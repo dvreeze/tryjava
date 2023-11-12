@@ -51,18 +51,18 @@ public class LinkbaseInfoPrinter {
         var linkbaseInfoPrinter = new LinkbaseInfoPrinter();
         var extendedLinks = linkbaseInfoPrinter.findAllExtendedLinks(xmlDocElem);
 
-        extendedLinks.stream().forEach(extLink -> {
+        extendedLinks.forEach(extLink -> {
             System.out.println();
             System.out.println("Extended link");
             System.out.printf("Extended link role: %s%n", extLink.xlinkRole);
 
             System.out.println();
             System.out.println("Extended link arcs");
-            extLink.arcs.stream().forEach(arc -> System.out.println(arc));
+            extLink.arcs.forEach(System.out::println);
 
             System.out.println();
             System.out.println("Extended link locators");
-            extLink.locators.stream().forEach(loc -> System.out.println(loc));
+            extLink.locators.forEach(System.out::println);
         });
     }
 
@@ -77,26 +77,30 @@ public class LinkbaseInfoPrinter {
     public final QName xlinkRoleName = new QName(xlinkNs, "role");
     public final QName linkbaseName = new QName(linkNs, "linkbase");
 
-    enum XLinkType {
+    public enum XLinkType {
         SIMPLE,
         EXTENDED,
         LOC,
         ARC,
     }
 
-    public record Locator(URI xlinkHref, String xlinkLabel) {
+    public sealed interface XLink permits ExtendedLink, Arc, Locator {
+        XLinkType xlinkType();
+    }
+
+    public record Locator(URI xlinkHref, String xlinkLabel) implements XLink {
         public XLinkType xlinkType() {
             return XLinkType.LOC;
         }
     }
 
-    public record Arc(String xlinkArcrole, String xlinkFrom, String xlinkTo, String order) {
+    public record Arc(String xlinkArcrole, String xlinkFrom, String xlinkTo, String order) implements XLink {
         public XLinkType xlinkType() {
             return XLinkType.ARC;
         }
     }
 
-    public record ExtendedLink(String xlinkRole, List<Arc> arcs, List<Locator> locators) {
+    public record ExtendedLink(String xlinkRole, List<Arc> arcs, List<Locator> locators) implements XLink {
         public XLinkType xlinkType() {
             return XLinkType.EXTENDED;
         }
@@ -109,7 +113,7 @@ public class LinkbaseInfoPrinter {
         return linkbaseElem
                 .filterDescendants(e -> hasAttributeValue(e, xlinkTypeName, "extended"))
                 .stream()
-                .map(e -> extractExtendedLink(e))
+                .map(this::extractExtendedLink)
                 .toList();
     }
 
@@ -149,6 +153,6 @@ public class LinkbaseInfoPrinter {
     }
 
     private boolean hasAttributeValue(ElemNode elem, QName attrName, String attrValue) {
-        return elem.findAttributeValue(attrName).stream().anyMatch(v -> attrValue.equals(v));
+        return elem.findAttributeValue(attrName).stream().anyMatch(attrValue::equals);
     }
 }

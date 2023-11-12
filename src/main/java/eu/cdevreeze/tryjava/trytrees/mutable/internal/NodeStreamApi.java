@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * API for querying tree nodes, across common axes
+ * API for querying generic tree nodes, across common axes
  *
  * @param <N>
  * @author Chris de Vreeze

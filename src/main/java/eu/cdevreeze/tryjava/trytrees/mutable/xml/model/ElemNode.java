@@ -62,7 +62,7 @@ public record ElemNode(QName name, Map<QName, String> attributes,
     }
 
     public String getAttributeValue(QName attrName) {
-        return findAttributeValue(attrName).get();
+        return findAttributeValue(attrName).orElseThrow();
     }
 
     private static NodeStreamApi<ElemNode> singleNodeStreamApi() {
