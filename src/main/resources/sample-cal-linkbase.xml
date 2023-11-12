@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XBRL International Inc Financial Accounts Taxonomy-->
+<!-- From "https://gitlab.xbrl.org/xii/ixbrl-samples/-/blob/master/src/xii-financial-statements-2022/xii-taxonomy-20220630/www.xbrl.org/taxonomy/xii/2022-06-30/xii-20220630_cal.xml?ref_type=heads" -->
+<linkbase xmlns="http://www.xbrl.org/2003/linkbase" xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.xbrl.org/2003/linkbase http://www.xbrl.org/2003/xbrl-linkbase-2003-12-31.xsd">
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/IS" xlink:href="xii-20220630.xsd#roleType_IS" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/NS" xlink:href="xii-20220630.xsd#roleType_NS" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/BS" xlink:href="xii-20220630.xsd#roleType_BS" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/CF" xlink:href="xii-20220630.xsd#roleType_CF" xlink:type="simple"/>
+    <calculationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/BS" xlink:type="extended">
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_Assets" xlink:label="us-gaap_Assets" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AssetsCurrent" xlink:label="us-gaap_AssetsCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_Assets" xlink:to="us-gaap_AssetsCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:label="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AccountsReceivableNetCurrent" xlink:label="us-gaap_AccountsReceivableNetCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_AccountsReceivableNetCurrent" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ConferenceFeesReceivableCurrent" xlink:label="xii_ConferenceFeesReceivableCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_AssetsCurrent" xlink:to="xii_ConferenceFeesReceivableCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OtherReceivablesNetCurrent" xlink:label="us-gaap_OtherReceivablesNetCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_OtherReceivablesNetCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_PrepaidExpenseAndOtherAssetsCurrent" xlink:label="us-gaap_PrepaidExpenseAndOtherAssetsCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_PrepaidExpenseAndOtherAssetsCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AssetsNoncurrent" xlink:label="us-gaap_AssetsNoncurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_Assets" xlink:to="us-gaap_AssetsNoncurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_LiabilitiesAndStockholdersEquity" xlink:label="us-gaap_LiabilitiesAndStockholdersEquity" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_LiabilitiesCurrent" xlink:label="us-gaap_LiabilitiesCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_LiabilitiesAndStockholdersEquity" xlink:to="us-gaap_LiabilitiesCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AccountsPayableAndAccruedLiabilitiesCurrent" xlink:label="us-gaap_AccountsPayableAndAccruedLiabilitiesCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_LiabilitiesCurrent" xlink:to="us-gaap_AccountsPayableAndAccruedLiabilitiesCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ContractWithCustomerLiabilityCurrent" xlink:label="us-gaap_ContractWithCustomerLiabilityCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_LiabilitiesCurrent" xlink:to="us-gaap_ContractWithCustomerLiabilityCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_DeferredIncomeCurrent" xlink:label="us-gaap_DeferredIncomeCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_LiabilitiesCurrent" xlink:to="us-gaap_DeferredIncomeCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StockholdersEquity" xlink:label="us-gaap_StockholdersEquity" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_LiabilitiesAndStockholdersEquity" xlink:to="us-gaap_StockholdersEquity" xlink:type="arc"/>
+    </calculationLink>
+    <calculationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/IS" xlink:type="extended">
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetIncomeLoss" xlink:label="us-gaap_NetIncomeLoss" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_Revenues" xlink:label="us-gaap_Revenues" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetIncomeLoss" xlink:to="us-gaap_Revenues" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:label="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_Revenues" xlink:to="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_InvestmentIncomeInterest" xlink:label="us-gaap_InvestmentIncomeInterest" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_Revenues" xlink:to="us-gaap_InvestmentIncomeInterest" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CostsAndExpenses" xlink:label="us-gaap_CostsAndExpenses" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetIncomeLoss" xlink:to="us-gaap_CostsAndExpenses" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_SalariesWagesAndOfficersCompensation" xlink:label="us-gaap_SalariesWagesAndOfficersCompensation" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_SalariesWagesAndOfficersCompensation" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_MeetingExpense" xlink:label="xii_MeetingExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_MeetingExpense" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_MaintenanceExpense" xlink:label="xii_MaintenanceExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_MaintenanceExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_TravelAndEntertainmentExpense" xlink:label="us-gaap_TravelAndEntertainmentExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_TravelAndEntertainmentExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_MarketingExpense" xlink:label="us-gaap_MarketingExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_MarketingExpense" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_LicenseFees" xlink:label="xii_LicenseFees" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_LicenseFees" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RoyaltyExpense" xlink:label="us-gaap_RoyaltyExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_RoyaltyExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProfessionalFees" xlink:label="us-gaap_ProfessionalFees" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_ProfessionalFees" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_GeneralInsuranceExpense" xlink:label="us-gaap_GeneralInsuranceExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_GeneralInsuranceExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OtherSellingGeneralAndAdministrativeExpense" xlink:label="us-gaap_OtherSellingGeneralAndAdministrativeExpense" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_OtherSellingGeneralAndAdministrativeExpense" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_BankCharges" xlink:label="xii_BankCharges" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_BankCharges" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProvisionForDoubtfulAccounts" xlink:label="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ForeignCurrencyTransactionGainLossBeforeTax" xlink:label="us-gaap_ForeignCurrencyTransactionGainLossBeforeTax" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_ForeignCurrencyTransactionGainLossBeforeTax" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ReleasedFromRestrictionsAmount" xlink:label="xii_ReleasedFromRestrictionsAmount" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetIncomeLoss" xlink:to="xii_ReleasedFromRestrictionsAmount" xlink:type="arc"/>
+    </calculationLink>
+    <calculationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/CF" xlink:type="extended">
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:label="us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:label="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:to="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProfitLoss" xlink:label="us-gaap_ProfitLoss" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_ProfitLoss" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProvisionForDoubtfulAccounts" xlink:label="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInAccountsReceivable" xlink:label="us-gaap_IncreaseDecreaseInAccountsReceivable" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_IncreaseDecreaseInAccountsReceivable" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_IncreaseDecreaseConferenceFeesReceivable" xlink:label="xii_IncreaseDecreaseConferenceFeesReceivable" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="xii_IncreaseDecreaseConferenceFeesReceivable" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInOtherReceivables" xlink:label="us-gaap_IncreaseDecreaseInOtherReceivables" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_IncreaseDecreaseInOtherReceivables" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInPrepaidDeferredExpenseAndOtherAssets" xlink:label="us-gaap_IncreaseDecreaseInPrepaidDeferredExpenseAndOtherAssets" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_IncreaseDecreaseInPrepaidDeferredExpenseAndOtherAssets" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInAccountsPayableTrade" xlink:label="us-gaap_IncreaseDecreaseInAccountsPayableTrade" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_IncreaseDecreaseInAccountsPayableTrade" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInContractWithCustomerLiability" xlink:label="us-gaap_IncreaseDecreaseInContractWithCustomerLiability" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_IncreaseDecreaseInContractWithCustomerLiability" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_IncreaseDecreaseInDeferredIncome" xlink:label="xii_IncreaseDecreaseInDeferredIncome" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="xii_IncreaseDecreaseInDeferredIncome" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetCashProvidedByUsedInInvestingActivities" xlink:label="us-gaap_NetCashProvidedByUsedInInvestingActivities" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:to="us-gaap_NetCashProvidedByUsedInInvestingActivities" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetCashProvidedByUsedInFinancingActivities" xlink:label="us-gaap_NetCashProvidedByUsedInFinancingActivities" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:to="us-gaap_NetCashProvidedByUsedInFinancingActivities" xlink:type="arc"/>
+    </calculationLink>
+    <calculationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/NS" xlink:type="extended">
+        <loc xlink:href="xii-20220630.xsd#xii_FinancialAssetsToMeetGeneralExpenditures" xlink:label="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:label="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:to="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ReceivablesNetCurrent" xlink:label="us-gaap_ReceivablesNetCurrent" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:to="us-gaap_ReceivablesNetCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:label="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="locator"/>
+        <loc xlink:href="xii-20220630.xsd#xii_GrossRevenue" xlink:label="xii_GrossRevenue" xlink:type="locator"/>
+        <calculationArc order="1" weight="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:to="xii_GrossRevenue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OperatingCostsAndExpenses" xlink:label="us-gaap_OperatingCostsAndExpenses" xlink:type="locator"/>
+        <calculationArc order="1" weight="-1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/summation-item" xlink:from="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:to="us-gaap_OperatingCostsAndExpenses" xlink:type="arc"/>
+    </calculationLink>
+</linkbase>

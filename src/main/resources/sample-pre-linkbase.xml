@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XBRL International Inc Financial Accounts Taxonomy-->
+<!-- From "https://gitlab.xbrl.org/xii/ixbrl-samples/-/blob/master/src/xii-financial-statements-2022/xii-taxonomy-20220630/www.xbrl.org/taxonomy/xii/2022-06-30/xii-20220630_pre.xml?ref_type=heads" -->
+<linkbase xmlns="http://www.xbrl.org/2003/linkbase" xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.xbrl.org/2003/linkbase http://www.xbrl.org/2003/xbrl-linkbase-2003-12-31.xsd">
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/AR" xlink:href="xii-20220630.xsd#roleType_AR" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/IS" xlink:href="xii-20220630.xsd#roleType_IS" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/DEI" xlink:href="xii-20220630.xsd#roleType_DEI" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/BS" xlink:href="xii-20220630.xsd#roleType_BS" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/CF" xlink:href="xii-20220630.xsd#roleType_CF" xlink:type="simple"/>
+    <roleRef roleURI="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/NS" xlink:href="xii-20220630.xsd#roleType_NS" xlink:type="simple"/>
+    <presentationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/DEI" xlink:type="extended">
+        <loc xlink:href="xii-20220630.xsd#xii_DocumentAndEntityInformationAbstract" xlink:label="xii_DocumentAndEntityInformationAbstract" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.sec.gov/dei/2021/dei-2021.xsd#dei_DocumentPeriodEndDate" xlink:label="dei_DocumentPeriodEndDate" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_DocumentAndEntityInformationAbstract" xlink:to="dei_DocumentPeriodEndDate" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.sec.gov/dei/2021/dei-2021.xsd#dei_EntityRegistrantName" xlink:label="dei_EntityRegistrantName" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_DocumentAndEntityInformationAbstract" xlink:to="dei_EntityRegistrantName" xlink:type="arc"/>
+    </presentationLink>
+    <presentationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/BS" xlink:type="extended">
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementOfFinancialPositionAbstract" xlink:label="us-gaap_StatementOfFinancialPositionAbstract" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementTable" xlink:label="us-gaap_StatementTable" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfFinancialPositionAbstract" xlink:to="us-gaap_StatementTable" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_RestrictionAxis" xlink:label="xii_RestrictionAxis" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="xii_RestrictionAxis" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_RestrictionDomain" xlink:label="xii_RestrictionDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionAxis" xlink:to="xii_RestrictionDomain" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_WithDonorRestrictionsMember" xlink:label="xii_WithDonorRestrictionsMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionDomain" xlink:to="xii_WithDonorRestrictionsMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_WithoutDonorRestrictionsMember" xlink:label="xii_WithoutDonorRestrictionsMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionDomain" xlink:to="xii_WithoutDonorRestrictionsMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementLineItems" xlink:label="us-gaap_StatementLineItems" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="us-gaap_StatementLineItems" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_Assets" xlink:label="us-gaap_Assets" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="us-gaap_Assets" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AssetsCurrent" xlink:label="us-gaap_AssetsCurrent" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_Assets" xlink:to="us-gaap_AssetsCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:label="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AccountsReceivableNetCurrent" xlink:label="us-gaap_AccountsReceivableNetCurrent" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_AccountsReceivableNetCurrent" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ConferenceFeesReceivableCurrent" xlink:label="xii_ConferenceFeesReceivableCurrent" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AssetsCurrent" xlink:to="xii_ConferenceFeesReceivableCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OtherReceivablesNetCurrent" xlink:label="us-gaap_OtherReceivablesNetCurrent" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_OtherReceivablesNetCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_PrepaidExpenseAndOtherAssetsCurrent" xlink:label="us-gaap_PrepaidExpenseAndOtherAssetsCurrent" xlink:type="locator"/>
+        <presentationArc order="5" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AssetsCurrent" xlink:to="us-gaap_PrepaidExpenseAndOtherAssetsCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AssetsNoncurrent" xlink:label="us-gaap_AssetsNoncurrent" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_Assets" xlink:to="us-gaap_AssetsNoncurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_LiabilitiesAndStockholdersEquity" xlink:label="us-gaap_LiabilitiesAndStockholdersEquity" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="us-gaap_LiabilitiesAndStockholdersEquity" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_LiabilitiesCurrent" xlink:label="us-gaap_LiabilitiesCurrent" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_LiabilitiesAndStockholdersEquity" xlink:to="us-gaap_LiabilitiesCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AccountsPayableAndAccruedLiabilitiesCurrent" xlink:label="us-gaap_AccountsPayableAndAccruedLiabilitiesCurrent" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_LiabilitiesCurrent" xlink:to="us-gaap_AccountsPayableAndAccruedLiabilitiesCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ContractWithCustomerLiabilityCurrent" xlink:label="us-gaap_ContractWithCustomerLiabilityCurrent" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_LiabilitiesCurrent" xlink:to="us-gaap_ContractWithCustomerLiabilityCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_DeferredIncomeCurrent" xlink:label="us-gaap_DeferredIncomeCurrent" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_LiabilitiesCurrent" xlink:to="us-gaap_DeferredIncomeCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StockholdersEquity" xlink:label="us-gaap_StockholdersEquity" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_LiabilitiesAndStockholdersEquity" xlink:to="us-gaap_StockholdersEquity" xlink:type="arc"/>
+    </presentationLink>
+    <presentationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/IS" xlink:type="extended">
+        <loc xlink:href="xii-20220630.xsd#xii_StatementOfActivitiesAbstract" xlink:label="xii_StatementOfActivitiesAbstract" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementTable" xlink:label="us-gaap_StatementTable" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_StatementOfActivitiesAbstract" xlink:to="us-gaap_StatementTable" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/srt/2021/elts/srt-2021-01-31.xsd#srt_ProductOrServiceAxis" xlink:label="srt_ProductOrServiceAxis" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="srt_ProductOrServiceAxis" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/srt/2021/elts/srt-2021-01-31.xsd#srt_ProductsAndServicesDomain" xlink:label="srt_ProductsAndServicesDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductOrServiceAxis" xlink:to="srt_ProductsAndServicesDomain" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_MembershipMember" xlink:label="us-gaap_MembershipMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="us-gaap_MembershipMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ConferenceMember" xlink:label="xii_ConferenceMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_ConferenceMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_SoftwareCertificationMember" xlink:label="xii_SoftwareCertificationMember" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_SoftwareCertificationMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RoyaltyMember" xlink:label="us-gaap_RoyaltyMember" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="us-gaap_RoyaltyMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_GrantMember" xlink:label="us-gaap_GrantMember" xlink:type="locator"/>
+        <presentationArc order="5" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="us-gaap_GrantMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ConsultingMember" xlink:label="xii_ConsultingMember" xlink:type="locator"/>
+        <presentationArc order="6" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_ConsultingMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_InterestIncomeImmaterialNonOperatingMember" xlink:label="xii_InterestIncomeImmaterialNonOperatingMember" xlink:type="locator"/>
+        <presentationArc order="7" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_InterestIncomeImmaterialNonOperatingMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementBusinessSegmentsAxis" xlink:label="us-gaap_StatementBusinessSegmentsAxis" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="us-gaap_StatementBusinessSegmentsAxis" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_SegmentDomain" xlink:label="us-gaap_SegmentDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementBusinessSegmentsAxis" xlink:to="us-gaap_SegmentDomain" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ProgramServicesMember" xlink:label="xii_ProgramServicesMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_SegmentDomain" xlink:to="xii_ProgramServicesMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_SupportServicesMember" xlink:label="xii_SupportServicesMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_SegmentDomain" xlink:to="xii_SupportServicesMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_RestrictionAxis" xlink:label="xii_RestrictionAxis" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="xii_RestrictionAxis" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_RestrictionDomain" xlink:label="xii_RestrictionDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionAxis" xlink:to="xii_RestrictionDomain" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_WithDonorRestrictionsMember" xlink:label="xii_WithDonorRestrictionsMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionDomain" xlink:to="xii_WithDonorRestrictionsMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_WithoutDonorRestrictionsMember" xlink:label="xii_WithoutDonorRestrictionsMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionDomain" xlink:to="xii_WithoutDonorRestrictionsMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementLineItems" xlink:label="us-gaap_StatementLineItems" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="us-gaap_StatementLineItems" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_Revenues" xlink:label="us-gaap_Revenues" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="us-gaap_Revenues" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:label="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_Revenues" xlink:to="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_InvestmentIncomeInterest" xlink:label="us-gaap_InvestmentIncomeInterest" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_Revenues" xlink:to="us-gaap_InvestmentIncomeInterest" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CostsAndExpenses" xlink:label="us-gaap_CostsAndExpenses" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="us-gaap_CostsAndExpenses" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_SalariesWagesAndOfficersCompensation" xlink:label="us-gaap_SalariesWagesAndOfficersCompensation" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_SalariesWagesAndOfficersCompensation" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_MeetingExpense" xlink:label="xii_MeetingExpense" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_MeetingExpense" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_MaintenanceExpense" xlink:label="xii_MaintenanceExpense" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_MaintenanceExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_TravelAndEntertainmentExpense" xlink:label="us-gaap_TravelAndEntertainmentExpense" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_TravelAndEntertainmentExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_MarketingExpense" xlink:label="us-gaap_MarketingExpense" xlink:type="locator"/>
+        <presentationArc order="5" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_MarketingExpense" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_LicenseFees" xlink:label="xii_LicenseFees" xlink:type="locator"/>
+        <presentationArc order="6" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_LicenseFees" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RoyaltyExpense" xlink:label="us-gaap_RoyaltyExpense" xlink:type="locator"/>
+        <presentationArc order="7" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_RoyaltyExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProfessionalFees" xlink:label="us-gaap_ProfessionalFees" xlink:type="locator"/>
+        <presentationArc order="8" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_ProfessionalFees" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_GeneralInsuranceExpense" xlink:label="us-gaap_GeneralInsuranceExpense" xlink:type="locator"/>
+        <presentationArc order="9" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_GeneralInsuranceExpense" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OtherSellingGeneralAndAdministrativeExpense" xlink:label="us-gaap_OtherSellingGeneralAndAdministrativeExpense" xlink:type="locator"/>
+        <presentationArc order="10" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_OtherSellingGeneralAndAdministrativeExpense" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_BankCharges" xlink:label="xii_BankCharges" xlink:type="locator"/>
+        <presentationArc order="11" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="xii_BankCharges" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProvisionForDoubtfulAccounts" xlink:label="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="locator"/>
+        <presentationArc order="12" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ForeignCurrencyTransactionGainLossBeforeTax" xlink:label="us-gaap_ForeignCurrencyTransactionGainLossBeforeTax" xlink:type="locator"/>
+        <presentationArc order="13" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_CostsAndExpenses" xlink:to="us-gaap_ForeignCurrencyTransactionGainLossBeforeTax" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ReleasedFromRestrictionsAmount" xlink:label="xii_ReleasedFromRestrictionsAmount" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="xii_ReleasedFromRestrictionsAmount" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetIncomeLoss" xlink:label="us-gaap_NetIncomeLoss" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="us-gaap_NetIncomeLoss" xlink:type="arc"/>
+    </presentationLink>
+    <presentationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/CF" xlink:type="extended">
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementOfCashFlowsAbstract" xlink:label="us-gaap_StatementOfCashFlowsAbstract" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:label="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfCashFlowsAbstract" xlink:to="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProfitLoss" xlink:label="us-gaap_ProfitLoss" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_ProfitLoss" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:label="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_NetCashProvidedByUsedInOperatingActivities" xlink:to="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ProvisionForDoubtfulAccounts" xlink:label="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="us-gaap_ProvisionForDoubtfulAccounts" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInAccountsReceivable" xlink:label="us-gaap_IncreaseDecreaseInAccountsReceivable" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="us-gaap_IncreaseDecreaseInAccountsReceivable" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_IncreaseDecreaseConferenceFeesReceivable" xlink:label="xii_IncreaseDecreaseConferenceFeesReceivable" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="xii_IncreaseDecreaseConferenceFeesReceivable" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInOtherReceivables" xlink:label="us-gaap_IncreaseDecreaseInOtherReceivables" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="us-gaap_IncreaseDecreaseInOtherReceivables" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInPrepaidDeferredExpenseAndOtherAssets" xlink:label="us-gaap_IncreaseDecreaseInPrepaidDeferredExpenseAndOtherAssets" xlink:type="locator"/>
+        <presentationArc order="5" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="us-gaap_IncreaseDecreaseInPrepaidDeferredExpenseAndOtherAssets" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInAccountsPayableTrade" xlink:label="us-gaap_IncreaseDecreaseInAccountsPayableTrade" xlink:type="locator"/>
+        <presentationArc order="6" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="us-gaap_IncreaseDecreaseInAccountsPayableTrade" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_IncreaseDecreaseInContractWithCustomerLiability" xlink:label="us-gaap_IncreaseDecreaseInContractWithCustomerLiability" xlink:type="locator"/>
+        <presentationArc order="7" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="us-gaap_IncreaseDecreaseInContractWithCustomerLiability" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_IncreaseDecreaseInDeferredIncome" xlink:label="xii_IncreaseDecreaseInDeferredIncome" xlink:type="locator"/>
+        <presentationArc order="8" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract" xlink:to="xii_IncreaseDecreaseInDeferredIncome" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetCashProvidedByUsedInInvestingActivities" xlink:label="us-gaap_NetCashProvidedByUsedInInvestingActivities" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfCashFlowsAbstract" xlink:to="us-gaap_NetCashProvidedByUsedInInvestingActivities" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_NetCashProvidedByUsedInFinancingActivities" xlink:label="us-gaap_NetCashProvidedByUsedInFinancingActivities" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfCashFlowsAbstract" xlink:to="us-gaap_NetCashProvidedByUsedInFinancingActivities" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:label="us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfCashFlowsAbstract" xlink:to="us-gaap_CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:label="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="locator"/>
+        <presentationArc order="5" preferredLabel="http://www.xbrl.org/2003/role/periodStartLabel" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfCashFlowsAbstract" xlink:to="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:label="us-gaap_CashAndCashEquivalentsAtCarryingValue_1" xlink:type="locator"/>
+        <presentationArc order="6" preferredLabel="http://www.xbrl.org/2003/role/periodEndLabel" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementOfCashFlowsAbstract" xlink:to="us-gaap_CashAndCashEquivalentsAtCarryingValue_1" xlink:type="arc"/>
+    </presentationLink>
+    <presentationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/NS" xlink:type="extended">
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_DisclosureTextBlockAbstract" xlink:label="us-gaap_DisclosureTextBlockAbstract" xlink:type="locator"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_BusinessDescriptionAndAccountingPoliciesTextBlock" xlink:label="us-gaap_BusinessDescriptionAndAccountingPoliciesTextBlock" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisclosureTextBlockAbstract" xlink:to="us-gaap_BusinessDescriptionAndAccountingPoliciesTextBlock" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_LiquidAvailableResourcesDisclosureTextBlock" xlink:label="xii_LiquidAvailableResourcesDisclosureTextBlock" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisclosureTextBlockAbstract" xlink:to="xii_LiquidAvailableResourcesDisclosureTextBlock" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_LiquidAvailableResourcesAbstract" xlink:label="xii_LiquidAvailableResourcesAbstract" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_LiquidAvailableResourcesDisclosureTextBlock" xlink:to="xii_LiquidAvailableResourcesAbstract" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementTable" xlink:label="us-gaap_StatementTable" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_LiquidAvailableResourcesAbstract" xlink:to="us-gaap_StatementTable" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_RestrictionAxis" xlink:label="xii_RestrictionAxis" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="xii_RestrictionAxis" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_RestrictionDomain" xlink:label="xii_RestrictionDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionAxis" xlink:to="xii_RestrictionDomain" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_WithDonorRestrictionsMember" xlink:label="xii_WithDonorRestrictionsMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionDomain" xlink:to="xii_WithDonorRestrictionsMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_WithoutDonorRestrictionsMember" xlink:label="xii_WithoutDonorRestrictionsMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_RestrictionDomain" xlink:to="xii_WithoutDonorRestrictionsMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StatementLineItems" xlink:label="us-gaap_StatementLineItems" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementTable" xlink:to="us-gaap_StatementLineItems" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_FinancialAssetsToMeetGeneralExpendituresForNextTwelveMonths" xlink:label="xii_FinancialAssetsToMeetGeneralExpendituresForNextTwelveMonths" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_StatementLineItems" xlink:to="xii_FinancialAssetsToMeetGeneralExpendituresForNextTwelveMonths" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_FinancialAssetsToMeetGeneralExpenditures" xlink:label="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_FinancialAssetsToMeetGeneralExpendituresForNextTwelveMonths" xlink:to="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:label="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:to="us-gaap_CashAndCashEquivalentsAtCarryingValue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ReceivablesNetCurrent" xlink:label="us-gaap_ReceivablesNetCurrent" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_FinancialAssetsToMeetGeneralExpenditures" xlink:to="us-gaap_ReceivablesNetCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_StockholdersEquity" xlink:label="us-gaap_StockholdersEquity" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_FinancialAssetsToMeetGeneralExpendituresForNextTwelveMonths" xlink:to="us-gaap_StockholdersEquity" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RevenueFromContractWithCustomerTextBlock" xlink:label="us-gaap_RevenueFromContractWithCustomerTextBlock" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisclosureTextBlockAbstract" xlink:to="us-gaap_RevenueFromContractWithCustomerTextBlock" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_DisaggregationOfRevenueAbstract" xlink:label="us-gaap_DisaggregationOfRevenueAbstract" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_RevenueFromContractWithCustomerTextBlock" xlink:to="us-gaap_DisaggregationOfRevenueAbstract" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_DisaggregationOfRevenueTable" xlink:label="us-gaap_DisaggregationOfRevenueTable" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisaggregationOfRevenueAbstract" xlink:to="us-gaap_DisaggregationOfRevenueTable" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/srt/2021/elts/srt-2021-01-31.xsd#srt_ProductOrServiceAxis" xlink:label="srt_ProductOrServiceAxis" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisaggregationOfRevenueTable" xlink:to="srt_ProductOrServiceAxis" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/srt/2021/elts/srt-2021-01-31.xsd#srt_ProductsAndServicesDomain" xlink:label="srt_ProductsAndServicesDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductOrServiceAxis" xlink:to="srt_ProductsAndServicesDomain" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_ConferenceMember" xlink:label="xii_ConferenceMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_ConferenceMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_SoftwareCertificationAndRoyaltyMember" xlink:label="xii_SoftwareCertificationAndRoyaltyMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_SoftwareCertificationAndRoyaltyMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_SoftwareCertificationMember" xlink:label="xii_SoftwareCertificationMember" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="xii_SoftwareCertificationMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RoyaltyMember" xlink:label="us-gaap_RoyaltyMember" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_ProductsAndServicesDomain" xlink:to="us-gaap_RoyaltyMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_TimingOfTransferOfGoodOrServiceAxis" xlink:label="us-gaap_TimingOfTransferOfGoodOrServiceAxis" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisaggregationOfRevenueTable" xlink:to="us-gaap_TimingOfTransferOfGoodOrServiceAxis" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_TimingOfTransferOfGoodOrServiceDomain" xlink:label="us-gaap_TimingOfTransferOfGoodOrServiceDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_TimingOfTransferOfGoodOrServiceAxis" xlink:to="us-gaap_TimingOfTransferOfGoodOrServiceDomain" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_TransferredAtPointInTimeMember" xlink:label="us-gaap_TransferredAtPointInTimeMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_TimingOfTransferOfGoodOrServiceDomain" xlink:to="us-gaap_TransferredAtPointInTimeMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_TransferredOverTimeMember" xlink:label="us-gaap_TransferredOverTimeMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_TimingOfTransferOfGoodOrServiceDomain" xlink:to="us-gaap_TransferredOverTimeMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/srt/2021/elts/srt-2021-01-31.xsd#srt_MajorCustomersAxis" xlink:label="srt_MajorCustomersAxis" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisaggregationOfRevenueTable" xlink:to="srt_MajorCustomersAxis" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/srt/2021/elts/srt-2021-01-31.xsd#srt_NameOfMajorCustomerDomain" xlink:label="srt_NameOfMajorCustomerDomain" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_MajorCustomersAxis" xlink:to="srt_NameOfMajorCustomerDomain" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_JurisdictionMember" xlink:label="xii_JurisdictionMember" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_NameOfMajorCustomerDomain" xlink:to="xii_JurisdictionMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_DirectParticipantMember" xlink:label="xii_DirectParticipantMember" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_NameOfMajorCustomerDomain" xlink:to="xii_DirectParticipantMember" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_SustainingPartnerMember" xlink:label="xii_SustainingPartnerMember" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="srt_NameOfMajorCustomerDomain" xlink:to="xii_SustainingPartnerMember" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_DisaggregationOfRevenueLineItems" xlink:label="us-gaap_DisaggregationOfRevenueLineItems" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisaggregationOfRevenueTable" xlink:to="us-gaap_DisaggregationOfRevenueLineItems" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:label="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisaggregationOfRevenueLineItems" xlink:to="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:type="arc"/>
+        <loc xlink:href="xii-20220630.xsd#xii_GrossRevenue" xlink:label="xii_GrossRevenue" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:to="xii_GrossRevenue" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OperatingCostsAndExpenses" xlink:label="us-gaap_OperatingCostsAndExpenses" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_RevenueFromContractWithCustomerIncludingAssessedTax" xlink:to="us-gaap_OperatingCostsAndExpenses" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:label="us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_RevenueFromContractWithCustomerTextBlock" xlink:to="us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ContractWithCustomerLiabilityCurrent" xlink:label="us-gaap_ContractWithCustomerLiabilityCurrent" xlink:type="locator"/>
+        <presentationArc order="1" preferredLabel="http://www.xbrl.org/2003/role/periodStartLabel" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:to="us-gaap_ContractWithCustomerLiabilityCurrent" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ContractWithCustomerLiabilityRevenueRecognized" xlink:label="us-gaap_ContractWithCustomerLiabilityRevenueRecognized" xlink:type="locator"/>
+        <presentationArc order="2" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:to="us-gaap_ContractWithCustomerLiabilityRevenueRecognized" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ContractWithCustomerLiabilityCumulativeCatchUpAdjustmentToRevenueChangeInMeasureOfProgress" xlink:label="us-gaap_ContractWithCustomerLiabilityCumulativeCatchUpAdjustmentToRevenueChangeInMeasureOfProgress" xlink:type="locator"/>
+        <presentationArc order="3" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:to="us-gaap_ContractWithCustomerLiabilityCumulativeCatchUpAdjustmentToRevenueChangeInMeasureOfProgress" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_ContractWithCustomerLiabilityCurrent" xlink:label="us-gaap_ContractWithCustomerLiabilityCurrent_1" xlink:type="locator"/>
+        <presentationArc order="4" preferredLabel="http://www.xbrl.org/2003/role/periodEndLabel" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_ChangeInContractWithCustomerLiabilityAbstract" xlink:to="us-gaap_ContractWithCustomerLiabilityCurrent_1" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_OtherOperatingIncomeAndExpenseTextBlock" xlink:label="us-gaap_OtherOperatingIncomeAndExpenseTextBlock" xlink:type="locator"/>
+        <presentationArc order="4" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisclosureTextBlockAbstract" xlink:to="us-gaap_OtherOperatingIncomeAndExpenseTextBlock" xlink:type="arc"/>
+        <loc xlink:href="https://xbrl.fasb.org/us-gaap/2021/elts/us-gaap-2021-01-31.xsd#us-gaap_LossContingencyDisclosures" xlink:label="us-gaap_LossContingencyDisclosures" xlink:type="locator"/>
+        <presentationArc order="5" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="us-gaap_DisclosureTextBlockAbstract" xlink:to="us-gaap_LossContingencyDisclosures" xlink:type="arc"/>
+    </presentationLink>
+    <presentationLink xlink:role="http://www.xbrl.org/taxonomy/xii/2022-06-30/role/AR" xlink:type="extended">
+        <loc xlink:href="xii-20220630.xsd#xii_AuditorReportAbstract" xlink:label="xii_AuditorReportAbstract" xlink:type="locator"/>
+        <loc xlink:href="xii-20220630.xsd#xii_AuditorReportTextBlock" xlink:label="xii_AuditorReportTextBlock" xlink:type="locator"/>
+        <presentationArc order="1" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="xii_AuditorReportAbstract" xlink:to="xii_AuditorReportTextBlock" xlink:type="arc"/>
+    </presentationLink>
+</linkbase>
