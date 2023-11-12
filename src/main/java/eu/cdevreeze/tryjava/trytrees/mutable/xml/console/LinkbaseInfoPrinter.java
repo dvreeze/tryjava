@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.tryjava.trytrees.mutable.xml.console;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.cdevreeze.tryjava.trytrees.mutable.xml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.trytrees.mutable.xml.model.ElemNode;
 import net.sf.saxon.s9api.Processor;
@@ -23,6 +24,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +38,7 @@ public class LinkbaseInfoPrinter {
 
     private static final Processor saxonProcessor = new Processor(false);
 
-    public static void main(String[] args) throws SaxonApiException {
+    public static void main(String[] args) throws SaxonApiException, IOException {
         Objects.requireNonNull(args);
         if (args.length != 1)
             throw new IllegalArgumentException(String.format("Expected precisely 1 argument (the input XML file path), but got %s ones", args.length));
@@ -50,20 +52,10 @@ public class LinkbaseInfoPrinter {
 
         var linkbaseInfoPrinter = new LinkbaseInfoPrinter();
         var extendedLinks = linkbaseInfoPrinter.findAllExtendedLinks(xmlDocElem);
+        var linkbase = new Linkbase(extendedLinks);
 
-        extendedLinks.forEach(extLink -> {
-            System.out.println();
-            System.out.println("Extended link");
-            System.out.printf("Extended link role: %s%n", extLink.xlinkRole);
-
-            System.out.println();
-            System.out.println("Extended link arcs");
-            extLink.arcs.forEach(System.out::println);
-
-            System.out.println();
-            System.out.println("Extended link locators");
-            extLink.locators.forEach(System.out::println);
-        });
+        var objectMapper = new ObjectMapper();
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(System.out, linkbase);
     }
 
     public final String xlinkNs = "http://www.w3.org/1999/xlink";
@@ -104,6 +96,9 @@ public class LinkbaseInfoPrinter {
         public XLinkType xlinkType() {
             return XLinkType.EXTENDED;
         }
+    }
+
+    public record Linkbase(List<ExtendedLink> extendedLinks) {
     }
 
     public List<ExtendedLink> findAllExtendedLinks(ElemNode linkbaseElem) {

@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.tryjava.trytrees.mutable.xml.console;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.cdevreeze.tryjava.trytrees.mutable.xml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.trytrees.mutable.xml.model.ElemNode;
 import net.sf.saxon.s9api.Axis;
@@ -25,10 +26,9 @@ import net.sf.saxon.s9api.XdmNodeKind;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,12 +38,24 @@ import java.util.stream.Collectors;
  */
 public class XmlInfoPrinter {
 
-    public record XmlDocInfo(Path docPath, int nrOfElems, Map<QName, Long> elemCounts) {
+    public record ElementCount(QName elementName, long elementCount) {
+    }
+
+    public record XmlDocInfo(Path docPath, int nrOfElems, List<ElementCount> elemCounts) {
 
         public static XmlDocInfo fromDoc(Path docPath, ElemNode docElem) {
             var allElems = docElem.findAllDescendantsOrSelf();
 
-            var elemCounts = allElems.stream().collect(Collectors.groupingBy(ElemNode::name, Collectors.counting()));
+            var elemCounts = allElems.stream().collect(Collectors.groupingBy(
+                            ElemNode::name,
+                            Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .map(kv -> new ElementCount(kv.getKey(), kv.getValue()))
+                    .sorted(
+                            Comparator.comparingLong(ElementCount::elementCount).reversed()
+                                    .thenComparing(elemCnt -> elemCnt.elementName().toString()))
+                    .toList();
 
             return new XmlDocInfo(docPath, allElems.size(), elemCounts);
         }
@@ -51,7 +63,7 @@ public class XmlInfoPrinter {
 
     private static final Processor saxonProcessor = new Processor(false);
 
-    public static void main(String[] args) throws SaxonApiException {
+    public static void main(String[] args) throws SaxonApiException, IOException {
         Objects.requireNonNull(args);
         if (args.length != 1)
             throw new IllegalArgumentException(String.format("Expected precisely 1 argument (the input XML file path), but got %s ones", args.length));
@@ -68,23 +80,20 @@ public class XmlInfoPrinter {
 
         var xmlDocElem = (ElemNode) new SaxonConverter().convertToXmlNode(docNode);
 
-        printXmlFileInfo(inputFile.toPath(), xmlDocElem);
-    }
+        System.out.println();
+        System.out.println("Ready converting Saxon document to ElemNode");
 
-    public static void printXmlFileInfo(Path docPath, ElemNode xmlDocElem) {
-        var xmlDocInfo = XmlDocInfo.fromDoc(docPath, xmlDocElem);
+        var xmlDocInfo = XmlDocInfo.fromDoc(inputFile.toPath(), xmlDocElem);
 
         System.out.println();
-        System.out.printf("Document path: '%s'%n", xmlDocInfo.docPath);
-        System.out.printf("Number of element nodes:  %s%n", xmlDocInfo.nrOfElems);
+        System.out.println("Ready creating 'XmlDocInfo' from ElemNode");
+
+        var objectMapper = new ObjectMapper();
 
         System.out.println();
-        xmlDocInfo.elemCounts
-                .entrySet()
-                .stream()
-                .toList()
-                .stream()
-                .sorted(Comparator.comparingLong((Map.Entry<QName, Long> kv) -> kv.getValue()).reversed())
-                .forEach(kv -> System.out.printf("Element '%s' occurs %s times%n", kv.getKey(), kv.getValue()));
+        System.out.println("JSON output:");
+        System.out.println();
+
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(System.out, xmlDocInfo);
     }
 }
