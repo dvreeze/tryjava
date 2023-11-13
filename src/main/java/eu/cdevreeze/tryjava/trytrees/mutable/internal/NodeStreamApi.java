@@ -45,4 +45,12 @@ public interface NodeStreamApi<N> {
     Stream<N> filterDescendants(N node, Predicate<N> predicate);
 
     Optional<N> findDescendant(N node, Predicate<N> predicate);
+
+    Stream<N> findTopmostDescendantsOrSelf(N node, Predicate<N> predicate);
+
+    Optional<N> findTopmostDescendantOrSelf(N node, Predicate<N> predicate);
+
+    Stream<N> findTopmostDescendants(N node, Predicate<N> predicate);
+
+    Optional<N> findTopmostDescendant(N node, Predicate<N> predicate);
 }

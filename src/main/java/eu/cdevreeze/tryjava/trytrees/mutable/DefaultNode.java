@@ -78,4 +78,28 @@ public interface DefaultNode<N extends DefaultNode<N>> extends Node<N> {
         Objects.requireNonNull(predicate);
         return nodeStreamApi().findDescendant(self(), predicate);
     }
+
+    @Override
+    default List<N> findTopmostDescendantsOrSelf(Predicate<N> predicate) {
+        Objects.requireNonNull(predicate);
+        return nodeStreamApi().findTopmostDescendantsOrSelf(self(), predicate).toList();
+    }
+
+    @Override
+    default Optional<N> findTopmostDescendantOrSelf(Predicate<N> predicate) {
+        Objects.requireNonNull(predicate);
+        return nodeStreamApi().findTopmostDescendantOrSelf(self(), predicate);
+    }
+
+    @Override
+    default List<N> findTopmostDescendants(Predicate<N> predicate) {
+        Objects.requireNonNull(predicate);
+        return nodeStreamApi().findTopmostDescendants(self(), predicate).toList();
+    }
+
+    @Override
+    default Optional<N> findTopmostDescendant(Predicate<N> predicate) {
+        Objects.requireNonNull(predicate);
+        return nodeStreamApi().findTopmostDescendant(self(), predicate);
+    }
 }

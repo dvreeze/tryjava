@@ -95,4 +95,38 @@ public interface DefaultNodeStreamApi<N> extends NodeStreamApi<N> {
 
         return filterDescendants(node, predicate).findFirst();
     }
+
+    @Override
+    default Stream<N> findTopmostDescendantsOrSelf(N node, Predicate<N> predicate) {
+        Objects.requireNonNull(node);
+        Objects.requireNonNull(predicate);
+
+        return (predicate.test(node)) ?
+                Stream.of(node) :
+                findAllChildren(node).flatMap(ch -> findTopmostDescendantsOrSelf(ch, predicate));
+    }
+
+    @Override
+    default Optional<N> findTopmostDescendantOrSelf(N node, Predicate<N> predicate) {
+        Objects.requireNonNull(node);
+        Objects.requireNonNull(predicate);
+
+        return findTopmostDescendantsOrSelf(node, predicate).findFirst();
+    }
+
+    @Override
+    default Stream<N> findTopmostDescendants(N node, Predicate<N> predicate) {
+        Objects.requireNonNull(node);
+        Objects.requireNonNull(predicate);
+
+        return findAllChildren(node).flatMap(ch -> findTopmostDescendantsOrSelf(ch, predicate));
+    }
+
+    @Override
+    default Optional<N> findTopmostDescendant(N node, Predicate<N> predicate) {
+        Objects.requireNonNull(node);
+        Objects.requireNonNull(predicate);
+
+        return findTopmostDescendants(node, predicate).findFirst();
+    }
 }

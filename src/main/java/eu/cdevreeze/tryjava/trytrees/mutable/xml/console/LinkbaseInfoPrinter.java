@@ -21,16 +21,19 @@ import eu.cdevreeze.tryjava.trytrees.mutable.xml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.trytrees.mutable.xml.model.ElemNode;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
-import java.io.File;
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Program that prints some info about an XBRL linkbase (but not label or reference linkbase)
+ * Program that prints some info about an XBRL linkbase (but not label or reference linkbase).
+ * The linkbase file is referred to by a URI program parameter.
  *
  * @author Chris de Vreeze
  */
@@ -38,24 +41,38 @@ public class LinkbaseInfoPrinter {
 
     private static final Processor saxonProcessor = new Processor(false);
 
+    private static final Logger logger = LoggerFactory.getLogger(LinkbaseInfoPrinter.class);
+
     public static void main(String[] args) throws SaxonApiException, IOException {
         Objects.requireNonNull(args);
         if (args.length != 1)
             throw new IllegalArgumentException(String.format("Expected precisely 1 argument (the input XML file path), but got %s ones", args.length));
 
-        var inputFile = new File(args[0]);
+        var inputFile = URI.create(args[0]);
 
         var docBuilder = saxonProcessor.newDocumentBuilder();
-        var docNode = docBuilder.build(inputFile);
+
+        logger.info("Parsing document ...");
+        var docNode = docBuilder.build(new StreamSource(inputFile.toURL().openStream()));
+
+        logger.atInfo().setMessage("Document parsed (as Saxon node): {}").addArgument(docNode.getBaseURI()).log();
 
         var xmlDocElem = (ElemNode) new SaxonConverter().convertToXmlNode(docNode);
+
+        logger.info("Ready converting Saxon document to ElemNode");
 
         var linkbaseInfoPrinter = new LinkbaseInfoPrinter();
         var extendedLinks = linkbaseInfoPrinter.findAllExtendedLinks(xmlDocElem);
         var linkbase = new Linkbase(extendedLinks);
 
+        logger.info("Ready creating 'Linkbase' from ElemNode");
+
         var objectMapper = new ObjectMapper();
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(System.out, linkbase);
+
+        logger.atInfo()
+                .setMessage("JSON output:\n{}")
+                .addArgument(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(linkbase))
+                .log();
     }
 
     public final String xlinkNs = "http://www.w3.org/1999/xlink";
@@ -106,7 +123,7 @@ public class LinkbaseInfoPrinter {
             throw new IllegalArgumentException(String.format("Not a linkbase element name: '%s'", linkbaseElem.name()));
         }
         return linkbaseElem
-                .filterDescendants(e -> hasAttributeValue(e, xlinkTypeName, "extended"))
+                .findTopmostDescendants(e -> hasAttributeValue(e, xlinkTypeName, "extended"))
                 .stream()
                 .map(this::extractExtendedLink)
                 .toList();

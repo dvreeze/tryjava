@@ -47,4 +47,12 @@ public interface Node<N extends Node<N>> {
     List<N> filterDescendants(Predicate<N> predicate);
 
     Optional<N> findDescendant(Predicate<N> predicate);
+
+    List<N> findTopmostDescendantsOrSelf(Predicate<N> predicate);
+
+    Optional<N> findTopmostDescendantOrSelf(Predicate<N> predicate);
+
+    List<N> findTopmostDescendants(Predicate<N> predicate);
+
+    Optional<N> findTopmostDescendant(Predicate<N> predicate);
 }
