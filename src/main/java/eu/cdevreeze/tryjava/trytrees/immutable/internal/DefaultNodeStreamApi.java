@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.trytrees.mutable.internal;
+package eu.cdevreeze.tryjava.trytrees.immutable.internal;
 
 import java.util.Objects;
 import java.util.Optional;
