@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.trytrees.immutable.xml.console;
+package eu.cdevreeze.tryjava.trytrees.immutable2.xml.console;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.cdevreeze.tryjava.trytrees.immutable.xml.convert.SaxonConverter;
-import eu.cdevreeze.tryjava.trytrees.immutable.xml.model.ElemNode;
+import eu.cdevreeze.tryjava.trytrees.immutable2.xml.convert.SaxonConverter;
+import eu.cdevreeze.tryjava.trytrees.immutable2.xml.model.ElemNode;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Traversable;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNodeKind;
-import org.javimmutable.collections.ICollectors;
-import org.javimmutable.collections.IList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Program that prints some info about an input XML document (referred to by a URI program parameter)
@@ -46,21 +45,18 @@ public class XmlInfoPrinter {
     public record ElementCount(QName elementName, long elementCount) {
     }
 
-    public record XmlDocInfo(URI docUri, int nrOfElems, IList<ElementCount> elemCounts) {
+    public record XmlDocInfo(URI docUri, int nrOfElems, Seq<ElementCount> elemCounts) {
 
         public static XmlDocInfo fromDoc(URI docUri, ElemNode docElem) {
             var allElems = docElem.findAllDescendantsOrSelf();
 
-            var elemCounts = allElems.stream().collect(Collectors.groupingBy(
-                            ElemNode::name,
-                            Collectors.counting()))
-                    .entrySet()
-                    .stream()
-                    .map(kv -> new ElementCount(kv.getKey(), kv.getValue()))
+            var elemCounts = allElems.groupBy(ElemNode::name)
+                    .mapValues(Traversable::size)
+                    .map(kv -> new ElementCount(kv._1(), kv._2()))
                     .sorted(
                             Comparator.comparingLong(ElementCount::elementCount).reversed()
-                                    .thenComparing(elemCnt -> elemCnt.elementName().toString()))
-                    .collect(ICollectors.toList());
+                                    .thenComparing(elemCnt -> elemCnt.elementName().toString())
+                    );
 
             return new XmlDocInfo(docUri, allElems.size(), elemCounts);
         }
@@ -106,7 +102,7 @@ public class XmlInfoPrinter {
         var mutableXmlDocInfo = new MutableXmlDocInfo(
                 xmlDocInfo.docUri,
                 xmlDocInfo.nrOfElems,
-                xmlDocInfo.elemCounts.stream().toList()
+                xmlDocInfo.elemCounts.toJavaStream().toList()
         );
 
         logger.info("Ready creating 'XmlDocInfo' from ElemNode");

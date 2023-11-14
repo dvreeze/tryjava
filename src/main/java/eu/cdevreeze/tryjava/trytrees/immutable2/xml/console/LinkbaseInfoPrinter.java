@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.trytrees.immutable.xml.console;
+package eu.cdevreeze.tryjava.trytrees.immutable2.xml.console;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import eu.cdevreeze.tryjava.trytrees.immutable.xml.convert.SaxonConverter;
-import eu.cdevreeze.tryjava.trytrees.immutable.xml.model.ElemNode;
+import eu.cdevreeze.tryjava.trytrees.immutable2.xml.convert.SaxonConverter;
+import eu.cdevreeze.tryjava.trytrees.immutable2.xml.model.ElemNode;
+import io.vavr.collection.Seq;
+import io.vavr.jackson.datatype.VavrModule;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
-import org.javimmutable.collections.ICollectors;
-import org.javimmutable.collections.IList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,8 +70,7 @@ public class LinkbaseInfoPrinter {
 
         var objectMapper = new ObjectMapper();
 
-        var module = new SimpleModule();
-        module.addSerializer(Linkbase.class, new LinkbaseSerializer());
+        var module = new VavrModule();
         objectMapper.registerModule(module);
 
         logger.atInfo()
@@ -118,88 +113,22 @@ public class LinkbaseInfoPrinter {
         }
     }
 
-    public record ExtendedLink(String xlinkRole, IList<Arc> arcs, IList<Locator> locators) implements XLink {
+    public record ExtendedLink(String xlinkRole, Seq<Arc> arcs, Seq<Locator> locators) implements XLink {
         public XLinkType xlinkType() {
             return XLinkType.EXTENDED;
         }
     }
 
-    public record Linkbase(IList<ExtendedLink> extendedLinks) {
+    public record Linkbase(Seq<ExtendedLink> extendedLinks) {
     }
 
-    private static class LinkbaseSerializer extends StdSerializer<Linkbase> {
-
-        public LinkbaseSerializer() {
-            this(null);
-        }
-
-        public LinkbaseSerializer(Class<Linkbase> t) {
-            super(t);
-        }
-
-        @Override
-        public void serialize(Linkbase value, JsonGenerator jgen, SerializerProvider provider) {
-            try {
-                jgen.writeStartObject();
-                jgen.writeArrayFieldStart("extendedLinks");
-                value.extendedLinks.stream().forEach(extLink -> serializeExtendedLink(extLink, jgen));
-                jgen.writeEndArray();
-                jgen.writeEndObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void serializeExtendedLink(ExtendedLink extendedLink, JsonGenerator jgen) {
-            try {
-                jgen.writeStartObject();
-                jgen.writeStringField("xlinkRole", extendedLink.xlinkRole());
-                jgen.writeArrayFieldStart("arcs");
-                extendedLink.arcs.stream().forEach(arc -> serializeArc(arc, jgen));
-                jgen.writeEndArray();
-                jgen.writeArrayFieldStart("locators");
-                extendedLink.locators.stream().forEach(locator -> serializeLocator(locator, jgen));
-                jgen.writeEndArray();
-                jgen.writeEndObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void serializeArc(Arc arc, JsonGenerator jgen) {
-            try {
-                jgen.writeStartObject();
-                jgen.writeStringField("xlinkArcrole", arc.xlinkArcrole());
-                jgen.writeStringField("xlinkFrom", arc.xlinkFrom());
-                jgen.writeStringField("xlinkTo", arc.xlinkTo());
-                jgen.writeStringField("order", arc.order());
-                jgen.writeEndObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void serializeLocator(Locator locator, JsonGenerator jgen) {
-            try {
-                jgen.writeStartObject();
-                jgen.writeStringField("xlinkHref", locator.xlinkHref().toString());
-                jgen.writeStringField("xlinkLabel", locator.xlinkLabel());
-                jgen.writeEndObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public IList<ExtendedLink> findAllExtendedLinks(ElemNode linkbaseElem) {
+    public Seq<ExtendedLink> findAllExtendedLinks(ElemNode linkbaseElem) {
         if (!linkbaseName.equals(linkbaseElem.name())) {
             throw new IllegalArgumentException(String.format("Not a linkbase element name: '%s'", linkbaseElem.name()));
         }
         return linkbaseElem
                 .findTopmostDescendants(e -> hasAttributeValue(e, xlinkTypeName, "extended"))
-                .stream()
-                .map(this::extractExtendedLink)
-                .collect(ICollectors.toList());
+                .map(this::extractExtendedLink);
     }
 
     private ExtendedLink extractExtendedLink(ElemNode extendedLinkElem) {
@@ -213,24 +142,20 @@ public class LinkbaseInfoPrinter {
         );
     }
 
-    private IList<Arc> findAllArcs(ElemNode extendedLinkElem) {
+    private Seq<Arc> findAllArcs(ElemNode extendedLinkElem) {
         assert hasAttributeValue(extendedLinkElem, xlinkTypeName, "extended");
 
         return extendedLinkElem
                 .filterChildren(e -> hasAttributeValue(e, xlinkTypeName, "arc"))
-                .stream()
-                .map(e -> new Arc(e.getAttributeValue(xlinkArcroleName), e.getAttributeValue(xlinkFromName), e.getAttributeValue(xlinkToName), e.findAttributeValue(new QName("order")).orElse("1")))
-                .collect(ICollectors.toList());
+                .map(e -> new Arc(e.getAttributeValue(xlinkArcroleName), e.getAttributeValue(xlinkFromName), e.getAttributeValue(xlinkToName), e.findAttributeValue(new QName("order")).orElse("1")));
     }
 
-    private IList<Locator> findAllLocators(ElemNode extendedLinkElem) {
+    private Seq<Locator> findAllLocators(ElemNode extendedLinkElem) {
         assert hasAttributeValue(extendedLinkElem, xlinkTypeName, "extended");
 
         return extendedLinkElem
                 .filterChildren(e -> hasAttributeValue(e, xlinkTypeName, "locator"))
-                .stream()
-                .map(e -> new Locator(URI.create(e.getAttributeValue(xlinkHrefName)), e.getAttributeValue(xlinkLabelName)))
-                .collect(ICollectors.toList());
+                .map(e -> new Locator(URI.create(e.getAttributeValue(xlinkHrefName)), e.getAttributeValue(xlinkLabelName)));
     }
 
     private boolean hasAttribute(ElemNode elem, QName attrName) {
