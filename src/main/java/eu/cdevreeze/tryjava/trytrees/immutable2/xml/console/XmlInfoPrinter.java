@@ -21,6 +21,7 @@ import eu.cdevreeze.tryjava.trytrees.immutable2.xml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.trytrees.immutable2.xml.model.ElemNode;
 import io.vavr.collection.Seq;
 import io.vavr.collection.Traversable;
+import io.vavr.jackson.datatype.VavrModule;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -62,9 +63,6 @@ public class XmlInfoPrinter {
         }
     }
 
-    private record MutableXmlDocInfo(URI docUri, int nrOfElems, java.util.List<ElementCount> elemCounts) {
-    }
-
     private static final Processor saxonProcessor = new Processor(false);
 
     private static final Logger logger = LoggerFactory.getLogger(XmlInfoPrinter.class);
@@ -99,19 +97,16 @@ public class XmlInfoPrinter {
 
         var xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem);
 
-        var mutableXmlDocInfo = new MutableXmlDocInfo(
-                xmlDocInfo.docUri,
-                xmlDocInfo.nrOfElems,
-                xmlDocInfo.elemCounts.toJavaStream().toList()
-        );
-
         logger.info("Ready creating 'XmlDocInfo' from ElemNode");
 
         var objectMapper = new ObjectMapper();
 
+        var module = new VavrModule();
+        objectMapper.registerModule(module);
+
         logger.atInfo()
                 .setMessage("JSON output:\n{}")
-                .addArgument(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mutableXmlDocInfo))
+                .addArgument(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(xmlDocInfo))
                 .log();
     }
 }
