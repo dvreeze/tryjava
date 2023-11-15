@@ -116,6 +116,68 @@ public class QuoteCollection {
                     There is only one kind of freedom and that's individual liberty.
                     Our lives come from our creator and our liberty comes from our creator.
                     It has nothing to do with government granting it.""",
-                    "Ron Paul", Vector.of("liberty"))
+                    "Ron Paul", Vector.of("liberty")),
+            new Quote("Genius is patience",
+                    "Isaac Newton",
+                    Vector.of("genius")),
+            new Quote("""
+                    Atheism is so senseless.
+                    When I look at the solar system,
+                    I see the earth at the right distance from the sun to receive the proper amounts of heat and light.
+                    This did not happen by chance.""",
+                    "Isaac Newton",
+                    Vector.of("faith")),
+            new Quote("""
+                    If I have seen further than others, it is by standing upon the shoulders of giants.""",
+                    "Isaac Newton",
+                    Vector.of("achievements")),
+            new Quote("""
+                    WAR is a racket.
+                    It always has been.
+                    It is possibly the oldest, easily the most profitable, surely the most vicious.
+                    It is the only one international in scope.
+                    It is the only one in which the profits are reckoned in dollars and the losses in lives.""",
+                    "Smedley Butler",
+                    Vector.of("war")),
+            new Quote("""
+                    I spent thirty-three years and four months in active military service as a member of this country's most agile military force,
+                    the Marine Corps.
+                    I served in all commissioned ranks from Second Lieutenant to Major-General.
+                    And during that period, I spent most of my time being a high class muscle-man for Big Business, for Wall Street and for the Bankers.
+                    In short, I was a racketeer, a gangster for capitalism.""",
+                    "Smedley Butler",
+                    Vector.of("war", "conquest", "racket")),
+            new Quote("""
+                    Only those who would be called upon to risk their lives for their country should have the privilege of voting
+                    to determine whether the nation should go to war.""",
+                    "Smedley Butler",
+                    Vector.of("war")),
+            new Quote("""
+                    The illegal we do immediately; the unconstitutional takes a little longer.""",
+                    "Henry Kissinger",
+                    Vector.of("corrupt government")),
+            new Quote("""
+                    Military men are dumb, stupid animals to be used as pawns for foreign policy.""",
+                    "Henry Kissinger",
+                    Vector.of("corrupt government", "hubris")),
+            new Quote("""
+                    Every now and again the United States has to pick up a crappy little country and throw it against a wall
+                    just to prove we are serious.""",
+                    "Michael Ledeen",
+                    Vector.of("war", "hubris")),
+            new Quote(
+                    "We now have the technology to bring ET home.",
+                    "Ben Rich",
+                    Vector.of("hidden knowledge")),
+            new Quote(
+                    "If you want to find the secrets of the universe, think in terms of energy, frequency and vibration.",
+                    "Nikola Tesla",
+                    Vector.of("hidden knowledge")),
+            new Quote("""
+                    The day science begins to study non-physical phenomena,
+                    it will make more progress in one decade than in all the previous centuries of its existence.""",
+                    "Nikola Tesla",
+                    Vector.of("")
+            )
     );
 }
