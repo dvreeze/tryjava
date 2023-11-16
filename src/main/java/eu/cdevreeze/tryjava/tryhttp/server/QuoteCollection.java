@@ -83,31 +83,37 @@ public class QuoteCollection {
                     Vector.of("liberty", "financial system")),
             new Quote("""
                     Legitimate use of violence can only be that which is required in self-defense.""",
-                    "Ron Paul", Vector.of("defense")),
+                    "Ron Paul",
+                    Vector.of("defense")),
             new Quote("""
                     I am absolutely opposed to a national ID card.
                     This is a total contradiction of what a free society is all about.
                     The purpose of government is to protect the secrecy and the privacy of all individuals,
                     not the secrecy of government. We don't need a national ID card.""",
-                    "Ron Paul", Vector.of("liberty")),
+                    "Ron Paul",
+                    Vector.of("liberty")),
             new Quote("""
                     Maybe we ought to consider a Golden Rule in foreign policy:
                     Don't do to other nations what we don't want happening to us.
                     We endlessly bomb these countries and then we wonder why they get upset with us?""",
-                    "Ron Paul", Vector.of("liberty", "peace")),
+                    "Ron Paul",
+                    Vector.of("liberty", "peace")),
             new Quote("""
                     I am just absolutely convinced that the best formula for giving us peace and
                     preserving the American way of life is freedom, limited government,
                     and minding our own business overseas.""",
-                    "Ron Paul", Vector.of("liberty", "peace")),
+                    "Ron Paul",
+                    Vector.of("liberty", "peace")),
             new Quote("""
                     Real patriotism is a willingness to challenge the government when it's wrong.""",
-                    "Ron Paul", Vector.of("patriotism", "liberty")),
+                    "Ron Paul",
+                    Vector.of("patriotism", "liberty")),
             new Quote("""
                     Believe me, the intellectual revolution is going on,
                     and that has to come first before you see the political changes.
                     That's where I'm very optimistic.""",
-                    "Ron Paul", Vector.of("politics")),
+                    "Ron Paul",
+                    Vector.of("politics")),
             new Quote("""
                     War is never economically beneficial except for those in position to profit from war expenditures.""",
                     "Ron Paul",
@@ -116,7 +122,8 @@ public class QuoteCollection {
                     There is only one kind of freedom and that's individual liberty.
                     Our lives come from our creator and our liberty comes from our creator.
                     It has nothing to do with government granting it.""",
-                    "Ron Paul", Vector.of("liberty")),
+                    "Ron Paul",
+                    Vector.of("liberty")),
             new Quote("Genius is patience",
                     "Isaac Newton",
                     Vector.of("genius")),
@@ -177,7 +184,7 @@ public class QuoteCollection {
                     The day science begins to study non-physical phenomena,
                     it will make more progress in one decade than in all the previous centuries of its existence.""",
                     "Nikola Tesla",
-                    Vector.of("")
+                    Vector.of("hidden knowledge")
             )
     );
 }

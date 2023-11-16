@@ -68,8 +68,10 @@ public class QuoteServer {
     private static String quoteToString(Quote quote) {
         var lines = Vector.of(
                 String.format("Quote by %s:%n", quote.attributedTo()),
-                quote.text(),
-                String.format("%nSubject(s): %s", quote.subjects().mkString(", ")));
-        return lines.mkString(String.format("%n"));
+                String.format("%n"),
+                String.format("%s%n", quote.text()),
+                String.format("%n"),
+                String.format("Subject(s): %s%n", quote.subjects().mkString(", ")));
+        return lines.mkString();
     }
 }
