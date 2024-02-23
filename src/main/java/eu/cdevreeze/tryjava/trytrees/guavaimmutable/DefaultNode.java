@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.trytrees.immutable2;
+package eu.cdevreeze.tryjava.trytrees.guavaimmutable;
 
-import eu.cdevreeze.tryjava.trytrees.immutable2.internal.NodeStreamApi;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
+import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.tryjava.trytrees.guavaimmutable.internal.NodeStreamApi;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,9 +34,9 @@ public interface DefaultNode<N extends DefaultNode<N>> extends Node<N> {
     NodeStreamApi<N> nodeStreamApi();
 
     @Override
-    default Seq<N> filterChildren(Predicate<N> predicate) {
+    default ImmutableList<N> filterChildren(Predicate<N> predicate) {
         Objects.requireNonNull(predicate);
-        return nodeStreamApi().filterChildren(self(), predicate).collect(Vector.collector());
+        return nodeStreamApi().filterChildren(self(), predicate).collect(ImmutableList.toImmutableList());
     }
 
     @Override
@@ -47,14 +46,14 @@ public interface DefaultNode<N extends DefaultNode<N>> extends Node<N> {
     }
 
     @Override
-    default Seq<N> findAllDescendantsOrSelf() {
-        return nodeStreamApi().findAllDescendantsOrSelf(self()).collect(Vector.collector());
+    default ImmutableList<N> findAllDescendantsOrSelf() {
+        return nodeStreamApi().findAllDescendantsOrSelf(self()).collect(ImmutableList.toImmutableList());
     }
 
     @Override
-    default Seq<N> filterDescendantsOrSelf(Predicate<N> predicate) {
+    default ImmutableList<N> filterDescendantsOrSelf(Predicate<N> predicate) {
         Objects.requireNonNull(predicate);
-        return nodeStreamApi().filterDescendantsOrSelf(self(), predicate).collect(Vector.collector());
+        return nodeStreamApi().filterDescendantsOrSelf(self(), predicate).collect(ImmutableList.toImmutableList());
     }
 
     @Override
@@ -64,14 +63,14 @@ public interface DefaultNode<N extends DefaultNode<N>> extends Node<N> {
     }
 
     @Override
-    default Seq<N> findAllDescendants() {
-        return nodeStreamApi().findAllDescendants(self()).collect(Vector.collector());
+    default ImmutableList<N> findAllDescendants() {
+        return nodeStreamApi().findAllDescendants(self()).collect(ImmutableList.toImmutableList());
     }
 
     @Override
-    default Seq<N> filterDescendants(Predicate<N> predicate) {
+    default ImmutableList<N> filterDescendants(Predicate<N> predicate) {
         Objects.requireNonNull(predicate);
-        return nodeStreamApi().filterDescendants(self(), predicate).collect(Vector.collector());
+        return nodeStreamApi().filterDescendants(self(), predicate).collect(ImmutableList.toImmutableList());
     }
 
     @Override
@@ -81,9 +80,9 @@ public interface DefaultNode<N extends DefaultNode<N>> extends Node<N> {
     }
 
     @Override
-    default Seq<N> findTopmostDescendantsOrSelf(Predicate<N> predicate) {
+    default ImmutableList<N> findTopmostDescendantsOrSelf(Predicate<N> predicate) {
         Objects.requireNonNull(predicate);
-        return nodeStreamApi().findTopmostDescendantsOrSelf(self(), predicate).collect(Vector.collector());
+        return nodeStreamApi().findTopmostDescendantsOrSelf(self(), predicate).collect(ImmutableList.toImmutableList());
     }
 
     @Override
@@ -93,9 +92,9 @@ public interface DefaultNode<N extends DefaultNode<N>> extends Node<N> {
     }
 
     @Override
-    default Seq<N> findTopmostDescendants(Predicate<N> predicate) {
+    default ImmutableList<N> findTopmostDescendants(Predicate<N> predicate) {
         Objects.requireNonNull(predicate);
-        return nodeStreamApi().findTopmostDescendants(self(), predicate).collect(Vector.collector());
+        return nodeStreamApi().findTopmostDescendants(self(), predicate).collect(ImmutableList.toImmutableList());
     }
 
     @Override

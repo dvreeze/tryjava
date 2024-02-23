@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.trytrees.mutable.xml.console;
+package eu.cdevreeze.tryjava.trytrees.guavaimmutable.xml.console;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.cdevreeze.tryjava.trytrees.mutable.xml.convert.SaxonConverter;
-import eu.cdevreeze.tryjava.trytrees.mutable.xml.model.ElemNode;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.collect.ImmutableList;
+import eu.cdevreeze.tryjava.trytrees.guavaimmutable.xml.convert.SaxonConverter;
+import eu.cdevreeze.tryjava.trytrees.guavaimmutable.xml.model.ElemNode;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -31,7 +33,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -45,21 +46,21 @@ public class XmlInfoPrinter {
     public record ElementCount(QName elementName, long elementCount) {
     }
 
-    public record XmlDocInfo(URI docUri, int nrOfElems, List<ElementCount> elemCounts) {
+    public record XmlDocInfo(URI docUri, int nrOfElems, ImmutableList<ElementCount> elemCounts) {
 
         public static XmlDocInfo fromDoc(URI docUri, ElemNode docElem) {
             var allElems = docElem.findAllDescendantsOrSelf();
 
-            var elemCounts = allElems.stream().collect(Collectors.groupingBy(
-                            ElemNode::name,
-                            Collectors.counting()))
-                    .entrySet()
+            var elemsGroupedByName = allElems.stream().collect(Collectors.groupingBy(ElemNode::name));
+
+            var elemCounts = ImmutableList.copyOf(elemsGroupedByName.entrySet())
                     .stream()
-                    .map(kv -> new ElementCount(kv.getKey(), kv.getValue()))
+                    .map(entry -> new ElementCount(entry.getKey(), entry.getValue().size()))
                     .sorted(
                             Comparator.comparingLong(ElementCount::elementCount).reversed()
-                                    .thenComparing(elemCnt -> elemCnt.elementName().toString()))
-                    .toList();
+                                    .thenComparing(elemCnt -> elemCnt.elementName().toString())
+                    )
+                    .collect(ImmutableList.toImmutableList());
 
             return new XmlDocInfo(docUri, allElems.size(), elemCounts);
         }
@@ -102,6 +103,9 @@ public class XmlInfoPrinter {
         logger.info("Ready creating 'XmlDocInfo' from ElemNode");
 
         var objectMapper = new ObjectMapper();
+
+        var module = new GuavaModule();
+        objectMapper.registerModule(module);
 
         logger.atInfo()
                 .setMessage("JSON output:\n{}")
