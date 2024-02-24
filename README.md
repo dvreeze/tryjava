@@ -35,7 +35,7 @@ code. This habit goes well together with using immutable data structures and imm
 
 Scala "implicits" (when used in moderation) are a compile-time safe alternative to many applications of Java reflection.
 
-How would Java (at least in theory) stack up nowadays against my points above about what I like about Scala?
+How would Java (at least in theory) stack up nowadays against my points above about what I like about Scala? Not too bad:
 
 + Guava (or alternative libraries) offer (widely used) thread-safe immutable collections to Java
 + With record classes, local variable type inference, etc., Java has evolved into a much improved domain modeling language
@@ -63,11 +63,12 @@ Java, on the other hand, is more closely bound to the JVM, and therefore less or
 
 In general, some things I find important in programming:
 
-+ Ability to reason locally about code
-+ A clear "mental model" of the "runtime behaviour" of a framework/library (e.g. functional effect systems, Futures etc.)
-+ Disciplined use of packages/namespaces, with only unidirectional dependencies
++ Ability to *reason locally about code*
++ A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (e.g. ZIO 2, Futures, servlets, etc.)
++ Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
++ On DRY versus unwanted dependencies: undesirable (often ad-hoc) dependencies hurt more than some code repetition
 
-As an example of different runtime behaviour and hidden assumptions is ThreadLocal in one-thread-per-request servlets in
+As an example of different runtime behaviour and hidden assumptions is ThreadLocal in one-thread-per-request servlets used in
 combination with Futures that take an underlying ExecutionContext ("breaking" the ThreadLocals).
 
 In summary, what I find important in programming is mostly related to *discipline*, to limiting myself to practices that
