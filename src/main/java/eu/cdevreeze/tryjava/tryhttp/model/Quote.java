@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.tryjava.tryhttp.model;
 
-import io.vavr.collection.Seq;
+import com.google.common.collect.ImmutableList;
 
 import java.util.Objects;
 
@@ -25,7 +25,7 @@ import java.util.Objects;
  *
  * @author Chris de Vreeze
  */
-public record Quote(String text, String attributedTo, Seq<String> subjects) {
+public record Quote(String text, String attributedTo, ImmutableList<String> subjects) {
 
     public Quote {
         Objects.requireNonNull(text);

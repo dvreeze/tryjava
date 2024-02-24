@@ -16,9 +16,9 @@
 
 package eu.cdevreeze.tryjava.tryhttp.server;
 
+import com.google.common.collect.ImmutableList;
 import com.sun.net.httpserver.*;
 import eu.cdevreeze.tryjava.tryhttp.model.Quote;
-import io.vavr.collection.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,12 +66,12 @@ public class QuoteServer {
     }
 
     private static String quoteToString(Quote quote) {
-        var lines = Vector.of(
+        var lines = ImmutableList.of(
                 String.format("Quote by %s:%n", quote.attributedTo()),
                 String.format("%n"),
                 String.format("%s%n", quote.text()),
                 String.format("%n"),
-                String.format("Subject(s): %s%n", quote.subjects().mkString(", ")));
-        return lines.mkString();
+                String.format("Subject(s): %s%n", String.join(", ", quote.subjects())));
+        return String.join("", lines);
     }
 }
