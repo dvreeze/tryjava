@@ -54,7 +54,7 @@ mutability-by-default.
 
 Java, on the other hand, is more closely bound to the JVM, and therefore less orthogonal. Where do we see that? E.g.:
 
-+ We extend traits in Scala, but in Java we extend classes yet implement interfaces
++ We extend traits (and classes) in Scala, but in Java we extend classes yet implement interfaces
 + In Java we have static members, that we cannot abstract about, whereas in Scala singleton objects can extend traits
 + In Java primitives and (heap) objects are clearly distinct, whereas in Scala this distinction is less prominent
 + In Java methods and operators are distinct concepts, but in Scala "operators" are just methods with different names
@@ -67,6 +67,7 @@ In general, some things I find important in programming:
 + A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (e.g. ZIO 2, Futures, servlets, etc.)
 + Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
 + On DRY versus unwanted dependencies: undesirable (often ad-hoc) dependencies hurt more than some code repetition
++ Reducing mental load, striving for *simplicity*, and Li Haoyi's *Principle of Least Power*
 
 As an example of different runtime behaviour and hidden assumptions is ThreadLocal in one-thread-per-request servlets used in
 combination with Futures that take an underlying ExecutionContext ("breaking" the ThreadLocals).
