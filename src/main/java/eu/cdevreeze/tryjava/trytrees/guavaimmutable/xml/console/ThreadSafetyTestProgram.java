@@ -34,13 +34,14 @@ import java.net.URI;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
  * Thread-safety test program. This program shows that the Guava-based deeply immutable XML trees are thread-safe.
+ * Deeply immutable thread-safe data structures give "peace of mind" when sharing them across threads
+ * without worrying about data corruption (and/or memory visibility issues).
  *
  * @author Chris de Vreeze
  */
@@ -53,7 +54,7 @@ public class ThreadSafetyTestProgram {
     private static final QName counterQName = new QName("counter");
 
     private static final int numberOfDocuments = 100;
-    private static final int numberOfIterations = 100;
+    private static final int numberOfIterations = 250;
 
     public static void main(String[] args) throws Exception {
         URI defaultDocUri = Objects.requireNonNull(ThreadSafetyTestProgram.class.getResource("/books.xml")).toURI();
@@ -114,20 +115,16 @@ public class ThreadSafetyTestProgram {
 
     private static ElemNode incrementCounters(ElemNode elem) {
         // No side effects within this function. Just "stateless" transformations.
+        // This transformation (or functional update) is not efficient, but that's not the point here.
         return transform(elem, ThreadSafetyTestProgram::incrementOwnCounter);
     }
-
-    private static final AtomicLong internalCounter = new AtomicLong(0L);
 
     private static ElemNode incrementOwnCounter(ElemNode elem) {
         // No side effects within this function. Just "stateless" transformations.
         var previousCounter = Integer.parseInt(elem.findAttributeValue(counterQName).orElse("0"));
 
-        if (internalCounter.getAndIncrement() % 1000L == 0L) {
-            logger.debug(String.format("Thread: %s. Previous counter: %d", Thread.currentThread(), previousCounter));
-        }
-
-        ImmutableMap<QName, String> startAttrs = ImmutableMap.<QName, String>builder().put(counterQName, "0").putAll(elem.attributes()).buildKeepingLast();
+        ImmutableMap<QName, String> startAttrs =
+                ImmutableMap.<QName, String>builder().put(counterQName, "0").putAll(elem.attributes()).buildKeepingLast();
 
         var updatedAttrs = startAttrs.entrySet().stream().collect(ImmutableMap.toImmutableMap(
                 Map.Entry::getKey,

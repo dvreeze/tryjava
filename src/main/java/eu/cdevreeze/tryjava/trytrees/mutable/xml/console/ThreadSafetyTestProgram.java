@@ -31,13 +31,12 @@ import java.net.URI;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Thread-safety test program. This program shows memory visibility problems, so these XML trees
- * are not thread-safe.
+ * Thread-safety test program. This program shows that these mutable XML trees are not thread-safe
+ * by themselves.
  *
  * @author Chris de Vreeze
  */
@@ -50,7 +49,7 @@ public class ThreadSafetyTestProgram {
     private static final QName counterQName = new QName("counter");
 
     private static final int numberOfDocuments = 100;
-    private static final int numberOfIterations = 100;
+    private static final int numberOfIterations = 250;
 
     public static void main(String[] args) throws Exception {
         URI defaultDocUri = Objects.requireNonNull(ThreadSafetyTestProgram.class.getResource("/books.xml")).toURI();
@@ -74,7 +73,8 @@ public class ThreadSafetyTestProgram {
         // Now updating elements across multiple threads in parallel
         var updatedDocElems = docElems.stream().parallel().map(e -> {
             logger.debug(String.format("Current thread: %s", Thread.currentThread()));
-            // Slow, with too fine-grained parallelism. If we remove the "parallel" call below, the result is correct
+            // Slow, with too fine-grained parallelism.
+            // If we remove the "parallel" call below, the result is correct and not corrupted
             return Stream.iterate(e, ThreadSafetyTestProgram::incrementCounters)
                     .limit(numberOfIterations)
                     .parallel()
@@ -115,16 +115,10 @@ public class ThreadSafetyTestProgram {
         return elem;
     }
 
-    private static final AtomicLong internalCounter = new AtomicLong(0L);
-
     private static void incrementOwnCounter(ElemNode elem) {
         // Side effects on mutable attributes Map. Also attribute update not an atomic operation.
         var previousCounter = Integer.parseInt(elem.findAttributeValue(counterQName).orElse("0"));
         elem.attributes().put(counterQName, String.valueOf(previousCounter + 1));
-
-        if (internalCounter.getAndIncrement() % 1000L == 0L) {
-            logger.debug(String.format("Thread: %s. Previous counter: %d", Thread.currentThread(), previousCounter));
-        }
 
         if (!Optional.ofNullable(elem.attributes().get(counterQName)).equals(Optional.of(String.valueOf(previousCounter + 1))))
             logger.warn(String.format("Attribute update did not increment counter by 1 (previously %d)", previousCounter));
