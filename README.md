@@ -74,6 +74,9 @@ E.g.:
 + In Java *fields* and *methods* are different; Scala treats "val" as a special case of "def" ("ignoring/hiding" fields)
 + In Java *methods* and *operators* are distinct concepts, but in Scala "operators" are just methods with different names
 
+Also, using *null* (null reference) in Scala is considered a bad practice. Scala has its *Option* type, like Java has its
+*Optional* type, but "nullability" in Java is part of the development experience.
+
 ### Ideas about programming in general
 
 In general, some things I find important in programming:
