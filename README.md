@@ -72,6 +72,7 @@ E.g.:
 + In Java *primitives* and (heap) *objects* are clearly distinct, whereas in Scala this distinction is less prominent
 + In Java *arrays* and *collections* differ in selection syntax; Scala sees arrays/collections as "mathematical functions"
 + In Java *fields* and *methods* are different; Scala treats "val" as a special case of "def" ("ignoring/hiding" fields)
++ In Java there is a sharp distinction between *expressions* and *statements*; not so in Scala
 + In Java *methods* and *operators* are distinct concepts, but in Scala "operators" are just methods with different names
 
 Also, using *null* (null reference) in Scala is considered a bad practice. Scala has its *Option* type, like Java has its
