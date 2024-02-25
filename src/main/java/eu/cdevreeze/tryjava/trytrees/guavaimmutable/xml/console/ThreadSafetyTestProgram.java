@@ -32,7 +32,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -62,7 +61,8 @@ public class ThreadSafetyTestProgram {
 
         logger.info(String.format("Parsing %d input XML documents ...", numberOfDocuments));
 
-        ImmutableList<ElemNode> docElems = IntStream.range(0, numberOfDocuments).mapToObj(i -> parseXml(docUri)).collect(ImmutableList.toImmutableList());
+        ImmutableList<ElemNode> docElems =
+                IntStream.range(0, numberOfDocuments).mapToObj(i -> parseXml(docUri)).collect(ImmutableList.toImmutableList());
 
         logger.info(String.format("Parsed %d input XML documents", numberOfDocuments));
 
@@ -91,7 +91,8 @@ public class ThreadSafetyTestProgram {
         var expectedSumOfCountersAfterwards = totalNumberOfElems * (numberOfIterations - 1);
         logger.info(String.format("Expected sum of counters afterwards: %d", expectedSumOfCountersAfterwards));
         logger.info(String.format("Actual sum of counters afterwards: %d", sumOfCountersAfterwards));
-        logger.info(String.format("Expected and actual counters are equal: %s", sumOfCountersAfterwards == expectedSumOfCountersAfterwards));
+        logger.info(
+                String.format("Expected and actual counters are equal: %s", sumOfCountersAfterwards == expectedSumOfCountersAfterwards));
     }
 
     private static ElemNode parseXml(URI docUri) {
@@ -123,13 +124,11 @@ public class ThreadSafetyTestProgram {
         // No side effects within this function. Just "stateless" transformations.
         var previousCounter = Integer.parseInt(elem.findAttributeValue(counterQName).orElse("0"));
 
-        ImmutableMap<QName, String> startAttrs =
-                ImmutableMap.<QName, String>builder().put(counterQName, "0").putAll(elem.attributes()).buildKeepingLast();
-
-        var updatedAttrs = startAttrs.entrySet().stream().collect(ImmutableMap.toImmutableMap(
-                Map.Entry::getKey,
-                entry -> String.valueOf(previousCounter + 1)
-        ));
+        ImmutableMap<QName, String> updatedAttrs =
+                ImmutableMap.<QName, String>builder()
+                        .putAll(elem.attributes())
+                        .put(counterQName, String.valueOf(previousCounter + 1))
+                        .buildKeepingLast();
 
         var resultElem = new ElemNode(elem.name(), updatedAttrs, elem.childNodes());
         if (!resultElem.getAttributeValue(counterQName).equals(String.valueOf(previousCounter + 1))) {
