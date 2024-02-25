@@ -1,4 +1,3 @@
-
 Trying out Java again
 =====================
 
@@ -18,7 +17,8 @@ What is it that I really like and benefited from in Scala? For example:
 
 + Thread-safe immutable collections
 + Great language for domain modeling
-+ Supports functional effect systems such as ZIO 2, and "FP light" in general (writing deterministic total pure functions)
++ Supports functional effect systems such as ZIO 2, and "FP light" in general (writing deterministic total pure
+  functions)
 + Term derivation by the compiler ("implicits"), in particular the improved "implicits" in Scala 3
 
 This helped me in the past. Thread-safe immutable collections are great when developing an XML library (which I did with
@@ -35,10 +35,12 @@ code. This habit goes well together with using immutable data structures and imm
 
 Scala "implicits" (when used in moderation) are a compile-time safe alternative to many applications of Java reflection.
 
-How would Java (at least in theory) stack up nowadays against my points above about what I like about Scala? Not too bad:
+How would Java (at least in theory) stack up nowadays against my points above about what I like about Scala? Not too
+bad:
 
 + Guava (or alternative libraries) offer (widely used) thread-safe immutable collections to Java
-+ With record classes, local variable type inference, etc., Java has evolved into a much improved domain modeling language
++ With record classes, local variable type inference, etc., Java has evolved into a much improved domain modeling
+  language
 + I don't know about functional effect systems in Java, but "FP light" is well supported now, e.g. due to record types
 + Java has no "implicits", so in Java we are stuck with reflection
 
@@ -57,20 +59,32 @@ Java, on the other hand, is more closely bound to the JVM, and therefore less or
 + We extend traits (and classes) in Scala, but in Java we extend classes yet implement interfaces
 + In Java we have static members, that we cannot abstract about, whereas in Scala singleton objects can extend traits
 + In Java primitives and (heap) objects are clearly distinct, whereas in Scala this distinction is less prominent
++ In Java selection from arrays and selection from collections differ in syntax, whereas in Scala they have the same
+  syntax
 + In Java methods and operators are distinct concepts, but in Scala "operators" are just methods with different names
++ In Java fields and methods are distinct concepts, yet Scala treats "val" as a special case of "def" ("ignoring/hiding"
+  fields)
 
 ### Ideas about programming in general
 
 In general, some things I find important in programming:
 
 + Ability to *reason locally about code*
-+ A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (e.g. ZIO 2, Futures, servlets, etc.)
++ A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (e.g. ZIO 2, Futures, servlets,
+  etc.)
 + Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
 + On DRY versus unwanted dependencies: undesirable (often ad-hoc) dependencies hurt more than some code repetition
 + Reducing mental load, striving for *simplicity*, and Li Haoyi's *Principle of Least Power*
 
-As an example of different runtime behaviour and hidden assumptions is ThreadLocal in one-thread-per-request servlets used in
+As an example of different runtime behaviour and hidden assumptions is ThreadLocal in one-thread-per-request servlets
+used in
 combination with Futures that take an underlying ExecutionContext ("breaking" the ThreadLocals).
+
+An attractive style of programming is the FP style of "monadic" chains of higher-order function calls, such as Scala
+collection
+transformations or even Java's Stream API. In this programming style we hardly find loops, if-else statements, and
+side-effects.
+The result is easier to reason about, and more concise and to the point.
 
 In summary, what I find important in programming is mostly related to *discipline*, to limiting myself to practices that
 work well at a larger scale.
