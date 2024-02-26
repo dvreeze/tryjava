@@ -20,6 +20,7 @@ What is it that I really like and benefited from in Scala? For example:
 + Scala supports functional effect systems (ZIO 2, etc.)
 + Scala supports "FP light" (and much more) in general (writing *deterministic total pure functions* is natural in Scala)
 + Scala offers term derivation by the compiler ("implicits"), in particular the improved "implicits" in Scala 3
++ Scala makes a great language for parser combinator libraries (such as [FastParse](https://github.com/com-lihaoyi/fastparse))
 
 This helped me a lot in the past. For example, *thread-safe immutable collections* are great when developing an XML
 library (which I did with [yaidom](https://github.com/dvreeze/yaidom)), supporting in-memory collections of read-only
@@ -40,8 +41,12 @@ on us by used frameworks and libraries.
 Scala's *implicits* (when used in moderation) are a compile-time safe alternative to many applications of Java
 reflection.
 
+Using the [CatsParse](https://github.com/typelevel/cats-parse) *parser combinator library*, I created the
+[xpathparser](https://github.com/dvreeze/xpathparser) library in the past. If needed, such parsers could be programmed
+in Scala (using a parser combinator library) with a Java-friendly API.
+
 How would Java (at least in theory) stack up nowadays against my points above about what I like about Scala? Not too
-bad:
+bad (ignoring parser combinators):
 
 + [Guava](https://guava.dev/) (or alternative libraries) offer (widely used) thread-safe immutable collections to Java
 + With record classes, sealed interfaces, etc., Java has evolved into a powerful domain modeling language
@@ -49,7 +54,7 @@ bad:
 + "FP light" is well supported now in Java, e.g. due to record types, immutable collections (e.g. Guava) and *Streams*
 + Java has no "implicits", so in Java we are stuck with reflection
 
-So other than implicits versus reflection, Java does fine in the points that I like and benefited from in Scala.
+So other than implicits versus reflection, Java for the most part does fine in the points that I like and benefited from in Scala.
 In particular, the above-mentioned "yaidom" XML library could also be ported to Java 21 without too much effort.
 
 ### Different philosophies of Scala and Java
