@@ -92,6 +92,7 @@ In general, some things I find important in programming:
 + Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
 + On DRY versus *unwanted dependencies*: undesirable (often ad-hoc) dependencies hurt more than some code repetition
 + Reducing mental load, striving for *simplicity*
++ Code *clarity* and *readability* (and therefore maintainability)
 
 Regarding simplicity, a very important article is Li Haoyi's
 [Principle of Least Power](https://www.lihaoyi.com/post/StrategicScalaStylePrincipleofLeastPower.html).
