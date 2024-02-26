@@ -104,3 +104,13 @@ work well at a larger scale. But that's of course my perspective, coming from my
 Of course, the above is about Scala and Java, and not about practices in "enterprise programming", programming cloud-based
 software, etc., which are topics that are at least as interesting as the chosen programming language.
 
+Yet challenges with respect to *local reasoning* and *understanding runtime behaviour* certainly exist at those larger scopes.
+For example:
+
++ Ensuring atomic "transactions" involving database transactions and messaging, especially when exceptions are thrown
++ Managing the scope/lifetime of mutable JPA-managed entities; yet [records can be used as DTOs](https://nljug.org/foojay/how-to-best-use-java-records-as-dtos-in-spring-boot-3/)
++ Understanding flows involving multiple Docker containers ("services") communicating with each other through RPC and/or messaging
++ Deeply understanding (bootstrapping and runtime behaviour of) Spring/JPA code depending heavily on annotations
+
+Note that lots of good and accessible information about Java topics can be found at [baeldung](https://www.baeldung.com/).
+
