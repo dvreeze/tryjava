@@ -20,8 +20,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.sun.source.tree.LineMap;
 
 import javax.lang.model.element.Name;
+import javax.tools.JavaFileObject;
 import java.io.IOException;
 
 /**
@@ -49,6 +51,38 @@ public class TreeJsonUtil {
         @Override
         public void serialize(Name value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
             generator.writeString(value.toString());
+        }
+    }
+
+    public static final class LineMapSerializer extends StdSerializer<LineMap> {
+
+        public LineMapSerializer() {
+            this(null);
+        }
+
+        public LineMapSerializer(Class<LineMap> t) {
+            super(t);
+        }
+
+        @Override
+        public void serialize(LineMap value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+            generator.writeString(value.toString());
+        }
+    }
+
+    public static final class JavaFileObjectSerializer extends StdSerializer<JavaFileObject> {
+
+        public JavaFileObjectSerializer() {
+            this(null);
+        }
+
+        public JavaFileObjectSerializer(Class<JavaFileObject> t) {
+            super(t);
+        }
+
+        @Override
+        public void serialize(JavaFileObject value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+            generator.writeString(value.getName());
         }
     }
 }
