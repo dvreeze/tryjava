@@ -35,6 +35,9 @@ import java.util.Optional;
  */
 public final class Trees {
 
+    private Trees() {
+    }
+
     sealed public interface Node {
         Tree.Kind getKind();
     }

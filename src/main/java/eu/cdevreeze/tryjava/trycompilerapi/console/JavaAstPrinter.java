@@ -16,15 +16,21 @@
 
 package eu.cdevreeze.tryjava.trycompilerapi.console;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.Tree;
 import com.sun.source.util.JavacTask;
-import com.sun.source.util.SimpleTreeVisitor;
+import eu.cdevreeze.tryjava.trycompilerapi.model.TreeJsonUtil;
 import eu.cdevreeze.tryjava.trycompilerapi.model.TreeModelFactory;
 import eu.cdevreeze.tryjava.trycompilerapi.model.Trees;
 
+import javax.lang.model.element.Name;
 import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -48,7 +54,7 @@ public class JavaAstPrinter {
         System.out.println();
         System.out.printf(
                 "Syntax of compilation unit(s) '%s':%n",
-                compilationUnits.stream().map(Object::toString).collect(Collectors.joining(", "))
+                compilationUnits.stream().map(u -> u.getSourceFile().getName()).collect(Collectors.joining(", "))
         );
         System.out.println();
 
@@ -57,7 +63,7 @@ public class JavaAstPrinter {
         System.out.println();
         System.out.printf(
                 "AST(s) of compilation unit(s) '%s':%n",
-                compilationUnits.stream().map(Object::toString).collect(Collectors.joining(", "))
+                compilationUnits.stream().map(u -> u.getSourceFile().getName()).collect(Collectors.joining(", "))
         );
         System.out.println();
 
@@ -82,14 +88,20 @@ public class JavaAstPrinter {
     public static String formatCompilationUnit(CompilationUnitTree compilationUnit) {
         var treeModelFactory = new TreeModelFactory();
         Trees.CompilationUnitNode modelCompilationUnit = treeModelFactory.build(compilationUnit);
-        return modelCompilationUnit.toString();
-    }
 
-    public static final class MyTreeVisitor extends SimpleTreeVisitor<Tree, Void> {
+        var simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Name.class, new TreeJsonUtil.NameSerializer());
 
-        @Override
-        protected Tree defaultAction(Tree node, Void unused) {
-            return node;
+        ObjectMapper mapper = JsonMapper
+                .builder()
+                .addModule(simpleModule)
+                .addModule(new GuavaModule())
+                .build()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        try {
+            return mapper.writeValueAsString(modelCompilationUnit);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }
