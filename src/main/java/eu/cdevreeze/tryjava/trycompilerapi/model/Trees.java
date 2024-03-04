@@ -39,25 +39,13 @@ public final class Trees {
         Tree.Kind getKind();
     }
 
-    // Catch-all, if not found
-
-    public record UnknownNode() implements Node {
-        public Tree.Kind getKind() {
-            return Tree.Kind.EMPTY_STATEMENT;
-        }// For lack of a better kind
+    // According to the implementation of the tree API, this is an ExpressionNode
+    sealed public interface TypeNode extends ExpressionNode {
     }
-
-    public record UnknownExpressionNode() implements ExpressionNode {
-        public Tree.Kind getKind() {
-            return Tree.Kind.PARENTHESIZED;
-        }// For lack of a better kind
-    }
-
-    // All (known) subtypes of Node
 
     public record AnnotatedTypeNode(
             ExpressionNode underlyingType,
-            ImmutableList<? extends AnnotationNode> annotations) implements ExpressionNode {
+            ImmutableList<? extends AnnotationNode> annotations) implements TypeNode {
         public Tree.Kind getKind() {
             return Tree.Kind.ANNOTATED_TYPE;
         }
@@ -85,7 +73,7 @@ public final class Trees {
         }
     }
 
-    public record ArrayTypeNode(Node type) implements Node {
+    public record ArrayTypeNode(Node type) implements TypeNode {
         public Tree.Kind getKind() {
             return Tree.Kind.ARRAY_TYPE;
         }
@@ -303,7 +291,7 @@ public final class Trees {
         }
     }
 
-    public record IntersectionTypeNode(ImmutableList<? extends Node> bounds) implements Node {
+    public record IntersectionTypeNode(ImmutableList<? extends Node> bounds) implements TypeNode {
         public Tree.Kind getKind() {
             return Tree.Kind.INTERSECTION_TYPE;
         }
@@ -431,7 +419,7 @@ public final class Trees {
         }
     }
 
-    public record ParameterizedTypeNode(Node type, ImmutableList<? extends Node> typeArguments) implements Node {
+    public record ParameterizedTypeNode(Node type, ImmutableList<? extends Node> typeArguments) implements TypeNode {
         public Tree.Kind getKind() {
             return Tree.Kind.PARAMETERIZED_TYPE;
         }
@@ -452,7 +440,7 @@ public final class Trees {
     sealed public interface PatternNode extends Node {
     }
 
-    public record PrimitiveTypeNode(TypeKind primitiveTypeKind) implements Node {
+    public record PrimitiveTypeNode(TypeKind primitiveTypeKind) implements TypeNode {
         public Tree.Kind getKind() {
             return Tree.Kind.PRIMITIVE_TYPE;
         }
@@ -550,7 +538,7 @@ public final class Trees {
         }
     }
 
-    public record UnionTypeNode(ImmutableList<? extends Node> typeAlternatives) implements Node {
+    public record UnionTypeNode(ImmutableList<? extends Node> typeAlternatives) implements TypeNode {
         public Tree.Kind getKind() {
             return Tree.Kind.UNION_TYPE;
         }

@@ -36,22 +36,17 @@ public final class TreeModelFactory {
             case CaseLabelTree t -> build(t);
             case DirectiveTree t -> build(t);
             case PatternTree t -> build(t);
-            case ArrayTypeTree t -> build(t);
             case CaseTree t -> build(t);
             case CatchTree t -> build(t);
             case CompilationUnitTree t -> build(t);
             case ImportTree t -> build(t);
-            case IntersectionTypeTree t -> build(t);
             case MethodTree t -> build(t);
             case ModifiersTree t -> build(t);
             case ModuleTree t -> build(t);
             case PackageTree t -> build(t);
-            case ParameterizedTypeTree t -> build(t);
-            case PrimitiveTypeTree t -> build(t);
             case TypeParameterTree t -> build(t);
-            case UnionTypeTree t -> build(t);
             case WildcardTree t -> build(t);
-            default -> new Trees.UnknownNode();
+            default -> throw new IllegalStateException("Unexpected value: " + tree);
         };
     }
 
@@ -249,6 +244,7 @@ public final class TreeModelFactory {
             case AnnotatedTypeTree t -> build(t);
             case AnnotationTree t -> build(t);
             case ArrayAccessTree t -> build(t);
+            case ArrayTypeTree t -> build(t);
             case AssignmentTree t -> build(t);
             case BinaryTree t -> build(t);
             case CompoundAssignmentTree t -> build(t);
@@ -256,6 +252,7 @@ public final class TreeModelFactory {
             case ErroneousTree t -> build(t);
             case IdentifierTree t -> build(t);
             case InstanceOfTree t -> build(t);
+            case IntersectionTypeTree t -> build(t);
             case LambdaExpressionTree t -> build(t);
             case LiteralTree t -> build(t);
             case MemberReferenceTree t -> build(t);
@@ -263,12 +260,15 @@ public final class TreeModelFactory {
             case MethodInvocationTree t -> build(t);
             case NewArrayTree t -> build(t);
             case NewClassTree t -> build(t);
+            case ParameterizedTypeTree t -> build(t);
             case ParenthesizedTree t -> build(t);
+            case PrimitiveTypeTree t -> build(t);
             case StringTemplateTree t -> build(t);
             case SwitchExpressionTree t -> build(t);
             case TypeCastTree t -> build(t);
             case UnaryTree t -> build(t);
-            default -> new Trees.UnknownExpressionNode();
+            case UnionTypeTree t -> build(t);
+            default -> throw new IllegalStateException("Unexpected value: " + tree);
         };
     }
 
