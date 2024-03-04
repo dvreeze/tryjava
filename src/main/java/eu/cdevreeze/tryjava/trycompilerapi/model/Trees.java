@@ -115,7 +115,7 @@ public final class Trees {
         }
     }
 
-    public record BreakNode(Name label) implements StatementNode {
+    public record BreakNode(Optional<Name> label) implements StatementNode {
         public Tree.Kind getKind() {
             return Tree.Kind.BREAK;
         }
@@ -126,10 +126,10 @@ public final class Trees {
 
     public record CaseNode(
             CaseTree.CaseKind caseKind,
-            ImmutableList<? extends ExpressionNode> expressions,
-            ImmutableList<? extends StatementNode> statements,
-            Node body,
             ExpressionNode guard,
+            ImmutableList<? extends ExpressionNode> expressions,
+            Optional<ImmutableList<? extends StatementNode>> statements,
+            Optional<Node> body,
             ImmutableList<? extends CaseLabelNode> labels
     ) implements Node {
         public Tree.Kind getKind() {
@@ -158,13 +158,13 @@ public final class Trees {
     }
 
     public record CompilationUnitNode(
-            ExpressionNode packageName,
+            Optional<ExpressionNode> packageName,
             Optional<ModuleNode> module,
-            PackageNode packageNode,
+            Optional<PackageNode> packageNode,
             ImmutableList<? extends ImportNode> imports,
-            LineMap lineMap,
-            ImmutableList<? extends AnnotationNode> packageAnnotations,
-            JavaFileObject sourceFile,
+            Optional<LineMap> lineMap,
+            Optional<ImmutableList<? extends AnnotationNode>> packageAnnotations,
+            Optional<JavaFileObject> sourceFile,
             ImmutableList<? extends Node> typeDecls
     ) implements Node {
         public Tree.Kind getKind() {
@@ -192,7 +192,7 @@ public final class Trees {
         }
     }
 
-    public record ContinueNode(Name label) implements StatementNode {
+    public record ContinueNode(Optional<Name> label) implements StatementNode {
         public Tree.Kind getKind() {
             return Tree.Kind.CONTINUE;
         }
@@ -240,7 +240,7 @@ public final class Trees {
     }
 
     public record ExportsNode(ExpressionNode packageName,
-                              ImmutableList<? extends ExpressionNode> moduleNames) implements DirectiveNode {
+                              Optional<ImmutableList<? extends ExpressionNode>> moduleNames) implements DirectiveNode {
         public Tree.Kind getKind() {
             return Tree.Kind.EXPORTS;
         }
@@ -285,7 +285,8 @@ public final class Trees {
         }
     }
 
-    public record InstanceOfNode(ExpressionNode expression, PatternNode pattern, Node type) implements ExpressionNode {
+    public record InstanceOfNode(ExpressionNode expression, Optional<PatternNode> pattern,
+                                 Node type) implements ExpressionNode {
         public Tree.Kind getKind() {
             return Tree.Kind.INSTANCE_OF;
         }
@@ -352,7 +353,7 @@ public final class Trees {
             ModifiersNode modifiers,
             ImmutableList<? extends TypeParameterNode> typeParameters,
             ImmutableList<? extends VariableNode> parameters,
-            Node returnType,
+            Optional<Node> returnType,
             Optional<VariableNode> receiverParameter,
             ImmutableList<? extends ExpressionNode> throwsExpressions,
             Optional<BlockNode> body,
@@ -382,7 +383,7 @@ public final class Trees {
     }
 
     public record NewArrayNode(
-            Node type,
+            Optional<Node> type,
             ImmutableList<? extends ExpressionNode> dimensions,
             ImmutableList<? extends ExpressionNode> initializers,
             ImmutableList<? extends AnnotationNode> annotations,
@@ -406,7 +407,7 @@ public final class Trees {
     }
 
     public record OpensNode(ExpressionNode packageName,
-                            ImmutableList<ExpressionNode> moduleNames) implements DirectiveNode {
+                            Optional<ImmutableList<ExpressionNode>> moduleNames) implements DirectiveNode {
         public Tree.Kind getKind() {
             return Tree.Kind.OPENS;
         }
@@ -460,7 +461,7 @@ public final class Trees {
         }
     }
 
-    public record ReturnNode(ExpressionNode expression) implements StatementNode {
+    public record ReturnNode(Optional<ExpressionNode> expression) implements StatementNode {
         public Tree.Kind getKind() {
             return Tree.Kind.RETURN;
         }
@@ -472,7 +473,7 @@ public final class Trees {
     public record StringTemplateNode(
             ImmutableList<String> fragments,
             ImmutableList<? extends ExpressionNode> expressions,
-            ExpressionNode processor
+            Optional<ExpressionNode> processor
     ) implements ExpressionNode {
         public Tree.Kind getKind() {
             return Tree.Kind.TEMPLATE; // Subject to change!
@@ -509,7 +510,7 @@ public final class Trees {
             ImmutableList<? extends Node> resources,
             BlockNode block,
             ImmutableList<? extends CatchNode> catches,
-            BlockNode finallyBlock
+            Optional<BlockNode> finallyBlock
     ) implements StatementNode {
         public Tree.Kind getKind() {
             return Tree.Kind.TRY;
@@ -569,7 +570,7 @@ public final class Trees {
         }
     }
 
-    public record WildcardNode(Node bound, Tree.Kind kind) implements Node {
+    public record WildcardNode(Optional<Node> bound, Tree.Kind kind) implements Node {
         public Tree.Kind getKind() {
             return kind;
         }

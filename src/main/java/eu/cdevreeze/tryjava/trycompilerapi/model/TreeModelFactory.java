@@ -107,7 +107,7 @@ public final class TreeModelFactory {
     }
 
     public Trees.BreakNode build(BreakTree tree) {
-        return new Trees.BreakNode(tree.getLabel());
+        return new Trees.BreakNode(Optional.ofNullable(tree.getLabel()));
     }
 
     public Trees.CaseLabelNode build(CaseLabelTree tree) {
@@ -122,10 +122,10 @@ public final class TreeModelFactory {
     public Trees.CaseNode build(CaseTree tree) {
         return new Trees.CaseNode(
                 tree.getCaseKind(),
-                tree.getExpressions().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                tree.getStatements().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                build(tree.getBody()),
                 build(tree.getGuard()),
+                tree.getExpressions().stream().map(this::build).collect(ImmutableList.toImmutableList()),
+                Optional.ofNullable(tree.getStatements()).map(stmts -> stmts.stream().map(this::build).collect(ImmutableList.toImmutableList())),
+                Optional.ofNullable(tree.getBody()).map(this::build),
                 tree.getLabels().stream().map(this::build).collect(ImmutableList.toImmutableList())
         );
     }
@@ -148,13 +148,13 @@ public final class TreeModelFactory {
 
     public Trees.CompilationUnitNode build(CompilationUnitTree tree) {
         return new Trees.CompilationUnitNode(
-                build(tree.getPackageName()),
+                Optional.ofNullable(tree.getPackageName()).map(this::build),
                 Optional.ofNullable(tree.getModule()).map(this::build),
-                build(tree.getPackage()),
+                Optional.ofNullable(tree.getPackage()).map(this::build),
                 tree.getImports().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                tree.getLineMap(),
-                tree.getPackageAnnotations().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                tree.getSourceFile(),
+                Optional.ofNullable(tree.getLineMap()),
+                Optional.ofNullable(tree.getPackageAnnotations()).map(anns -> anns.stream().map(this::build).collect(ImmutableList.toImmutableList())),
+                Optional.ofNullable(tree.getSourceFile()),
                 tree.getTypeDecls().stream().map(this::build).collect(ImmutableList.toImmutableList())
         );
     }
@@ -180,7 +180,7 @@ public final class TreeModelFactory {
     }
 
     public Trees.ContinueNode build(ContinueTree tree) {
-        return new Trees.ContinueNode(tree.getLabel());
+        return new Trees.ContinueNode(Optional.ofNullable(tree.getLabel()));
     }
 
     public Trees.DeconstructionPatternNode build(DeconstructionPatternTree tree) {
@@ -231,7 +231,7 @@ public final class TreeModelFactory {
     public Trees.ExportsNode build(ExportsTree tree) {
         return new Trees.ExportsNode(
                 build(tree.getPackageName()),
-                tree.getModuleNames().stream().map(this::build).collect(ImmutableList.toImmutableList())
+                Optional.ofNullable(tree.getModuleNames()).map(names -> names.stream().map(this::build).collect(ImmutableList.toImmutableList()))
         );
     }
 
@@ -300,7 +300,7 @@ public final class TreeModelFactory {
     public Trees.InstanceOfNode build(InstanceOfTree tree) {
         return new Trees.InstanceOfNode(
                 build(tree.getExpression()),
-                build(tree.getPattern()),
+                Optional.ofNullable(tree.getPattern()).map(this::build),
                 build(tree.getType())
         );
     }
@@ -361,7 +361,7 @@ public final class TreeModelFactory {
                 build(tree.getModifiers()),
                 tree.getTypeParameters().stream().map(this::build).collect(ImmutableList.toImmutableList()),
                 tree.getParameters().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                build(tree.getReturnType()),
+                Optional.ofNullable(tree.getReturnType()).map(this::build),
                 Optional.ofNullable(tree.getReceiverParameter()).map(this::build),
                 tree.getThrows().stream().map(this::build).collect(ImmutableList.toImmutableList()),
                 Optional.ofNullable(tree.getBody()).map(this::build),
@@ -387,7 +387,7 @@ public final class TreeModelFactory {
 
     public Trees.NewArrayNode build(NewArrayTree tree) {
         return new Trees.NewArrayNode(
-                build(tree.getType()),
+                Optional.ofNullable(tree.getType()).map(this::build),
                 tree.getDimensions().stream().map(this::build).collect(ImmutableList.toImmutableList()),
                 tree.getInitializers().stream().map(this::build).collect(ImmutableList.toImmutableList()),
                 tree.getAnnotations().stream().map(this::build).collect(ImmutableList.toImmutableList()),
@@ -410,7 +410,7 @@ public final class TreeModelFactory {
     public Trees.OpensNode build(OpensTree tree) {
         return new Trees.OpensNode(
                 build(tree.getPackageName()),
-                tree.getModuleNames().stream().map(this::build).collect(ImmutableList.toImmutableList())
+                Optional.ofNullable(tree.getModuleNames()).map(names -> names.stream().map(this::build).collect(ImmutableList.toImmutableList()))
         );
     }
 
@@ -461,7 +461,7 @@ public final class TreeModelFactory {
     }
 
     public Trees.ReturnNode build(ReturnTree tree) {
-        return new Trees.ReturnNode(build(tree.getExpression()));
+        return new Trees.ReturnNode(Optional.ofNullable(tree.getExpression()).map(this::build));
     }
 
     public Trees.StatementNode build(StatementTree tree) {
@@ -494,7 +494,7 @@ public final class TreeModelFactory {
         return new Trees.StringTemplateNode(
                 tree.getFragments().stream().collect(ImmutableList.toImmutableList()),
                 tree.getExpressions().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                build(tree.getProcessor())
+                Optional.ofNullable(tree.getProcessor()).map(this::build)
         );
     }
 
@@ -525,7 +525,7 @@ public final class TreeModelFactory {
                 tree.getResources().stream().map(this::build).collect(ImmutableList.toImmutableList()),
                 build(tree.getBlock()),
                 tree.getCatches().stream().map(this::build).collect(ImmutableList.toImmutableList()),
-                build(tree.getFinallyBlock())
+                Optional.ofNullable(tree.getFinallyBlock()).map(this::build)
         );
     }
 
@@ -570,7 +570,7 @@ public final class TreeModelFactory {
     }
 
     public Trees.WildcardNode build(WildcardTree tree) {
-        return new Trees.WildcardNode(build(tree.getBound()), tree.getKind());
+        return new Trees.WildcardNode(Optional.ofNullable(tree.getBound()).map(this::build), tree.getKind());
     }
 
     public Trees.YieldNode build(YieldTree tree) {
