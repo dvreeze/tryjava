@@ -124,10 +124,10 @@ public class TreeJsonUtil {
 
     public static Module createModule() {
         var simpleModule = new SimpleModule();
-        simpleModule.addSerializer(Trees.Node.class, new TreeJsonUtil.NodeSerializer());
-        simpleModule.addSerializer(Name.class, new TreeJsonUtil.NameSerializer());
-        simpleModule.addSerializer(LineMap.class, new TreeJsonUtil.LineMapSerializer());
-        simpleModule.addSerializer(JavaFileObject.class, new TreeJsonUtil.JavaFileObjectSerializer());
+        simpleModule.addSerializer(Trees.Node.class, new NodeSerializer());
+        simpleModule.addSerializer(Name.class, new NameSerializer());
+        simpleModule.addSerializer(LineMap.class, new LineMapSerializer());
+        simpleModule.addSerializer(JavaFileObject.class, new JavaFileObjectSerializer());
         return simpleModule;
     }
 }
