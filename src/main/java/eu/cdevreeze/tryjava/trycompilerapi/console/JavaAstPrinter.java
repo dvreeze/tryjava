@@ -20,20 +20,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.LineMap;
 import com.sun.source.util.JavacTask;
 import eu.cdevreeze.tryjava.trycompilerapi.model.TreeJsonUtil;
 import eu.cdevreeze.tryjava.trycompilerapi.model.TreeModelFactory;
 import eu.cdevreeze.tryjava.trycompilerapi.model.Trees;
 
-import javax.lang.model.element.Name;
-import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -92,15 +88,9 @@ public class JavaAstPrinter {
         var treeModelFactory = new TreeModelFactory();
         Trees.CompilationUnitNode modelCompilationUnit = treeModelFactory.build(compilationUnit);
 
-        var simpleModule = new SimpleModule();
-        simpleModule.addSerializer(Trees.Node.class, new TreeJsonUtil.NodeSerializer());
-        simpleModule.addSerializer(Name.class, new TreeJsonUtil.NameSerializer());
-        simpleModule.addSerializer(LineMap.class, new TreeJsonUtil.LineMapSerializer());
-        simpleModule.addSerializer(JavaFileObject.class, new TreeJsonUtil.JavaFileObjectSerializer());
-
         ObjectMapper mapper = JsonMapper
                 .builder()
-                .addModule(simpleModule)
+                .addModule(TreeJsonUtil.createModule())
                 .addModule(new Jdk8Module())
                 .addModule(new GuavaModule())
                 .build()

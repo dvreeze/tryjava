@@ -64,7 +64,7 @@ public final class TreeModelFactory {
         );
     }
 
-    public Trees.AnyPatternNode build(AnyPatternTree tree) {
+    public Trees.AnyPatternNode build(AnyPatternTree ignoredTree) {
         return new Trees.AnyPatternNode();
     }
 
@@ -175,7 +175,7 @@ public final class TreeModelFactory {
         );
     }
 
-    public Trees.ConstantCaseLabelNode build(ConstantCaseLabelTree tree) {
+    public Trees.ConstantCaseLabelNode build(ConstantCaseLabelTree ignoredTree) {
         return new Trees.ConstantCaseLabelNode();
     }
 
@@ -191,7 +191,7 @@ public final class TreeModelFactory {
         );
     }
 
-    public Trees.DefaultCaseLabelNode build(DefaultCaseLabelTree tree) {
+    public Trees.DefaultCaseLabelNode build(DefaultCaseLabelTree ignoredTree) {
         return new Trees.DefaultCaseLabelNode();
     }
 
@@ -210,7 +210,7 @@ public final class TreeModelFactory {
         return new Trees.DoWhileLoopNode(build(tree.getCondition()), build(tree.getStatement()));
     }
 
-    public Trees.EmptyStatementNode build(EmptyStatementTree tree) {
+    public Trees.EmptyStatementNode build(EmptyStatementTree ignoredTree) {
         return new Trees.EmptyStatementNode();
     }
 

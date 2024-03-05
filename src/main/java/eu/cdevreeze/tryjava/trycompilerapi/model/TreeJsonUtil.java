@@ -17,7 +17,9 @@
 package eu.cdevreeze.tryjava.trycompilerapi.model;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.sun.source.tree.LineMap;
 
@@ -100,7 +102,7 @@ public class TreeJsonUtil {
 
         @Override
         public void serialize(LineMap value, JsonGenerator generator, SerializerProvider provider) throws IOException {
-            generator.writeString(value.toString());
+            generator.writeNull(); // Not much to write, given the "limited" API of LineMap
         }
     }
 
@@ -118,5 +120,14 @@ public class TreeJsonUtil {
         public void serialize(JavaFileObject value, JsonGenerator generator, SerializerProvider provider) throws IOException {
             generator.writeString(value.getName());
         }
+    }
+
+    public static Module createModule() {
+        var simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Trees.Node.class, new TreeJsonUtil.NodeSerializer());
+        simpleModule.addSerializer(Name.class, new TreeJsonUtil.NameSerializer());
+        simpleModule.addSerializer(LineMap.class, new TreeJsonUtil.LineMapSerializer());
+        simpleModule.addSerializer(JavaFileObject.class, new TreeJsonUtil.JavaFileObjectSerializer());
+        return simpleModule;
     }
 }
