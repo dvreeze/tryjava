@@ -175,8 +175,8 @@ public final class TreeModelFactory {
         );
     }
 
-    public Trees.ConstantCaseLabelNode build(ConstantCaseLabelTree ignoredTree) {
-        return new Trees.ConstantCaseLabelNode();
+    public Trees.ConstantCaseLabelNode build(ConstantCaseLabelTree tree) {
+        return new Trees.ConstantCaseLabelNode(build(tree.getConstantExpression()));
     }
 
     public Trees.ContinueNode build(ContinueTree tree) {

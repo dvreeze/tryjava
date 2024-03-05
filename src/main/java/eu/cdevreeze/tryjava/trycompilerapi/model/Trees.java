@@ -189,7 +189,7 @@ public final class Trees {
         }
     }
 
-    public record ConstantCaseLabelNode() implements CaseLabelNode {
+    public record ConstantCaseLabelNode(ExpressionNode constantExpression) implements CaseLabelNode {
         public Tree.Kind getKind() {
             return Tree.Kind.CONSTANT_CASE_LABEL;
         }
