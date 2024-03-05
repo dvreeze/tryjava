@@ -93,6 +93,7 @@ public class JavaAstPrinter {
         Trees.CompilationUnitNode modelCompilationUnit = treeModelFactory.build(compilationUnit);
 
         var simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Trees.Node.class, new TreeJsonUtil.NodeSerializer());
         simpleModule.addSerializer(Name.class, new TreeJsonUtil.NameSerializer());
         simpleModule.addSerializer(LineMap.class, new TreeJsonUtil.LineMapSerializer());
         simpleModule.addSerializer(JavaFileObject.class, new TreeJsonUtil.JavaFileObjectSerializer());

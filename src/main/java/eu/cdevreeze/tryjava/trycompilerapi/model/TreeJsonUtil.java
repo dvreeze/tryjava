@@ -17,7 +17,6 @@
 package eu.cdevreeze.tryjava.trycompilerapi.model;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.sun.source.tree.LineMap;
@@ -25,10 +24,12 @@ import com.sun.source.tree.LineMap;
 import javax.lang.model.element.Name;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.RecordComponent;
 
 /**
- * JSON serialization support for the tree model. Note that most of it is supported out of the box,
- * for records, and for Guava immutable collections (when registering the Guava Jackson module).
+ * JSON serialization support for the tree model. Note that much of it is supported out of the box,
+ * e.g. for Guava immutable collections (when registering the Guava Jackson module).
  * This class offers the few missing pieces.
  *
  * @author Chris de Vreeze
@@ -36,6 +37,39 @@ import java.io.IOException;
 public class TreeJsonUtil {
 
     private TreeJsonUtil() {
+    }
+
+    public static final class NodeSerializer extends StdSerializer<Trees.Node> {
+
+        public NodeSerializer() {
+            this(null);
+        }
+
+        public NodeSerializer(Class<Trees.Node> t) {
+            super(t);
+        }
+
+        @Override
+        public void serialize(Trees.Node value, JsonGenerator generator, SerializerProvider provider) throws IOException {
+            generator.writeStartObject();
+
+            // First output the kind of value
+            generator.writeStringField("kind", value.getKind().toString());
+
+            // And then output the rest
+            var recordComponents = value.getClass().getRecordComponents();
+
+            for (RecordComponent comp : recordComponents) {
+                try {
+                    var mappedValue = comp.getAccessor().invoke(value);
+                    provider.defaultSerializeField(comp.getName(), mappedValue, provider.getGenerator());
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            generator.writeEndObject();
+        }
     }
 
     public static final class NameSerializer extends StdSerializer<Name> {
@@ -49,7 +83,7 @@ public class TreeJsonUtil {
         }
 
         @Override
-        public void serialize(Name value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+        public void serialize(Name value, JsonGenerator generator, SerializerProvider provider) throws IOException {
             generator.writeString(value.toString());
         }
     }
@@ -65,7 +99,7 @@ public class TreeJsonUtil {
         }
 
         @Override
-        public void serialize(LineMap value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+        public void serialize(LineMap value, JsonGenerator generator, SerializerProvider provider) throws IOException {
             generator.writeString(value.toString());
         }
     }
@@ -81,7 +115,7 @@ public class TreeJsonUtil {
         }
 
         @Override
-        public void serialize(JavaFileObject value, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+        public void serialize(JavaFileObject value, JsonGenerator generator, SerializerProvider provider) throws IOException {
             generator.writeString(value.getName());
         }
     }
