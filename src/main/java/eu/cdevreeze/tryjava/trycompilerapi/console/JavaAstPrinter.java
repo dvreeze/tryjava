@@ -85,8 +85,8 @@ public class JavaAstPrinter {
     }
 
     public static String formatCompilationUnit(CompilationUnitTree compilationUnit) {
-        var treeModelFactory = new TreeModelFactory();
-        Trees.CompilationUnitNode modelCompilationUnit = treeModelFactory.build(compilationUnit);
+        Trees.CompilationUnitNode modelCompilationUnit =
+                TreeModelFactory.compilationUnitNodes().apply(compilationUnit);
 
         ObjectMapper mapper = JsonMapper
                 .builder()

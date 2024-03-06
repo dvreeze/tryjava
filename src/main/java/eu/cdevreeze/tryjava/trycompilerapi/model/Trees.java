@@ -38,12 +38,12 @@ public final class Trees {
     private Trees() {
     }
 
-    sealed public interface Node {
+    public sealed interface Node {
         Tree.Kind getKind();
     }
 
     // According to the implementation of the tree API, this is an ExpressionNode
-    sealed public interface TypeNode extends ExpressionNode {
+    public sealed interface TypeNode extends ExpressionNode {
     }
 
     public record AnnotatedTypeNode(
@@ -124,7 +124,7 @@ public final class Trees {
         }
     }
 
-    sealed public interface CaseLabelNode extends Node {
+    public sealed interface CaseLabelNode extends Node {
     }
 
     public record CaseNode(
@@ -214,7 +214,7 @@ public final class Trees {
         }
     }
 
-    sealed public interface DirectiveNode extends Node {
+    public sealed interface DirectiveNode extends Node {
     }
 
     public record DoWhileLoopNode(ExpressionNode condition, StatementNode statement) implements StatementNode {
@@ -249,13 +249,13 @@ public final class Trees {
         }
     }
 
+    public sealed interface ExpressionNode extends Node {
+    }
+
     public record ExpressionStatementNode(ExpressionNode expression) implements StatementNode {
         public Tree.Kind getKind() {
             return Tree.Kind.EXPRESSION_STATEMENT;
         }
-    }
-
-    sealed public interface ExpressionNode extends Node {
     }
 
     public record ForLoopNode(
@@ -441,7 +441,7 @@ public final class Trees {
         }
     }
 
-    sealed public interface PatternNode extends Node {
+    public sealed interface PatternNode extends Node {
     }
 
     public record PrimitiveTypeNode(TypeKind primitiveTypeKind) implements TypeNode {
@@ -470,7 +470,7 @@ public final class Trees {
         }
     }
 
-    sealed public interface StatementNode extends Node {
+    public sealed interface StatementNode extends Node {
     }
 
     public record StringTemplateNode(
