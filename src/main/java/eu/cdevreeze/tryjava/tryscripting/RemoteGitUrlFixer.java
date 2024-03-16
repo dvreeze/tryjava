@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Program that fixes remote git URLs, of remote repository "origin" (unless overridden). It iterators over direct subdirectories
+ * Program that fixes remote git URLs, of remote repository "origin" (unless overridden). It iterates over direct subdirectories
  * of a given directory, and adapts the ("origin") git URLs (returned by the "git remote -v" command, if these URLs exist),
  * if they contain a given substring, replacing the substring in the URL by a given replacement string. No regexes are used,
  * so care must be taken to not use dangerously short substrings to match on.
@@ -47,7 +47,7 @@ import java.util.stream.Stream;
  *
  * @author Chris de Vreeze
  */
-public final class RemoteGitUrlFixer {
+public class RemoteGitUrlFixer {
 
     private static final String repoName = System.getProperty("repoName", "origin");
 
@@ -55,7 +55,7 @@ public final class RemoteGitUrlFixer {
             Set.of(System.getProperty("excludedRepos", "").split(Pattern.quote(",")));
 
     public static void main(String[] args) {
-        Objects.checkFromToIndex(0, 2, args.length);
+        Objects.checkFromToIndex(0, 3, args.length);
         var parentDir = Path.of(args[0]);
         Objects.requireNonNull(parentDir);
 
