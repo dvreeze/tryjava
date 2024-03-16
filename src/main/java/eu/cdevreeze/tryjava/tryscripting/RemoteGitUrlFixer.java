@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -48,6 +49,8 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public class RemoteGitUrlFixer {
+
+    private static final long waitingTimeInSeconds = 60L;
 
     private static final String repoName = System.getProperty("repoName", "origin");
 
@@ -114,9 +117,12 @@ public class RemoteGitUrlFixer {
             var runningCmd = startCommand(cmd, projectDir.toFile());
 
             System.out.printf("PID: %s%n", runningCmd.pid());
-            var exitCode = runningCmd.waitFor();
+            var exited = runningCmd.waitFor(waitingTimeInSeconds, TimeUnit.SECONDS);
+            var maybeExitCode = (exited) ? OptionalInt.of(runningCmd.exitValue()) : OptionalInt.empty();
 
-            if (exitCode != 0) return Optional.empty();
+            if (maybeExitCode.stream().allMatch(code -> code != 0)) {
+                return Optional.empty();
+            }
 
             var scanner = new Scanner(runningCmd.getInputStream());
             var output = scanner.nextLine().trim();
@@ -137,7 +143,12 @@ public class RemoteGitUrlFixer {
             var runningCmd = startCommand(cmd, projectDir.toFile());
 
             System.out.printf("PID: %s%n", runningCmd.pid());
-            runningCmd.waitFor();
+            var exited = runningCmd.waitFor(waitingTimeInSeconds, TimeUnit.SECONDS);
+            var maybeExitCode = (exited) ? OptionalInt.of(runningCmd.exitValue()) : OptionalInt.empty();
+
+            if (maybeExitCode.stream().allMatch(code -> code != 0)) {
+                throw new RuntimeException(String.format("Could not set remote URL to %s", newUrl));
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -47,6 +49,8 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public class GitPullRunner {
+
+    private static final long waitingTimeInSeconds = 60L;
 
     private static final List<String> gitPullCommand =
             List.of(System.getProperty("gitPullCommand", "git pull").split(Pattern.quote(" ")));
@@ -92,9 +96,12 @@ public class GitPullRunner {
             var runningCmd = startCommand(cmd, projectDir.toFile());
 
             System.out.printf("PID: %s%n", runningCmd.pid());
-            var exitCode = runningCmd.waitFor();
+            var exited = runningCmd.waitFor(waitingTimeInSeconds, TimeUnit.SECONDS);
+            OptionalInt maybeExitCode = (exited) ? OptionalInt.of(runningCmd.exitValue()) : OptionalInt.empty();
 
-            if (exitCode != 0) System.out.println("The 'git pull' command was unsuccessful");
+            if (maybeExitCode.stream().allMatch(code -> code != 0)) {
+                System.out.println("The 'git pull' command was unsuccessful");
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
