@@ -72,7 +72,11 @@ public class GitPullRunner {
         for (Path projectDir : matchingSubdirectories) {
             System.out.println();
             System.out.printf("Running 'git pull' command for project directory %s%n", projectDir);
-            runGitPull(projectDir);
+            try {
+                runGitPull(projectDir);
+            } catch (RuntimeException e) {
+                System.out.printf("The 'git pull' command was unsuccessful. Exception: %s", e);
+            }
         }
     }
 
@@ -100,7 +104,7 @@ public class GitPullRunner {
             OptionalInt maybeExitCode = (exited) ? OptionalInt.of(runningCmd.exitValue()) : OptionalInt.empty();
 
             if (maybeExitCode.stream().allMatch(code -> code != 0)) {
-                System.out.println("The 'git pull' command was unsuccessful");
+                throw new RuntimeException("The 'git pull' command was unsuccessful and/or timed out");
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

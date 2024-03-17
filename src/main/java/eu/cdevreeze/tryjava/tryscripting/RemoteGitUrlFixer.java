@@ -76,7 +76,11 @@ public class RemoteGitUrlFixer {
         for (Path projectDir : matchingSubdirectories) {
             System.out.println();
             System.out.printf("Fixing remote git repo URLs (repo name %s) in directory '%s'%n", repoName, projectDir);
-            fixUrls(projectDir, stringToReplace, replacementString);
+            try {
+                fixUrls(projectDir, stringToReplace, replacementString);
+            } catch (RuntimeException e) {
+                System.out.printf("Fixing remote git repo URLs (repo name %s) was unsuccessful. Exception: %s", repoName, e);
+            }
         }
     }
 
@@ -121,6 +125,7 @@ public class RemoteGitUrlFixer {
             var maybeExitCode = (exited) ? OptionalInt.of(runningCmd.exitValue()) : OptionalInt.empty();
 
             if (maybeExitCode.stream().allMatch(code -> code != 0)) {
+                System.out.println("Could not get remote git URL");
                 return Optional.empty();
             }
 
