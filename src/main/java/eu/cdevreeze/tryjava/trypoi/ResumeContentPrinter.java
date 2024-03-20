@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -121,7 +122,16 @@ public final class ResumeContentPrinter {
                         .add(makeTextElem("objectId", Objects.toIdentityString(p)))
                         .add(makeTextElem("elementType", p.getElementType().toString()))
                         .add(makeTextElem("partType", p.getPartType().toString()))
-                        .addAll(p.getRuns().stream().map(r -> makeTextElem("text", r.text())).toList())
+                        .addAll(p.getRuns().stream().map(r -> makeTextElem(
+                                "text",
+                                ImmutableMap.of(
+                                        "isBold",
+                                        String.valueOf(r.isBold()),
+                                        "isItalic",
+                                        String.valueOf(r.isItalic())
+                                ),
+                                r.text()
+                        )).toList())
                         .build();
         return makeElem("paragraph", childNodes);
     }
@@ -199,12 +209,25 @@ public final class ResumeContentPrinter {
 
     static final class XmlSupport {
 
+        static ElemNode makeElem(String name, ImmutableMap<String, String> attrs, ImmutableList<XmlNode> children) {
+            return new ElemNode(
+                    new QName(name),
+                    attrs.entrySet().stream().collect(ImmutableMap
+                            .toImmutableMap((Map.Entry<String, String> kv) -> new QName(kv.getKey()), Map.Entry::getValue)),
+                    children
+            );
+        }
+
+        static ElemNode makeTextElem(String name, ImmutableMap<String, String> attrs, String text) {
+            return makeElem(name, attrs, ImmutableList.of(new TextNode(text)));
+        }
+
         static ElemNode makeElem(String name, ImmutableList<XmlNode> children) {
-            return new ElemNode(new QName(name), ImmutableMap.of(), children);
+            return makeElem(name, ImmutableMap.of(), children);
         }
 
         static ElemNode makeTextElem(String name, String text) {
-            return makeElem(name, ImmutableList.of(new TextNode(text)));
+            return makeTextElem(name, ImmutableMap.of(), text);
         }
     }
 
