@@ -22,7 +22,6 @@ import eu.cdevreeze.tryjava.trytrees.guavaimmutable.xml.model.ElemNode;
 import eu.cdevreeze.tryjava.trytrees.guavaimmutable.xml.model.TextNode;
 import eu.cdevreeze.tryjava.trytrees.guavaimmutable.xml.model.XmlNode;
 import net.sf.saxon.s9api.*;
-import org.apache.poi.ooxml.POIXMLDocumentPart;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.*;
 
@@ -31,10 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static eu.cdevreeze.tryjava.trypoi.ResumeContentPrinter.XmlSupport.makeElem;
 import static eu.cdevreeze.tryjava.trypoi.ResumeContentPrinter.XmlSupport.makeTextElem;
@@ -91,9 +87,14 @@ public final class ResumeContentPrinter {
         converterToSaxon.writeDocument(resultElem);
         var docXdmNode = converterToSaxon.getDocumentNode();
 
-        var xmlSerializer = processor.newSerializer(System.out);
-        xmlSerializer.setOutputProperty(Serializer.Property.INDENT, "yes");
-        xmlSerializer.serializeNode(docXdmNode);
+        Serializer xmlSerializer = null;
+        try {
+            xmlSerializer = processor.newSerializer(System.out);
+            xmlSerializer.setOutputProperty(Serializer.Property.INDENT, "yes");
+            xmlSerializer.serializeNode(docXdmNode);
+        } finally {
+            if (xmlSerializer != null) xmlSerializer.close();
+        }
     }
 
     // Recursion around IBody and IBodyElement.
@@ -103,6 +104,10 @@ public final class ResumeContentPrinter {
         return switch (b) {
             case XWPFDocument d -> printDocument(d);
             case XWPFTableCell c -> printTableCell(c);
+            case XWPFHeader h -> printHeader(h);
+            case XWPFFooter f -> printFooter(f);
+            case XWPFFootnote n -> printFootnote(n);
+            case XWPFEndnote n -> printEndnote(n);
             default -> printOtherBody(b);
         };
     }
@@ -111,10 +116,11 @@ public final class ResumeContentPrinter {
         return switch (e) {
             case XWPFParagraph p -> printParagraph(p);
             case XWPFTable t -> printTable(t);
-            case XWPFTableCell c -> printTableCell(c);
             default -> printOtherBodyElement(e);
         };
     }
+
+    // Printing IBodyElement instances (and their components)
 
     private static ElemNode printParagraph(XWPFParagraph p) {
         var childNodes =
@@ -124,12 +130,26 @@ public final class ResumeContentPrinter {
                         .add(makeTextElem("partType", p.getPartType().toString()))
                         .addAll(p.getRuns().stream().map(r -> makeTextElem(
                                 "text",
-                                ImmutableMap.of(
-                                        "isBold",
-                                        String.valueOf(r.isBold()),
-                                        "isItalic",
-                                        String.valueOf(r.isItalic())
-                                ),
+                                ImmutableMap.<String, String>builder()
+                                        .putAll(
+                                                ImmutableMap.of(
+                                                        "isBold",
+                                                        String.valueOf(r.isBold()),
+                                                        "isItalic",
+                                                        String.valueOf(r.isItalic())
+                                                )
+                                        )
+                                        .putAll(
+                                                ImmutableMap.of(
+                                                                "color",
+                                                                Optional.ofNullable(r.getColor()).orElse("")
+                                                        )
+                                                        .entrySet()
+                                                        .stream()
+                                                        .filter(kv -> !kv.getValue().isBlank())
+                                                        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue))
+                                        )
+                                        .build(),
                                 r.text()
                         )).toList())
                         .build();
@@ -142,9 +162,207 @@ public final class ResumeContentPrinter {
                         .add(makeTextElem("objectId", Objects.toIdentityString(t)))
                         .add(makeTextElem("elementType", t.getElementType().toString()))
                         .add(makeTextElem("partType", t.getPartType().toString()))
+                        .addAll(
+                                ImmutableList.<Optional<ElemNode>>builder()
+                                        // bottom
+                                        .add(
+                                                Optional.ofNullable(t.getBottomBorderColor())
+                                                        .map(v -> makeTextElem("bottomBorderColor", v))
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getBottomBorderSize())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("bottomBorderSize", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getBottomBorderSpace())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("bottomBorderSpace", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getBottomBorderType())
+                                                        .map(v -> makeTextElem("bottomBorderType", v.toString()))
+                                        )
+                                        // left
+                                        .add(
+                                                Optional.ofNullable(t.getLeftBorderColor())
+                                                        .map(v -> makeTextElem("leftBorderColor", v))
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getLeftBorderSize())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("leftBorderSize", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getLeftBorderSpace())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("leftBorderSpace", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getLeftBorderType())
+                                                        .map(v -> makeTextElem("leftBorderType", v.toString()))
+                                        )
+                                        // right
+                                        .add(
+                                                Optional.ofNullable(t.getRightBorderColor())
+                                                        .map(v -> makeTextElem("rightBorderColor", v))
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getRightBorderSize())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("rightBorderSize", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getRightBorderSpace())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("rightBorderSpace", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getRightBorderType())
+                                                        .map(v -> makeTextElem("rightBorderType", v.toString()))
+                                        )
+                                        // top
+                                        .add(
+                                                Optional.ofNullable(t.getTopBorderColor())
+                                                        .map(v -> makeTextElem("topBorderColor", v))
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getTopBorderSize())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("topBorderSize", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getTopBorderSpace())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("topBorderSpace", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getTopBorderType())
+                                                        .map(v -> makeTextElem("topBorderType", v.toString()))
+                                        )
+                                        // inside horizontal border
+                                        .add(
+                                                Optional.ofNullable(t.getInsideHBorderColor())
+                                                        .map(v -> makeTextElem("insideHBorderColor", v))
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getInsideHBorderSize())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("insideHBorderSize", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getInsideHBorderSpace())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("insideHBorderSpace", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getInsideHBorderType())
+                                                        .map(v -> makeTextElem("insideHBorderType", v.toString()))
+                                        )
+                                        // inside vertical border
+                                        .add(
+                                                Optional.ofNullable(t.getInsideVBorderColor())
+                                                        .map(v -> makeTextElem("insideVBorderColor", v))
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getInsideVBorderSize())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("insideVBorderSize", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getInsideVBorderSpace())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("insideVBorderSpace", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getInsideVBorderType())
+                                                        .map(v -> makeTextElem("insideVBorderType", v.toString()))
+                                        )
+                                        // other properties
+                                        .add(
+                                                OptionalInt.of(t.getCellMarginBottom())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("cellMarginBottom", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getCellMarginLeft())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("cellMarginLeft", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getCellMarginRight())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("cellMarginRight", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                OptionalInt.of(t.getCellMarginTop())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("cellMarginTop", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getTableAlignment())
+                                                        .map(v -> makeTextElem("tableAlignment", v.toString()))
+                                        )
+                                        .add(
+                                                OptionalDouble.of(t.getWidthDecimal())
+                                                        .stream()
+                                                        .mapToObj(v -> makeTextElem("width", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(t.getWidthType())
+                                                        .map(v -> makeTextElem("widthType", v.toString()))
+                                        )
+                                        .build()
+                                        .stream()
+                                        .flatMap(Optional::stream)
+                                        .collect(ImmutableList.toImmutableList())
+                        )
                         .addAll(t.getRows().stream().map(ResumeContentPrinter::printTableRow).toList())
                         .build();
         return makeElem("table", childNodes);
+    }
+
+    private static ElemNode printOtherBodyElement(IBodyElement e) {
+        var childNodes =
+                ImmutableList.<XmlNode>builder()
+                        .add(makeTextElem("objectId", Objects.toIdentityString(e)))
+                        .add(makeTextElem("elementType", e.getElementType().toString()))
+                        .add(makeTextElem("partType", e.getPartType().toString()))
+                        .build();
+        return makeElem("otherBodyElement", childNodes);
     }
 
     private static ElemNode printTableRow(XWPFTableRow r) {
@@ -155,6 +373,8 @@ public final class ResumeContentPrinter {
                         .build();
         return makeElem("tableRow", childNodes);
     }
+
+    // Printing IBody instances
 
     private static ElemNode printDocument(XWPFDocument d) {
         var childNodes =
@@ -168,12 +388,30 @@ public final class ResumeContentPrinter {
                                         .toList()
                         )
                         .add(
-                                makeTextElem(
+                                makeElem(
                                         "headers",
-                                        d.getHeaderList().stream().map(POIXMLDocumentPart::toString).collect(Collectors.joining(", "))
+                                        d.getHeaderList().stream().map(ResumeContentPrinter::printHeader).collect(ImmutableList.toImmutableList())
                                 )
                         )
                         .addAll(d.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
+                        .add(
+                                makeElem(
+                                        "footers",
+                                        d.getFooterList().stream().map(ResumeContentPrinter::printFooter).collect(ImmutableList.toImmutableList())
+                                )
+                        )
+                        .add(
+                                makeElem(
+                                        "footnotes",
+                                        d.getFootnotes().stream().map(ResumeContentPrinter::printFootnote).collect(ImmutableList.toImmutableList())
+                                )
+                        )
+                        .add(
+                                makeElem(
+                                        "endnotes",
+                                        d.getEndnotes().stream().map(ResumeContentPrinter::printEndnote).collect(ImmutableList.toImmutableList())
+                                )
+                        )
                         .build();
         return makeElem("document", childNodes);
     }
@@ -182,19 +420,52 @@ public final class ResumeContentPrinter {
         var childNodes =
                 ImmutableList.<XmlNode>builder()
                         .add(makeTextElem("objectId", Objects.toIdentityString(c)))
+                        .add(makeTextElem("partType", c.getPartType().toString()))
                         .addAll(c.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
                         .build();
         return makeElem("tableCell", childNodes);
     }
 
-    private static ElemNode printOtherBodyElement(IBodyElement e) {
+    private static ElemNode printHeader(XWPFHeader h) {
         var childNodes =
                 ImmutableList.<XmlNode>builder()
-                        .add(makeTextElem("objectId", Objects.toIdentityString(e)))
-                        .add(makeTextElem("elementType", e.getElementType().toString()))
-                        .add(makeTextElem("partType", e.getPartType().toString()))
+                        .add(makeTextElem("objectId", Objects.toIdentityString(h)))
+                        .add(makeTextElem("partType", h.getPartType().toString()))
+                        .add(makeTextElem("text", h.getText()))
+                        .addAll(h.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
                         .build();
-        return makeElem("otherBodyElement", childNodes);
+        return makeElem("header", childNodes);
+    }
+
+    private static ElemNode printFooter(XWPFFooter f) {
+        var childNodes =
+                ImmutableList.<XmlNode>builder()
+                        .add(makeTextElem("objectId", Objects.toIdentityString(f)))
+                        .add(makeTextElem("partType", f.getPartType().toString()))
+                        .add(makeTextElem("text", f.getText()))
+                        .addAll(f.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
+                        .build();
+        return makeElem("footer", childNodes);
+    }
+
+    private static ElemNode printFootnote(XWPFFootnote n) {
+        var childNodes =
+                ImmutableList.<XmlNode>builder()
+                        .add(makeTextElem("objectId", Objects.toIdentityString(n)))
+                        .add(makeTextElem("partType", n.getPartType().toString()))
+                        .addAll(n.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
+                        .build();
+        return makeElem("footnote", childNodes);
+    }
+
+    private static ElemNode printEndnote(XWPFEndnote n) {
+        var childNodes =
+                ImmutableList.<XmlNode>builder()
+                        .add(makeTextElem("objectId", Objects.toIdentityString(n)))
+                        .add(makeTextElem("partType", n.getPartType().toString()))
+                        .addAll(n.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
+                        .build();
+        return makeElem("endnote", childNodes);
     }
 
     private static ElemNode printOtherBody(IBody b) {
@@ -260,7 +531,6 @@ public final class ResumeContentPrinter {
                 xmlStreamWriter.writeStartDocument("1.0");
                 writeElement(elem);
                 xmlStreamWriter.writeEndDocument();
-                ;
             } catch (XMLStreamException e) {
                 throw new RuntimeException(e);
             }
