@@ -369,6 +369,24 @@ public final class ResumeContentPrinter {
         var childNodes =
                 ImmutableList.<XmlNode>builder()
                         .add(makeTextElem("objectId", Objects.toIdentityString(r)))
+                        .addAll(
+                                ImmutableList.<Optional<ElemNode>>builder()
+                                        .add(
+                                                OptionalInt.of(r.getHeight())
+                                                        .stream()
+                                                        .filter(v -> v != -1)
+                                                        .mapToObj(v -> makeTextElem("height", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(r.getHeightRule())
+                                                        .map(v -> makeTextElem("heightRule", v.toString()))
+                                        )
+                                        .build()
+                                        .stream()
+                                        .flatMap(Optional::stream)
+                                        .collect(ImmutableList.toImmutableList())
+                        )
                         .addAll(r.getTableCells().stream().map(ResumeContentPrinter::printTableCell).toList())
                         .build();
         return makeElem("tableRow", childNodes);
@@ -421,6 +439,27 @@ public final class ResumeContentPrinter {
                 ImmutableList.<XmlNode>builder()
                         .add(makeTextElem("objectId", Objects.toIdentityString(c)))
                         .add(makeTextElem("partType", c.getPartType().toString()))
+                        .addAll(
+                                ImmutableList.<Optional<ElemNode>>builder()
+                                        .add(
+                                                Optional.ofNullable(c.getColor())
+                                                        .map(v -> makeTextElem("color", v))
+                                        )
+                                        .add(
+                                                OptionalDouble.of(c.getWidthDecimal())
+                                                        .stream()
+                                                        .mapToObj(v -> makeTextElem("width", String.valueOf(v)))
+                                                        .findFirst()
+                                        )
+                                        .add(
+                                                Optional.ofNullable(c.getWidthType())
+                                                        .map(v -> makeTextElem("widthType", v.toString()))
+                                        )
+                                        .build()
+                                        .stream()
+                                        .flatMap(Optional::stream)
+                                        .collect(ImmutableList.toImmutableList())
+                        )
                         .addAll(c.getBodyElements().stream().map(ResumeContentPrinter::printBodyElement).toList())
                         .build();
         return makeElem("tableCell", childNodes);
