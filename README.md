@@ -88,7 +88,7 @@ Also, using *null* (null reference) in Scala is considered a bad practice. Scala
 In general, some things I find important in programming:
 
 + Ability to *reason locally about code*
-+ Related to that, being sufficiently *explicit* (as opposed to going overboard with Spring autowiring, for example)
++ Related to that, being sufficiently *explicit* (as opposed to going overboard with Spring autowiring, or with (Lombok) annotation-driven code generation, for example)
 + A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (ZIO, Futures, servlets, etc.)
 + Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
 + On DRY versus *unwanted dependencies*: undesirable (often ad-hoc) dependencies hurt more than some code repetition
