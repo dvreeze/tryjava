@@ -88,6 +88,7 @@ Also, using *null* (null reference) in Scala is considered a bad practice. Scala
 In general, some things I find important in programming:
 
 + Ability to *reason locally about code*
++ Related to that, being sufficiently *explicit* (as opposed to going overboard with Spring autowiring, for example)
 + A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (ZIO, Futures, servlets, etc.)
 + Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
 + On DRY versus *unwanted dependencies*: undesirable (often ad-hoc) dependencies hurt more than some code repetition
@@ -104,8 +105,8 @@ An attractive style of programming is the FP style of "monadic" chains of *highe
 collection *transformations* or even Java's Stream API. In this programming style we hardly find loops, if-else statements,
 and side-effects.  The result is easier to reason about, and more concise and to the point.
 
-In summary, what I find important in programming is mostly related to *discipline*, to limiting myself to practices that
-work well at a larger scale. But that's of course my perspective, coming from my experiences.
+In summary, what I find important in programming is mostly related to *discipline*, to *limiting myself to practices that
+work well at a larger scale*. But that's of course my perspective, coming from my experiences.
 
 Of course, the above is about Scala and Java, and not about practices in "enterprise programming", programming cloud-based
 software, etc., which are topics that are at least as interesting as the chosen programming language.
