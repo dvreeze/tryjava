@@ -89,6 +89,8 @@ In general, some things I find important in programming:
 
 + Ability to *reason locally about code*
 + Related to that, being sufficiently *explicit* (as opposed to going overboard with Spring autowiring, or with (Lombok) annotation-driven code generation, for example)
+  + In particular, constructors should normally create *fully initialised* objects (and *dependency injection* should be constructor-based)
+  + In general, especially when programming in Java (or other languages), "internalize" the book *Effective Java*, and the *SOLID* principles
 + A clear "mental model" of the *runtime behaviour/assumptions* of a framework/library (ZIO, Futures, servlets, etc.)
 + Disciplined use of packages/namespaces, with (almost) only *unidirectional dependencies*
 + On DRY versus *unwanted dependencies*: undesirable (often ad-hoc) dependencies hurt more than some code repetition
