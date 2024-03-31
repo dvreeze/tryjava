@@ -128,6 +128,7 @@ public final class ResumeContentPrinter {
                         .add(makeTextElem("objectId", Objects.toIdentityString(p)))
                         .add(makeTextElem("elementType", p.getElementType().toString()))
                         .add(makeTextElem("partType", p.getPartType().toString()))
+                        .add(makeTextElem("combinedText", p.getText()))
                         .addAll(p.getRuns().stream().map(r -> makeTextElem(
                                 "text",
                                 ImmutableMap.<String, String>builder()
