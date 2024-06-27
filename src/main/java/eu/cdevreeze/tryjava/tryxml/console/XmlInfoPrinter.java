@@ -19,7 +19,10 @@ package eu.cdevreeze.tryjava.tryxml.console;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import eu.cdevreeze.tryjava.tryxml.convert.SaxonConverter;
+import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
 import eu.cdevreeze.tryjava.tryxml.simple.Element;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.Processor;
@@ -33,6 +36,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -46,7 +50,11 @@ public class XmlInfoPrinter {
     public record ElementCount(QName elementName, long elementCount) {
     }
 
-    public record XmlDocInfo(URI docUri, int nrOfElems, ImmutableList<ElementCount> elemCounts) {
+    public record XmlDocInfo(
+            URI docUri,
+            int nrOfElems,
+            ImmutableList<ElementCount> elemCounts,
+            ImmutableMap<ImmutableList<QName>, Long> namePathCounts) {
 
         public static XmlDocInfo fromDoc(URI docUri, Element docElem) {
             ImmutableList<ElementCount> elemCounts =
@@ -62,7 +70,23 @@ public class XmlInfoPrinter {
                             )
                             .collect(ImmutableList.toImmutableList());
 
-            return new XmlDocInfo(docUri, (int) docElem.elementStream().count(), elemCounts);
+            DocumentElement documentElement = DocumentElement.create(docElem);
+            QName docElemName = documentElement.documentElement().getUnderlyingElement().name();
+
+            ImmutableMap<ImmutableList<QName>, Long> namePathCounts =
+                    documentElement.documentElement().elementStream()
+                            .collect(Collectors.groupingBy(
+                                    e -> getNamePath(e, docElemName),
+                                    Collectors.counting()
+                            )).entrySet()
+                            .stream()
+                            .collect(
+                                    ImmutableSortedMap.toImmutableSortedMap(
+                                            Comparator.comparing(names -> names.stream().map(Object::toString).collect(Collectors.joining(","))),
+                                            Map.Entry::getKey,
+                                            Map.Entry::getValue));
+
+            return new XmlDocInfo(docUri, (int) docElem.elementStream().count(), elemCounts, namePathCounts);
         }
     }
 
@@ -111,5 +135,14 @@ public class XmlInfoPrinter {
                 .setMessage("JSON output:\n{}")
                 .addArgument(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(xmlDocInfo))
                 .log();
+    }
+
+    private static ImmutableList<QName> getNamePath(DocumentElement.Element element, QName docElemName) {
+        return element.ancestorOrSelfStream().map(e -> e.getUnderlyingElement().name())
+                .collect(
+                        Collectors.collectingAndThen(
+                                ImmutableList.toImmutableList(),
+                                p -> ImmutableList.<QName>builder().addAll(p).add(docElemName).build()))
+                .reverse();
     }
 }

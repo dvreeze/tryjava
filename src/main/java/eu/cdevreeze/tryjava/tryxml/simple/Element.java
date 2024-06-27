@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.tryjava.tryxml.internal.DefaultElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.internal.ElementStreamApi;
+import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -41,7 +42,7 @@ import java.util.stream.Stream;
 public record Element(
         QName name,
         ImmutableMap<QName, String> attributes,
-        ImmutableList<XmlNode> children) implements XmlNode {
+        ImmutableList<XmlNode> children) implements XmlNode, ElementQueryApi<Element> {
     public Element {
         Objects.requireNonNull(name);
         Objects.requireNonNull(attributes);
@@ -54,29 +55,6 @@ public record Element(
         Preconditions.checkArgument(
                 optionalInScopeNamespaces.isPresent(),
                 "There is no consistent mapping from prefix to namespace");
-    }
-
-    // Aliases of other stream-returning methods
-
-    /**
-     * Alias of descendantElementOrSelfStream
-     */
-    public Stream<Element> elementStream() {
-        return descendantElementOrSelfStream();
-    }
-
-    /**
-     * Alias of descendantElementOrSelfStream
-     */
-    public Stream<Element> elementStream(Predicate<Element> predicate) {
-        return descendantElementOrSelfStream(predicate);
-    }
-
-    /**
-     * Alias of topmostDescendantElementOrSelfStream
-     */
-    public Stream<Element> topmostElementStream(Predicate<Element> predicate) {
-        return topmostDescendantElementOrSelfStream(predicate);
     }
 
     // Specific stream-returning methods
