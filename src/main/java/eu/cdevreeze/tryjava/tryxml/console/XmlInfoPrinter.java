@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
 import java.net.URI;
 import java.util.Comparator;
 import java.util.Map;
@@ -101,10 +103,16 @@ public class XmlInfoPrinter {
 
         var inputFile = URI.create(args[0]);
 
+        MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+
         var docBuilder = saxonProcessor.newDocumentBuilder();
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
         logger.info("Parsing document ...");
         var docNode = docBuilder.build(new StreamSource(inputFile.toURL().openStream()));
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
         logger.atInfo().setMessage("Document parsed (as Saxon node): {}").addArgument(docNode.getBaseURI()).log();
         logger.atInfo()
@@ -118,18 +126,26 @@ public class XmlInfoPrinter {
                 )
                 .log();
 
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
+
         var xmlDocElem = (Element) new SaxonConverter().convertToXmlNode(docNode);
 
         logger.info("Ready converting Saxon document to Element");
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
         var xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem);
 
         logger.info("Ready creating 'XmlDocInfo' from Element");
 
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
+
         var objectMapper = new ObjectMapper();
 
         var module = new GuavaModule();
         objectMapper.registerModule(module);
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
         logger.atInfo()
                 .setMessage("JSON output:\n{}")
