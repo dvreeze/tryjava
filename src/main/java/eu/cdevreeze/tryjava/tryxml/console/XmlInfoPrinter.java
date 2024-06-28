@@ -23,6 +23,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import eu.cdevreeze.tryjava.tryxml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
+import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
 import eu.cdevreeze.tryjava.tryxml.simple.Element;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.Processor;
@@ -58,10 +60,10 @@ public class XmlInfoPrinter {
             ImmutableList<ElementCount> elemCounts,
             ImmutableMap<ImmutableList<QName>, Long> namePathCounts) {
 
-        public static XmlDocInfo fromDoc(URI docUri, Element docElem) {
+        public static <E extends ParentAwareElementQueryApi<E>> XmlDocInfo fromDoc(URI docUri, E docElem) {
             ImmutableList<ElementCount> elemCounts =
                     docElem.elementStream().collect(Collectors.groupingBy(
-                                    Element::name,
+                                    ElementQueryApi::elementName,
                                     Collectors.counting()
                             )).entrySet()
                             .stream()
@@ -72,11 +74,10 @@ public class XmlInfoPrinter {
                             )
                             .collect(ImmutableList.toImmutableList());
 
-            DocumentElement documentElement = DocumentElement.create(docElem);
-            QName docElemName = documentElement.documentElement().getUnderlyingElement().name();
+            QName docElemName = docElem.elementName();
 
             ImmutableMap<ImmutableList<QName>, Long> namePathCounts =
-                    documentElement.documentElement().elementStream()
+                    docElem.elementStream()
                             .collect(Collectors.groupingBy(
                                     e -> getNamePath(e, docElemName),
                                     Collectors.counting()
@@ -134,9 +135,15 @@ public class XmlInfoPrinter {
 
         logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
-        var xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem);
+        DocumentElement documentElement = DocumentElement.create(xmlDocElem);
 
-        logger.info("Ready creating 'XmlDocInfo' from Element");
+        logger.info("Ready converting Element to DocumentElement.Element");
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
+
+        var xmlDocInfo = XmlDocInfo.fromDoc(inputFile, documentElement.documentElement());
+
+        logger.info("Ready creating 'XmlDocInfo' from DocumentElement.Element");
 
         logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
@@ -153,8 +160,8 @@ public class XmlInfoPrinter {
                 .log();
     }
 
-    private static ImmutableList<QName> getNamePath(DocumentElement.Element element, QName docElemName) {
-        return element.ancestorOrSelfStream().map(e -> e.getUnderlyingElement().name())
+    private static <E extends ParentAwareElementQueryApi<E>> ImmutableList<QName> getNamePath(E element, QName docElemName) {
+        return element.ancestorOrSelfStream().map(ElementQueryApi::elementName)
                 .collect(
                         Collectors.collectingAndThen(
                                 ImmutableList.toImmutableList(),
