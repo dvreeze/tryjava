@@ -17,7 +17,6 @@
 package eu.cdevreeze.tryjava.tryxml.internal;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -48,7 +47,11 @@ public interface DefaultElementStreamApi<E> extends ElementStreamApi<E> {
     default Stream<E> descendantElementOrSelfStream(E element) {
         Objects.requireNonNull(element);
 
-        return descendantElementOrSelfStream(element, ignoredElem -> true);
+        Stream<E> selfStream = Stream.of(element);
+        // Recursion
+        Stream<E> descendantElemStream =
+                childElementStream(element).flatMap(this::descendantElementOrSelfStream);
+        return Stream.concat(selfStream, descendantElemStream);
     }
 
     @Override
@@ -56,18 +59,14 @@ public interface DefaultElementStreamApi<E> extends ElementStreamApi<E> {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
-        Optional<E> selfOption = Optional.of(element).filter(predicate);
-        // Recursion
-        Stream<E> descendantElems =
-                childElementStream(element).flatMap(che -> descendantElementOrSelfStream(che, predicate));
-        return Stream.concat(selfOption.stream(), descendantElems);
+        return descendantElementOrSelfStream(element).filter(predicate);
     }
 
     @Override
     default Stream<E> descendantElementStream(E element) {
         Objects.requireNonNull(element);
 
-        return descendantElementStream(element, ignoredElem -> true);
+        return childElementStream(element).flatMap(this::descendantElementOrSelfStream);
     }
 
     @Override
@@ -75,7 +74,7 @@ public interface DefaultElementStreamApi<E> extends ElementStreamApi<E> {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
-        return childElementStream(element).flatMap(che -> descendantElementOrSelfStream(che, predicate));
+        return descendantElementStream(element).filter(predicate);
     }
 
     @Override
