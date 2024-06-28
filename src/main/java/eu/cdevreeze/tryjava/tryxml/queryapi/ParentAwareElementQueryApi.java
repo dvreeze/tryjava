@@ -31,5 +31,7 @@ public interface ParentAwareElementQueryApi<E> extends ElementQueryApi<E> {
 
     public Stream<E> ancestorStream();
 
-    public Optional<E> parentOption();
+    default Optional<E> parentOption() {
+        return ancestorStream().findFirst();
+    }
 }

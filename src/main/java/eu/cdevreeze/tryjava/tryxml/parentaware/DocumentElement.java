@@ -121,10 +121,6 @@ public final class DocumentElement {
             return ancestorOrSelfStream().skip(1);
         }
 
-        public Optional<Element> parentOption() {
-            return ancestorStream().limit(1).findFirst();
-        }
-
         private static Supplier<ElementStreamApi<Element>> elementStreamApi() {
             return () -> (DefaultElementStreamApi<Element>) (Element::childElementStream);
         }
