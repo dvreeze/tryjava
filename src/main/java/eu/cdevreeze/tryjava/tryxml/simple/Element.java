@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,27 +63,27 @@ public record Element(
     }
 
     public Stream<Element> descendantElementOrSelfStream() {
-        return elementStreamApi().get().descendantElementOrSelfStream(Element.this);
+        return elementStreamApi().descendantElementOrSelfStream(Element.this);
     }
 
     public Stream<Element> descendantElementOrSelfStream(Predicate<Element> predicate) {
-        return elementStreamApi().get().descendantElementOrSelfStream(Element.this, predicate);
+        return elementStreamApi().descendantElementOrSelfStream(Element.this, predicate);
     }
 
     public Stream<Element> descendantElementStream() {
-        return elementStreamApi().get().descendantElementStream(Element.this);
+        return elementStreamApi().descendantElementStream(Element.this);
     }
 
     public Stream<Element> descendantElementStream(Predicate<Element> predicate) {
-        return elementStreamApi().get().descendantElementStream(Element.this, predicate);
+        return elementStreamApi().descendantElementStream(Element.this, predicate);
     }
 
     public Stream<Element> topmostDescendantElementOrSelfStream(Predicate<Element> predicate) {
-        return elementStreamApi().get().topmostDescendantElementOrSelfStream(Element.this, predicate);
+        return elementStreamApi().topmostDescendantElementOrSelfStream(Element.this, predicate);
     }
 
     public Stream<Element> topmostDescendantElementStream(Predicate<Element> predicate) {
-        return elementStreamApi().get().topmostDescendantElementStream(Element.this, predicate);
+        return elementStreamApi().topmostDescendantElementStream(Element.this, predicate);
     }
 
     private static Stream<Element> filterElements(Stream<XmlNode> nodeStream) {
@@ -125,7 +124,7 @@ public record Element(
         }
     }
 
-    private static Supplier<ElementStreamApi<Element>> elementStreamApi() {
-        return () -> (DefaultElementStreamApi<Element>) (Element::childElementStream);
+    private static ElementStreamApi<Element> elementStreamApi() {
+        return (DefaultElementStreamApi<Element>) (Element::childElementStream);
     }
 }
