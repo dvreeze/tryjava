@@ -22,6 +22,7 @@ import eu.cdevreeze.tryjava.tryxml.internal.DefaultElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.internal.ElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
 
+import javax.xml.namespace.QName;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,6 +69,14 @@ public final class DocumentElement {
 
         public eu.cdevreeze.tryjava.tryxml.simple.Element getUnderlyingElement() {
             return Objects.requireNonNull(elementMap.get(navigationPath));
+        }
+
+        public QName elementName() {
+            return getUnderlyingElement().elementName();
+        }
+
+        public ImmutableMap<QName, String> attributes() {
+            return getUnderlyingElement().attributes();
         }
 
         public ImmutableList<Element> findAllChildElements() {

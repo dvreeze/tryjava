@@ -16,6 +16,9 @@
 
 package eu.cdevreeze.tryjava.tryxml.queryapi;
 
+import com.google.common.collect.ImmutableMap;
+
+import javax.xml.namespace.QName;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -26,6 +29,10 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public interface ElementQueryApi<E> {
+
+    QName elementName();
+
+    ImmutableMap<QName, String> attributes();
 
     // Aliases of other stream-returning methods
 

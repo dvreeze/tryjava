@@ -23,12 +23,11 @@ import eu.cdevreeze.tryjava.tryxml.internal.DefaultElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.internal.ElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,11 +48,20 @@ public record Element(
 
         // Too expensive?
 
+        // Note that attributes must not use the default namespace, if any. That's not checked here.
         ImmutableList<QName> names = ImmutableList.<QName>builder().add(name).addAll(attributes.keySet()).build();
-        var optionalInScopeNamespaces = getOptionalInScopeNamespaces(names);
+        var prefixNamespaces = getPrefixNamespaceMap(names);
         Preconditions.checkArgument(
-                optionalInScopeNamespaces.isPresent(),
+                prefixNamespaces.entrySet().stream().allMatch(kv -> kv.getValue().size() == 1),
                 "There is no consistent mapping from prefix to namespace");
+    }
+
+    public QName elementName() {
+        return name;
+    }
+
+    public ImmutableMap<QName, String> attributes() {
+        return attributes;
     }
 
     // Specific stream-returning methods
@@ -96,32 +104,17 @@ public record Element(
         });
     }
 
-    private static Optional<ImmutableMap<String, String>> getOptionalInScopeNamespaces(List<QName> names) {
-        Map<String, List<String>> prefixNamespaces =
-                names.stream().collect(Collectors.groupingBy(
-                                name -> Optional.ofNullable(name.getPrefix()).orElse(XMLConstants.DEFAULT_NS_PREFIX),
-                                Collectors.mapping(
-                                        name -> Optional.ofNullable(name.getNamespaceURI()).orElse(XMLConstants.DEFAULT_NS_PREFIX),
-                                        Collectors.collectingAndThen(
-                                                Collectors.toList(),
-                                                nss -> nss.stream()
-                                                        .filter(ns -> !ns.isEmpty())
-                                                        .distinct()
-                                                        .collect(ImmutableList.toImmutableList()))
-                                )
-                        )).entrySet().stream()
-                        .filter(kv -> !kv.getValue().isEmpty())
-                        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        if (prefixNamespaces.values().stream().distinct().allMatch(namespaces -> namespaces.size() <= 1)) {
-            return Optional.of(
-                    prefixNamespaces.entrySet().stream().collect(ImmutableMap.toImmutableMap(
-                            Map.Entry::getKey,
-                            entry -> entry.getValue().getFirst()
-                    )));
-        } else {
-            return Optional.empty();
-        }
+    private static Map<String, Set<String>> getPrefixNamespaceMap(List<QName> names) {
+        return names.stream()
+                // keeping only real namespaces (and preventing default namespace conflicts with un-prefixed attributes)
+                .filter(nm -> !nm.getNamespaceURI().isEmpty())
+                .collect(Collectors.groupingBy(
+                        QName::getPrefix, // never null, but possibly empty string
+                        Collectors.mapping(
+                                QName::getNamespaceURI, // never null, but possibly empty string
+                                Collectors.toSet()
+                        )
+                ));
     }
 
     private static ElementStreamApi<Element> elementStreamApi() {
