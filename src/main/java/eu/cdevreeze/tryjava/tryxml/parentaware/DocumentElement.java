@@ -88,27 +88,27 @@ public final class DocumentElement {
         }
 
         public Stream<Element> descendantElementOrSelfStream() {
-            return elementStreamApi().get().findAllDescendantElementsOrSelf(Element.this);
+            return elementStreamApi().get().descendantElementOrSelfStream(Element.this);
         }
 
         public Stream<Element> descendantElementOrSelfStream(Predicate<Element> predicate) {
-            return elementStreamApi().get().filterDescendantElementsOrSelf(Element.this, predicate);
+            return elementStreamApi().get().descendantElementOrSelfStream(Element.this, predicate);
         }
 
         public Stream<Element> descendantElementStream() {
-            return elementStreamApi().get().findAllDescendantElements(Element.this);
+            return elementStreamApi().get().descendantElementStream(Element.this);
         }
 
         public Stream<Element> descendantElementStream(Predicate<Element> predicate) {
-            return elementStreamApi().get().filterDescendantElements(Element.this, predicate);
+            return elementStreamApi().get().descendantElementStream(Element.this, predicate);
         }
 
         public Stream<Element> topmostDescendantElementOrSelfStream(Predicate<Element> predicate) {
-            return elementStreamApi().get().findTopmostDescendantElementsOrSelf(Element.this, predicate);
+            return elementStreamApi().get().topmostDescendantElementOrSelfStream(Element.this, predicate);
         }
 
         public Stream<Element> topmostDescendantElementStream(Predicate<Element> predicate) {
-            return elementStreamApi().get().findTopmostDescendantElements(Element.this, predicate);
+            return elementStreamApi().get().topmostDescendantElementStream(Element.this, predicate);
         }
 
         // Specific stream-returning methods for element ancestry
@@ -121,8 +121,8 @@ public final class DocumentElement {
             return ancestorOrSelfStream().skip(1);
         }
 
-        public Stream<Element> parentStream() {
-            return ancestorStream().limit(1);
+        public Optional<Element> parentOption() {
+            return ancestorStream().limit(1).findFirst();
         }
 
         private static Supplier<ElementStreamApi<Element>> elementStreamApi() {

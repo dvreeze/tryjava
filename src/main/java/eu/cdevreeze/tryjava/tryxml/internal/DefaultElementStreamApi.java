@@ -34,52 +34,52 @@ public interface DefaultElementStreamApi<E> extends ElementStreamApi<E> {
      * On each call, returns a fresh Stream of child element nodes of the given element.
      */
     @Override
-    Stream<E> findAllChildElements(E element);
+    Stream<E> childElementStream(E element);
 
     @Override
-    default Stream<E> filterChildElements(E element, Predicate<E> predicate) {
+    default Stream<E> childElementStream(E element, Predicate<E> predicate) {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
-        return findAllChildElements(element).filter(predicate);
+        return childElementStream(element).filter(predicate);
     }
 
     @Override
-    default Stream<E> findAllDescendantElementsOrSelf(E element) {
+    default Stream<E> descendantElementOrSelfStream(E element) {
         Objects.requireNonNull(element);
 
-        return filterDescendantElementsOrSelf(element, ignoredElem -> true);
+        return descendantElementOrSelfStream(element, ignoredElem -> true);
     }
 
     @Override
-    default Stream<E> filterDescendantElementsOrSelf(E element, Predicate<E> predicate) {
+    default Stream<E> descendantElementOrSelfStream(E element, Predicate<E> predicate) {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
         Optional<E> selfOption = Optional.of(element).filter(predicate);
         // Recursion
         Stream<E> descendantElems =
-                findAllChildElements(element).flatMap(che -> filterDescendantElementsOrSelf(che, predicate));
+                childElementStream(element).flatMap(che -> descendantElementOrSelfStream(che, predicate));
         return Stream.concat(selfOption.stream(), descendantElems);
     }
 
     @Override
-    default Stream<E> findAllDescendantElements(E element) {
+    default Stream<E> descendantElementStream(E element) {
         Objects.requireNonNull(element);
 
-        return filterDescendantElements(element, ignoredElem -> true);
+        return descendantElementStream(element, ignoredElem -> true);
     }
 
     @Override
-    default Stream<E> filterDescendantElements(E element, Predicate<E> predicate) {
+    default Stream<E> descendantElementStream(E element, Predicate<E> predicate) {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
-        return findAllChildElements(element).flatMap(che -> filterDescendantElementsOrSelf(che, predicate));
+        return childElementStream(element).flatMap(che -> descendantElementOrSelfStream(che, predicate));
     }
 
     @Override
-    default Stream<E> findTopmostDescendantElementsOrSelf(E element, Predicate<E> predicate) {
+    default Stream<E> topmostDescendantElementOrSelfStream(E element, Predicate<E> predicate) {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
@@ -87,15 +87,15 @@ public interface DefaultElementStreamApi<E> extends ElementStreamApi<E> {
             return Stream.of(element);
         } else {
             // Recursion
-            return findAllChildElements(element).flatMap(che -> findTopmostDescendantElementsOrSelf(che, predicate));
+            return childElementStream(element).flatMap(che -> topmostDescendantElementOrSelfStream(che, predicate));
         }
     }
 
     @Override
-    default Stream<E> findTopmostDescendantElements(E element, Predicate<E> predicate) {
+    default Stream<E> topmostDescendantElementStream(E element, Predicate<E> predicate) {
         Objects.requireNonNull(element);
         Objects.requireNonNull(predicate);
 
-        return findAllChildElements(element).flatMap(che -> findTopmostDescendantElementsOrSelf(che, predicate));
+        return childElementStream(element).flatMap(che -> topmostDescendantElementOrSelfStream(che, predicate));
     }
 }

@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.tryjava.tryxml.queryapi;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -30,5 +31,5 @@ public interface ParentAwareElementQueryApi<E> extends ElementQueryApi<E> {
 
     public Stream<E> ancestorStream();
 
-    public Stream<E> parentStream();
+    public Optional<E> parentOption();
 }

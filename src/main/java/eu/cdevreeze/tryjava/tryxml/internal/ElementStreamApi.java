@@ -28,19 +28,19 @@ import java.util.stream.Stream;
  */
 public interface ElementStreamApi<E> {
 
-    Stream<E> findAllChildElements(E element);
+    Stream<E> childElementStream(E element);
 
-    Stream<E> filterChildElements(E element, Predicate<E> predicate);
+    Stream<E> childElementStream(E element, Predicate<E> predicate);
 
-    Stream<E> findAllDescendantElementsOrSelf(E element);
+    Stream<E> descendantElementOrSelfStream(E element);
 
-    Stream<E> filterDescendantElementsOrSelf(E element, Predicate<E> predicate);
+    Stream<E> descendantElementOrSelfStream(E element, Predicate<E> predicate);
 
-    Stream<E> findAllDescendantElements(E element);
+    Stream<E> descendantElementStream(E element);
 
-    Stream<E> filterDescendantElements(E element, Predicate<E> predicate);
+    Stream<E> descendantElementStream(E element, Predicate<E> predicate);
 
-    Stream<E> findTopmostDescendantElementsOrSelf(E element, Predicate<E> predicate);
+    Stream<E> topmostDescendantElementOrSelfStream(E element, Predicate<E> predicate);
 
-    Stream<E> findTopmostDescendantElements(E element, Predicate<E> predicate);
+    Stream<E> topmostDescendantElementStream(E element, Predicate<E> predicate);
 }
