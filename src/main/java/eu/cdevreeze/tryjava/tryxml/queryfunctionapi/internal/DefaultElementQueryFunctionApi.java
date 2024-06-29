@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.tryxml.internal;
+package eu.cdevreeze.tryjava.tryxml.queryfunctionapi.internal;
+
+import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.ElementQueryFunctionApi;
 
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * Default implementation of ElementStreamApi
+ * Default partial implementation of ElementQueryFunctionApi
  *
  * @param <E>
  * @author Chris de Vreeze
  */
-@FunctionalInterface
-public interface DefaultElementStreamApi<E> extends ElementStreamApi<E> {
-
-    /**
-     * On each call, returns a fresh Stream of child element nodes of the given element.
-     */
-    @Override
-    Stream<E> childElementStream(E element);
+public interface DefaultElementQueryFunctionApi<E> extends ElementQueryFunctionApi<E> {
 
     @Override
     default Stream<E> childElementStream(E element, Predicate<E> predicate) {

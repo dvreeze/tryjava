@@ -61,6 +61,8 @@ public interface ElementQueryApi<E> {
 
     Stream<E> childElementStream();
 
+    Stream<E> childElementStream(Predicate<E> predicate);
+
     Stream<E> descendantElementOrSelfStream();
 
     Stream<E> descendantElementOrSelfStream(Predicate<E> predicate);

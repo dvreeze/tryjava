@@ -14,33 +14,25 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.tryxml.internal;
+package eu.cdevreeze.tryjava.tryxml.queryfunctionapi;
 
-import java.util.function.Predicate;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Streaming API for querying XML element nodes, across common axes.
+ * Streaming API for querying XML element nodes, across common axes, including ancestor axes.
  * Each method below that returns a stream should on each call return a fresh new stream.
+ * <p>
+ * In Scala this would have been a type class.
  *
  * @param <E>
  * @author Chris de Vreeze
  */
-public interface ElementStreamApi<E> {
+public interface ParentAwareElementQueryFunctionApi<E> extends ElementQueryFunctionApi<E> {
 
-    Stream<E> childElementStream(E element);
+    Stream<E> ancestorElementOrSelfStream(E element);
 
-    Stream<E> childElementStream(E element, Predicate<E> predicate);
+    Stream<E> ancestorElementStream(E element);
 
-    Stream<E> descendantElementOrSelfStream(E element);
-
-    Stream<E> descendantElementOrSelfStream(E element, Predicate<E> predicate);
-
-    Stream<E> descendantElementStream(E element);
-
-    Stream<E> descendantElementStream(E element, Predicate<E> predicate);
-
-    Stream<E> topmostDescendantElementOrSelfStream(E element, Predicate<E> predicate);
-
-    Stream<E> topmostDescendantElementStream(E element, Predicate<E> predicate);
+    Optional<E> parentElementOption(E element);
 }

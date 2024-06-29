@@ -23,13 +23,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import eu.cdevreeze.tryjava.tryxml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
-import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
-import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.ParentAwareElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.saxon.SaxonElementQueryFunctionApi;
 import eu.cdevreeze.tryjava.tryxml.simple.Element;
-import net.sf.saxon.s9api.Axis;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XdmNodeKind;
+import net.sf.saxon.s9api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,10 +57,11 @@ public class XmlInfoPrinter {
             ImmutableList<ElementCount> elemCounts,
             ImmutableMap<ImmutableList<QName>, Long> namePathCounts) {
 
-        public static <E extends ParentAwareElementQueryApi<E>> XmlDocInfo fromDoc(URI docUri, E docElem) {
+        public static <E> XmlDocInfo fromDoc(URI docUri, E docElem, ParentAwareElementQueryFunctionApi<E> elementQueryFunctionApi) {
             ImmutableList<ElementCount> elemCounts =
-                    docElem.elementStream().collect(Collectors.groupingBy(
-                                    ElementQueryApi::elementName,
+                    elementQueryFunctionApi.elementStream(docElem)
+                            .collect(Collectors.groupingBy(
+                                    elementQueryFunctionApi::elementName,
                                     Collectors.counting()
                             )).entrySet()
                             .stream()
@@ -74,12 +72,12 @@ public class XmlInfoPrinter {
                             )
                             .collect(ImmutableList.toImmutableList());
 
-            QName docElemName = docElem.elementName();
+            QName docElemName = elementQueryFunctionApi.elementName(docElem);
 
             ImmutableMap<ImmutableList<QName>, Long> namePathCounts =
-                    docElem.elementStream()
+                    elementQueryFunctionApi.elementStream(docElem)
                             .collect(Collectors.groupingBy(
-                                    e -> getNamePath(e, docElemName),
+                                    e -> getNamePath(e, docElemName, elementQueryFunctionApi),
                                     Collectors.counting()
                             )).entrySet()
                             .stream()
@@ -89,7 +87,7 @@ public class XmlInfoPrinter {
                                             Map.Entry::getKey,
                                             Map.Entry::getValue));
 
-            return new XmlDocInfo(docUri, (int) docElem.elementStream().count(), elemCounts, namePathCounts);
+            return new XmlDocInfo(docUri, (int) elementQueryFunctionApi.elementStream(docElem).count(), elemCounts, namePathCounts);
         }
     }
 
@@ -129,21 +127,20 @@ public class XmlInfoPrinter {
 
         logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
-        var xmlDocElem = (Element) new SaxonConverter().convertToXmlNode(docNode);
+        var useSaxon = Boolean.parseBoolean(System.getProperty("useSaxon", "false"));
 
-        logger.info("Ready converting Saxon document to Element");
+        final XmlDocInfo xmlDocInfo;
 
-        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
+        if (useSaxon) {
+            var elementQueryFunctionApi = SaxonElementQueryFunctionApi.instance;
+            var xmlDocElem = elementQueryFunctionApi.getDocumentElement(docNode);
+            xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem, elementQueryFunctionApi);
+        } else {
+            DocumentElement.Element xmlDocElem = convertXdmNodeToElement(docNode, memoryBean);
+            xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem, xmlDocElem.getDocumentElement().elementQueryFunctionApi);
+        }
 
-        DocumentElement documentElement = DocumentElement.create(xmlDocElem);
-
-        logger.info("Ready converting Element to DocumentElement.Element");
-
-        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
-
-        var xmlDocInfo = XmlDocInfo.fromDoc(inputFile, documentElement.documentElement());
-
-        logger.info("Ready creating 'XmlDocInfo' from DocumentElement.Element");
+        logger.info("Ready creating 'XmlDocInfo'");
 
         logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
@@ -160,12 +157,28 @@ public class XmlInfoPrinter {
                 .log();
     }
 
-    private static <E extends ParentAwareElementQueryApi<E>> ImmutableList<QName> getNamePath(E element, QName docElemName) {
-        return element.ancestorOrSelfStream().map(ElementQueryApi::elementName)
+    private static <E> ImmutableList<QName> getNamePath(E element, QName docElemName, ParentAwareElementQueryFunctionApi<E> elementQueryFunctionApi) {
+        return elementQueryFunctionApi.ancestorElementOrSelfStream(element).map(elementQueryFunctionApi::elementName)
                 .collect(
                         Collectors.collectingAndThen(
                                 ImmutableList.toImmutableList(),
                                 p -> ImmutableList.<QName>builder().addAll(p).add(docElemName).build()))
                 .reverse();
+    }
+
+    private static DocumentElement.Element convertXdmNodeToElement(XdmNode node, MemoryMXBean memoryBean) {
+        var xmlDocElem = (Element) new SaxonConverter().convertToXmlNode(node);
+
+        logger.info("Ready converting Saxon document to Element");
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
+
+        DocumentElement documentElement = DocumentElement.create(xmlDocElem);
+
+        logger.info("Ready converting Element to DocumentElement.Element");
+
+        logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
+
+        return documentElement.documentElement();
     }
 }

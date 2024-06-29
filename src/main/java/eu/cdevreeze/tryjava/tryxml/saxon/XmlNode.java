@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.tryxml.queryapi;
+package eu.cdevreeze.tryjava.tryxml.saxon;
 
-import java.util.Optional;
-import java.util.stream.Stream;
+import net.sf.saxon.s9api.XdmNode;
 
 /**
- * Parent aware element query API, returning streams of elements. This is a common API offered by potentially multiple XML
- * element implementations in this library.
+ * XML node, wrapping a Saxon XdmNode
  *
  * @author Chris de Vreeze
  */
-public interface ParentAwareElementQueryApi<E> extends ElementQueryApi<E> {
+sealed public abstract class XmlNode permits Element, TextNode, Comment {
 
-    Stream<E> ancestorElementOrSelfStream();
+    private final XdmNode underlyingNode;
 
-    Stream<E> ancestorElementStream();
+    protected XmlNode(XdmNode underlyingNode) {
+        this.underlyingNode = underlyingNode;
+    }
 
-    Optional<E> parentElementOption();
+    public final XdmNode underlyingNode() {
+        return underlyingNode;
+    }
 }

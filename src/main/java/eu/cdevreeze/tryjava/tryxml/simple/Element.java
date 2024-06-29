@@ -19,9 +19,8 @@ package eu.cdevreeze.tryjava.tryxml.simple;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import eu.cdevreeze.tryjava.tryxml.internal.DefaultElementStreamApi;
-import eu.cdevreeze.tryjava.tryxml.internal.ElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.internal.DefaultElementQueryFunctionApi;
 
 import javax.xml.namespace.QName;
 import java.util.List;
@@ -56,52 +55,56 @@ public record Element(
                 "There is no consistent mapping from prefix to namespace");
     }
 
+    @Override
     public QName elementName() {
         return name;
     }
 
+    @Override
     public ImmutableMap<QName, String> attributes() {
         return attributes;
     }
 
     // Specific stream-returning methods
 
+    @Override
     public Stream<Element> childElementStream() {
-        return filterElements(children().stream());
+        return elementQueryFunctionApi.childElementStream(Element.this);
     }
 
+    @Override
+    public Stream<Element> childElementStream(Predicate<Element> predicate) {
+        return elementQueryFunctionApi.childElementStream(Element.this, predicate);
+    }
+
+    @Override
     public Stream<Element> descendantElementOrSelfStream() {
-        return elementStreamApi().descendantElementOrSelfStream(Element.this);
+        return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this);
     }
 
+    @Override
     public Stream<Element> descendantElementOrSelfStream(Predicate<Element> predicate) {
-        return elementStreamApi().descendantElementOrSelfStream(Element.this, predicate);
+        return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this, predicate);
     }
 
+    @Override
     public Stream<Element> descendantElementStream() {
-        return elementStreamApi().descendantElementStream(Element.this);
+        return elementQueryFunctionApi.descendantElementStream(Element.this);
     }
 
+    @Override
     public Stream<Element> descendantElementStream(Predicate<Element> predicate) {
-        return elementStreamApi().descendantElementStream(Element.this, predicate);
+        return elementQueryFunctionApi.descendantElementStream(Element.this, predicate);
     }
 
+    @Override
     public Stream<Element> topmostDescendantElementOrSelfStream(Predicate<Element> predicate) {
-        return elementStreamApi().topmostDescendantElementOrSelfStream(Element.this, predicate);
+        return elementQueryFunctionApi.topmostDescendantElementOrSelfStream(Element.this, predicate);
     }
 
+    @Override
     public Stream<Element> topmostDescendantElementStream(Predicate<Element> predicate) {
-        return elementStreamApi().topmostDescendantElementStream(Element.this, predicate);
-    }
-
-    private static Stream<Element> filterElements(Stream<XmlNode> nodeStream) {
-        return nodeStream.flatMap(node -> {
-            if (node instanceof Element elem) {
-                return Stream.of(elem);
-            } else {
-                return Stream.empty();
-            }
-        });
+        return elementQueryFunctionApi.topmostDescendantElementStream(Element.this, predicate);
     }
 
     private static Map<String, Set<String>> getPrefixNamespaceMap(List<QName> names) {
@@ -117,7 +120,35 @@ public record Element(
                 ));
     }
 
-    private static ElementStreamApi<Element> elementStreamApi() {
-        return (DefaultElementStreamApi<Element>) (Element::childElementStream);
+    public static final ElementQueryFunctionApi elementQueryFunctionApi = new ElementQueryFunctionApi();
+
+    // Note that Element and ElementQueryFunctionApi mutually depend on each other
+
+    public static final class ElementQueryFunctionApi implements DefaultElementQueryFunctionApi<Element> {
+
+        @Override
+        public QName elementName(Element element) {
+            return element.name();
+        }
+
+        @Override
+        public ImmutableMap<QName, String> attributes(Element element) {
+            return element.attributes();
+        }
+
+        @Override
+        public Stream<Element> childElementStream(Element element) {
+            return filterElements(element.children().stream());
+        }
+
+        private static Stream<Element> filterElements(Stream<XmlNode> nodeStream) {
+            return nodeStream.flatMap(node -> {
+                if (node instanceof Element elem) {
+                    return Stream.of(elem);
+                } else {
+                    return Stream.empty();
+                }
+            });
+        }
     }
 }

@@ -18,9 +18,9 @@ package eu.cdevreeze.tryjava.tryxml.parentaware;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import eu.cdevreeze.tryjava.tryxml.internal.DefaultElementStreamApi;
-import eu.cdevreeze.tryjava.tryxml.internal.ElementStreamApi;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.ParentAwareElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.internal.DefaultElementQueryFunctionApi;
 
 import javax.xml.namespace.QName;
 import java.util.Objects;
@@ -71,66 +71,121 @@ public final class DocumentElement {
             return Objects.requireNonNull(elementMap.get(navigationPath));
         }
 
+        public DocumentElement getDocumentElement() {
+            return DocumentElement.this;
+        }
+
+        @Override
         public QName elementName() {
-            return getUnderlyingElement().elementName();
+            return elementQueryFunctionApi.elementName(Element.this);
         }
 
+        @Override
         public ImmutableMap<QName, String> attributes() {
-            return getUnderlyingElement().attributes();
-        }
-
-        public ImmutableList<Element> findAllChildElements() {
-            return IntStream.range(0, (int) getUnderlyingElement().childElementStream().count())
-                    .mapToObj(idx -> new Element(addToPath(idx, navigationPath)))
-                    .collect(ImmutableList.toImmutableList());
-        }
-
-        public Optional<Element> findParent() {
-            return parentPathOption(navigationPath).map(Element::new);
+            return elementQueryFunctionApi.attributes(Element.this);
         }
 
         // Specific stream-returning methods
 
+        @Override
         public Stream<Element> childElementStream() {
-            return findAllChildElements().stream();
+            return elementQueryFunctionApi.childElementStream(Element.this);
         }
 
+        @Override
+        public Stream<Element> childElementStream(Predicate<Element> predicate) {
+            return elementQueryFunctionApi.childElementStream(Element.this, predicate);
+        }
+
+        @Override
         public Stream<Element> descendantElementOrSelfStream() {
-            return elementStreamApi().descendantElementOrSelfStream(Element.this);
+            return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this);
         }
 
+        @Override
         public Stream<Element> descendantElementOrSelfStream(Predicate<Element> predicate) {
-            return elementStreamApi().descendantElementOrSelfStream(Element.this, predicate);
+            return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this, predicate);
         }
 
+        @Override
         public Stream<Element> descendantElementStream() {
-            return elementStreamApi().descendantElementStream(Element.this);
+            return elementQueryFunctionApi.descendantElementStream(Element.this);
         }
 
+        @Override
         public Stream<Element> descendantElementStream(Predicate<Element> predicate) {
-            return elementStreamApi().descendantElementStream(Element.this, predicate);
+            return elementQueryFunctionApi.descendantElementStream(Element.this, predicate);
         }
 
+        @Override
         public Stream<Element> topmostDescendantElementOrSelfStream(Predicate<Element> predicate) {
-            return elementStreamApi().topmostDescendantElementOrSelfStream(Element.this, predicate);
+            return elementQueryFunctionApi.topmostDescendantElementOrSelfStream(Element.this, predicate);
         }
 
+        @Override
         public Stream<Element> topmostDescendantElementStream(Predicate<Element> predicate) {
-            return elementStreamApi().topmostDescendantElementStream(Element.this, predicate);
+            return elementQueryFunctionApi.topmostDescendantElementStream(Element.this, predicate);
         }
 
         // Specific stream-returning methods for element ancestry
 
-        public Stream<Element> ancestorOrSelfStream() {
-            return Stream.iterate(this, e -> e.findParent().isPresent(), e -> e.findParent().orElseThrow());
+        @Override
+        public Stream<Element> ancestorElementOrSelfStream() {
+            return elementQueryFunctionApi.ancestorElementOrSelfStream(Element.this);
         }
 
-        public Stream<Element> ancestorStream() {
-            return ancestorOrSelfStream().skip(1);
+        @Override
+        public Stream<Element> ancestorElementStream() {
+            return elementQueryFunctionApi.ancestorElementStream(Element.this);
         }
 
-        private static ElementStreamApi<Element> elementStreamApi() {
-            return (DefaultElementStreamApi<Element>) (Element::childElementStream);
+        @Override
+        public Optional<Element> parentElementOption() {
+            return elementQueryFunctionApi.parentElementOption(Element.this);
+        }
+    }
+
+    public final ElementQueryFunctionApi elementQueryFunctionApi = new ElementQueryFunctionApi();
+
+    // Note that Element and ElementQueryFunctionApi mutually depend on each other
+    // Both are bound to the same outer DocumentElement object
+
+    public final class ElementQueryFunctionApi implements DefaultElementQueryFunctionApi<Element>, ParentAwareElementQueryFunctionApi<Element> {
+
+        @Override
+        public QName elementName(Element element) {
+            return element.getUnderlyingElement().elementName();
+        }
+
+        @Override
+        public ImmutableMap<QName, String> attributes(Element element) {
+            return element.getUnderlyingElement().attributes();
+        }
+
+        @Override
+        public Stream<Element> childElementStream(Element element) {
+            return findAllChildElements(element).stream();
+        }
+
+        @Override
+        public Stream<Element> ancestorElementOrSelfStream(Element element) {
+            return Stream.iterate(element, e -> parentElementOption(e).isPresent(), e -> parentElementOption(e).orElseThrow());
+        }
+
+        @Override
+        public Stream<Element> ancestorElementStream(Element element) {
+            return ancestorElementOrSelfStream(element).skip(1);
+        }
+
+        @Override
+        public Optional<Element> parentElementOption(Element element) {
+            return parentPathOption(element.navigationPath).map(Element::new);
+        }
+
+        private ImmutableList<Element> findAllChildElements(Element element) {
+            return IntStream.range(0, (int) element.getUnderlyingElement().childElementStream().count())
+                    .mapToObj(idx -> new Element(addToPath(idx, element.navigationPath)))
+                    .collect(ImmutableList.toImmutableList());
         }
     }
 
