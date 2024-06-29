@@ -19,8 +19,8 @@ package eu.cdevreeze.tryjava.tryxml.simple;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal.DefaultFunctionalElementQueryApi;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
-import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal.DefaultElementQueryFunctionApi;
 
 import javax.xml.namespace.QName;
 import java.util.List;
@@ -69,42 +69,42 @@ public record Element(
 
     @Override
     public Stream<Element> childElementStream() {
-        return elementQueryFunctionApi.childElementStream(Element.this);
+        return functionalElementQueryApi.childElementStream(Element.this);
     }
 
     @Override
     public Stream<Element> childElementStream(Predicate<Element> predicate) {
-        return elementQueryFunctionApi.childElementStream(Element.this, predicate);
+        return functionalElementQueryApi.childElementStream(Element.this, predicate);
     }
 
     @Override
     public Stream<Element> descendantElementOrSelfStream() {
-        return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this);
+        return functionalElementQueryApi.descendantElementOrSelfStream(Element.this);
     }
 
     @Override
     public Stream<Element> descendantElementOrSelfStream(Predicate<Element> predicate) {
-        return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this, predicate);
+        return functionalElementQueryApi.descendantElementOrSelfStream(Element.this, predicate);
     }
 
     @Override
     public Stream<Element> descendantElementStream() {
-        return elementQueryFunctionApi.descendantElementStream(Element.this);
+        return functionalElementQueryApi.descendantElementStream(Element.this);
     }
 
     @Override
     public Stream<Element> descendantElementStream(Predicate<Element> predicate) {
-        return elementQueryFunctionApi.descendantElementStream(Element.this, predicate);
+        return functionalElementQueryApi.descendantElementStream(Element.this, predicate);
     }
 
     @Override
     public Stream<Element> topmostDescendantElementOrSelfStream(Predicate<Element> predicate) {
-        return elementQueryFunctionApi.topmostDescendantElementOrSelfStream(Element.this, predicate);
+        return functionalElementQueryApi.topmostDescendantElementOrSelfStream(Element.this, predicate);
     }
 
     @Override
     public Stream<Element> topmostDescendantElementStream(Predicate<Element> predicate) {
-        return elementQueryFunctionApi.topmostDescendantElementStream(Element.this, predicate);
+        return functionalElementQueryApi.topmostDescendantElementStream(Element.this, predicate);
     }
 
     private static Map<String, Set<String>> getPrefixNamespaceMap(List<QName> names) {
@@ -120,11 +120,11 @@ public record Element(
                 ));
     }
 
-    public static final ElementQueryFunctionApi elementQueryFunctionApi = new ElementQueryFunctionApi();
+    public static final FunctionalElementQueryApi functionalElementQueryApi = new FunctionalElementQueryApi();
 
-    // Note that Element and ElementQueryFunctionApi mutually depend on each other
+    // Note that Element and FunctionalElementQueryApi mutually depend on each other
 
-    public static final class ElementQueryFunctionApi implements DefaultElementQueryFunctionApi<Element> {
+    public static final class FunctionalElementQueryApi implements DefaultFunctionalElementQueryApi<Element> {
 
         @Override
         public QName elementName(Element element) {

@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * @param <E>
  * @author Chris de Vreeze
  */
-public interface ElementQueryFunctionApi<E> {
+public interface FunctionalElementQueryApi<E> {
 
     QName elementName(E element);
 

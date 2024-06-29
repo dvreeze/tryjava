@@ -19,8 +19,8 @@ package eu.cdevreeze.tryjava.tryxml.parentaware;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
-import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ParentAwareElementQueryFunctionApi;
-import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal.DefaultElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.FunctionalParentAwareElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal.DefaultFunctionalElementQueryApi;
 
 import javax.xml.namespace.QName;
 import java.util.Objects;
@@ -77,80 +77,80 @@ public final class DocumentElement {
 
         @Override
         public QName elementName() {
-            return elementQueryFunctionApi.elementName(Element.this);
+            return functionalElementQueryApi.elementName(Element.this);
         }
 
         @Override
         public ImmutableMap<QName, String> attributes() {
-            return elementQueryFunctionApi.attributes(Element.this);
+            return functionalElementQueryApi.attributes(Element.this);
         }
 
         // Specific stream-returning methods
 
         @Override
         public Stream<Element> childElementStream() {
-            return elementQueryFunctionApi.childElementStream(Element.this);
+            return functionalElementQueryApi.childElementStream(Element.this);
         }
 
         @Override
         public Stream<Element> childElementStream(Predicate<Element> predicate) {
-            return elementQueryFunctionApi.childElementStream(Element.this, predicate);
+            return functionalElementQueryApi.childElementStream(Element.this, predicate);
         }
 
         @Override
         public Stream<Element> descendantElementOrSelfStream() {
-            return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this);
+            return functionalElementQueryApi.descendantElementOrSelfStream(Element.this);
         }
 
         @Override
         public Stream<Element> descendantElementOrSelfStream(Predicate<Element> predicate) {
-            return elementQueryFunctionApi.descendantElementOrSelfStream(Element.this, predicate);
+            return functionalElementQueryApi.descendantElementOrSelfStream(Element.this, predicate);
         }
 
         @Override
         public Stream<Element> descendantElementStream() {
-            return elementQueryFunctionApi.descendantElementStream(Element.this);
+            return functionalElementQueryApi.descendantElementStream(Element.this);
         }
 
         @Override
         public Stream<Element> descendantElementStream(Predicate<Element> predicate) {
-            return elementQueryFunctionApi.descendantElementStream(Element.this, predicate);
+            return functionalElementQueryApi.descendantElementStream(Element.this, predicate);
         }
 
         @Override
         public Stream<Element> topmostDescendantElementOrSelfStream(Predicate<Element> predicate) {
-            return elementQueryFunctionApi.topmostDescendantElementOrSelfStream(Element.this, predicate);
+            return functionalElementQueryApi.topmostDescendantElementOrSelfStream(Element.this, predicate);
         }
 
         @Override
         public Stream<Element> topmostDescendantElementStream(Predicate<Element> predicate) {
-            return elementQueryFunctionApi.topmostDescendantElementStream(Element.this, predicate);
+            return functionalElementQueryApi.topmostDescendantElementStream(Element.this, predicate);
         }
 
         // Specific stream-returning methods for element ancestry
 
         @Override
         public Stream<Element> ancestorElementOrSelfStream() {
-            return elementQueryFunctionApi.ancestorElementOrSelfStream(Element.this);
+            return functionalElementQueryApi.ancestorElementOrSelfStream(Element.this);
         }
 
         @Override
         public Stream<Element> ancestorElementStream() {
-            return elementQueryFunctionApi.ancestorElementStream(Element.this);
+            return functionalElementQueryApi.ancestorElementStream(Element.this);
         }
 
         @Override
         public Optional<Element> parentElementOption() {
-            return elementQueryFunctionApi.parentElementOption(Element.this);
+            return functionalElementQueryApi.parentElementOption(Element.this);
         }
     }
 
-    public final ElementQueryFunctionApi elementQueryFunctionApi = new ElementQueryFunctionApi();
+    public final FunctionalElementQueryApi functionalElementQueryApi = new FunctionalElementQueryApi();
 
-    // Note that Element and ElementQueryFunctionApi mutually depend on each other
+    // Note that Element and FunctionalElementQueryApi mutually depend on each other
     // Both are bound to the same outer DocumentElement object
 
-    public final class ElementQueryFunctionApi implements DefaultElementQueryFunctionApi<Element>, ParentAwareElementQueryFunctionApi<Element> {
+    public final class FunctionalElementQueryApi implements DefaultFunctionalElementQueryApi<Element>, FunctionalParentAwareElementQueryApi<Element> {
 
         @Override
         public QName elementName(Element element) {

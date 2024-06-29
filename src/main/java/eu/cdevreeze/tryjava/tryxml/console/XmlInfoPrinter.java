@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import eu.cdevreeze.tryjava.tryxml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
-import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ParentAwareElementQueryFunctionApi;
-import eu.cdevreeze.tryjava.tryxml.saxon.SaxonElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.FunctionalParentAwareElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.saxon.FunctionalSaxonElementQueryApi;
 import eu.cdevreeze.tryjava.tryxml.simple.Element;
 import net.sf.saxon.s9api.*;
 import org.slf4j.Logger;
@@ -57,11 +57,11 @@ public class XmlInfoPrinter {
             ImmutableList<ElementCount> elemCounts,
             ImmutableMap<ImmutableList<QName>, Long> namePathCounts) {
 
-        public static <E> XmlDocInfo fromDoc(URI docUri, E docElem, ParentAwareElementQueryFunctionApi<E> elementQueryFunctionApi) {
+        public static <E> XmlDocInfo fromDoc(URI docUri, E docElem, FunctionalParentAwareElementQueryApi<E> functionalElementQueryApi) {
             ImmutableList<ElementCount> elemCounts =
-                    elementQueryFunctionApi.elementStream(docElem)
+                    functionalElementQueryApi.elementStream(docElem)
                             .collect(Collectors.groupingBy(
-                                    elementQueryFunctionApi::elementName,
+                                    functionalElementQueryApi::elementName,
                                     Collectors.counting()
                             )).entrySet()
                             .stream()
@@ -72,12 +72,12 @@ public class XmlInfoPrinter {
                             )
                             .collect(ImmutableList.toImmutableList());
 
-            QName docElemName = elementQueryFunctionApi.elementName(docElem);
+            QName docElemName = functionalElementQueryApi.elementName(docElem);
 
             ImmutableMap<ImmutableList<QName>, Long> namePathCounts =
-                    elementQueryFunctionApi.elementStream(docElem)
+                    functionalElementQueryApi.elementStream(docElem)
                             .collect(Collectors.groupingBy(
-                                    e -> getNamePath(e, docElemName, elementQueryFunctionApi),
+                                    e -> getNamePath(e, docElemName, functionalElementQueryApi),
                                     Collectors.counting()
                             )).entrySet()
                             .stream()
@@ -87,7 +87,7 @@ public class XmlInfoPrinter {
                                             Map.Entry::getKey,
                                             Map.Entry::getValue));
 
-            return new XmlDocInfo(docUri, (int) elementQueryFunctionApi.elementStream(docElem).count(), elemCounts, namePathCounts);
+            return new XmlDocInfo(docUri, (int) functionalElementQueryApi.elementStream(docElem).count(), elemCounts, namePathCounts);
         }
     }
 
@@ -132,12 +132,12 @@ public class XmlInfoPrinter {
         final XmlDocInfo xmlDocInfo;
 
         if (useSaxon) {
-            var elementQueryFunctionApi = SaxonElementQueryFunctionApi.instance;
-            var xmlDocElem = elementQueryFunctionApi.getDocumentElement(docNode);
-            xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem, elementQueryFunctionApi);
+            var functionalElementQueryApi = FunctionalSaxonElementQueryApi.instance;
+            var xmlDocElem = functionalElementQueryApi.getDocumentElement(docNode);
+            xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem, functionalElementQueryApi);
         } else {
             DocumentElement.Element xmlDocElem = convertXdmNodeToElement(docNode, memoryBean);
-            xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem, xmlDocElem.getDocumentElement().elementQueryFunctionApi);
+            xmlDocInfo = XmlDocInfo.fromDoc(inputFile, xmlDocElem, xmlDocElem.getDocumentElement().functionalElementQueryApi);
         }
 
         logger.info("Ready creating 'XmlDocInfo'");
@@ -157,8 +157,8 @@ public class XmlInfoPrinter {
                 .log();
     }
 
-    private static <E> ImmutableList<QName> getNamePath(E element, QName docElemName, ParentAwareElementQueryFunctionApi<E> elementQueryFunctionApi) {
-        return elementQueryFunctionApi.ancestorElementOrSelfStream(element).map(elementQueryFunctionApi::elementName)
+    private static <E> ImmutableList<QName> getNamePath(E element, QName docElemName, FunctionalParentAwareElementQueryApi<E> functionalElementQueryApi) {
+        return functionalElementQueryApi.ancestorElementOrSelfStream(element).map(functionalElementQueryApi::elementName)
                 .collect(
                         Collectors.collectingAndThen(
                                 ImmutableList.toImmutableList(),

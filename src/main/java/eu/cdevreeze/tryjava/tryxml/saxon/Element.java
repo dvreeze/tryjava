@@ -34,8 +34,8 @@ import java.util.stream.Stream;
  */
 public final class Element extends XmlNode implements ParentAwareElementQueryApi<Element> {
 
-    private static final SaxonElementQueryFunctionApi elementQueryFunctionApi =
-            SaxonElementQueryFunctionApi.instance;
+    private static final FunctionalSaxonElementQueryApi functionalElementQueryApi =
+            FunctionalSaxonElementQueryApi.instance;
 
     public Element(XdmNode underlyingNode) {
         super(requiringElementNode(underlyingNode));
@@ -43,12 +43,12 @@ public final class Element extends XmlNode implements ParentAwareElementQueryApi
 
     @Override
     public QName elementName() {
-        return elementQueryFunctionApi.elementName(underlyingNode());
+        return functionalElementQueryApi.elementName(underlyingNode());
     }
 
     @Override
     public ImmutableMap<QName, String> attributes() {
-        return elementQueryFunctionApi.attributes(underlyingNode());
+        return functionalElementQueryApi.attributes(underlyingNode());
     }
 
     public Stream<XmlNode> childNodeStream() {
@@ -63,7 +63,7 @@ public final class Element extends XmlNode implements ParentAwareElementQueryApi
 
     @Override
     public Stream<Element> childElementStream() {
-        return elementQueryFunctionApi.childElementStream(underlyingNode())
+        return functionalElementQueryApi.childElementStream(underlyingNode())
                 .map(Element::new);
     }
 
@@ -74,7 +74,7 @@ public final class Element extends XmlNode implements ParentAwareElementQueryApi
 
     @Override
     public Stream<Element> descendantElementOrSelfStream() {
-        return elementQueryFunctionApi.descendantElementOrSelfStream(underlyingNode())
+        return functionalElementQueryApi.descendantElementOrSelfStream(underlyingNode())
                 .map(Element::new);
     }
 
@@ -85,7 +85,7 @@ public final class Element extends XmlNode implements ParentAwareElementQueryApi
 
     @Override
     public Stream<Element> descendantElementStream() {
-        return elementQueryFunctionApi.descendantElementStream(underlyingNode())
+        return functionalElementQueryApi.descendantElementStream(underlyingNode())
                 .map(Element::new);
     }
 
@@ -111,19 +111,19 @@ public final class Element extends XmlNode implements ParentAwareElementQueryApi
 
     @Override
     public Stream<Element> ancestorElementOrSelfStream() {
-        return elementQueryFunctionApi.ancestorElementOrSelfStream(underlyingNode())
+        return functionalElementQueryApi.ancestorElementOrSelfStream(underlyingNode())
                 .map(Element::new);
     }
 
     @Override
     public Stream<Element> ancestorElementStream() {
-        return elementQueryFunctionApi.ancestorElementStream(underlyingNode())
+        return functionalElementQueryApi.ancestorElementStream(underlyingNode())
                 .map(Element::new);
     }
 
     @Override
     public Optional<Element> parentElementOption() {
-        return elementQueryFunctionApi.parentElementOption(underlyingNode())
+        return functionalElementQueryApi.parentElementOption(underlyingNode())
                 .map(Element::new);
     }
 

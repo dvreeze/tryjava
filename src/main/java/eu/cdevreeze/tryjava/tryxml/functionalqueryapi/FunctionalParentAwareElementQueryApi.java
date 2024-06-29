@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * @param <E>
  * @author Chris de Vreeze
  */
-public interface ParentAwareElementQueryFunctionApi<E> extends ElementQueryFunctionApi<E> {
+public interface FunctionalParentAwareElementQueryApi<E> extends FunctionalElementQueryApi<E> {
 
     Stream<E> ancestorElementOrSelfStream(E element);
 

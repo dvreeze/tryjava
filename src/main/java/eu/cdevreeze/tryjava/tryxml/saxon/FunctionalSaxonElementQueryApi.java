@@ -17,7 +17,7 @@
 package eu.cdevreeze.tryjava.tryxml.saxon;
 
 import com.google.common.collect.ImmutableMap;
-import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ParentAwareElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.FunctionalParentAwareElementQueryApi;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
@@ -33,11 +33,11 @@ import java.util.stream.Stream;
  *
  * @author Chris de Vreeze
  */
-public final class SaxonElementQueryFunctionApi implements ParentAwareElementQueryFunctionApi<XdmNode> {
+public final class FunctionalSaxonElementQueryApi implements FunctionalParentAwareElementQueryApi<XdmNode> {
 
-    public final static SaxonElementQueryFunctionApi instance = new SaxonElementQueryFunctionApi();
+    public final static FunctionalSaxonElementQueryApi instance = new FunctionalSaxonElementQueryApi();
 
-    private SaxonElementQueryFunctionApi() {
+    private FunctionalSaxonElementQueryApi() {
     }
 
     public XdmNode getDocumentElement(XdmNode node) {

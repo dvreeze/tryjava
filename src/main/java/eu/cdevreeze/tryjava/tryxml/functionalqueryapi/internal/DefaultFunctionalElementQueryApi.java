@@ -16,19 +16,19 @@
 
 package eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal;
 
-import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.FunctionalElementQueryApi;
 
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * Default partial implementation of ElementQueryFunctionApi
+ * Default partial implementation of FunctionalElementQueryApi
  *
  * @param <E>
  * @author Chris de Vreeze
  */
-public interface DefaultElementQueryFunctionApi<E> extends ElementQueryFunctionApi<E> {
+public interface DefaultFunctionalElementQueryApi<E> extends FunctionalElementQueryApi<E> {
 
     @Override
     default Stream<E> childElementStream(E element, Predicate<E> predicate) {
