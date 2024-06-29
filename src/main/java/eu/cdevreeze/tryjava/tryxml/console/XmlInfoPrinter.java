@@ -22,11 +22,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import eu.cdevreeze.tryjava.tryxml.convert.SaxonConverter;
-import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
 import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.FunctionalParentAwareElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
 import eu.cdevreeze.tryjava.tryxml.saxon.FunctionalSaxonElementQueryApi;
 import eu.cdevreeze.tryjava.tryxml.simple.Element;
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,15 +115,15 @@ public class XmlInfoPrinter {
 
         logger.info(String.format("Memory usage: %s", memoryBean.getHeapMemoryUsage()));
 
+        FunctionalSaxonElementQueryApi saxonQueryApi = FunctionalSaxonElementQueryApi.instance;
+
         logger.atInfo().setMessage("Document parsed (as Saxon node): {}").addArgument(docNode.getBaseURI()).log();
         logger.atInfo()
                 .setMessage("Number of (Saxon) elements: {}")
                 .addArgument(
-                        docNode.axisIterator(Axis.DESCENDANT_OR_SELF)
-                                .stream()
-                                .filter(n -> n.getNodeKind().equals(XdmNodeKind.ELEMENT))
-                                .asListOfNodes()
-                                .size()
+                        saxonQueryApi.descendantElementOrSelfStream(
+                                saxonQueryApi.getDocumentElement(docNode)
+                        ).count()
                 )
                 .log();
 
