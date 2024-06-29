@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.tryjava.tryxml.queryapi.ElementQueryApi;
-import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.internal.DefaultElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal.DefaultElementQueryFunctionApi;
 
 import javax.xml.namespace.QName;
 import java.util.List;

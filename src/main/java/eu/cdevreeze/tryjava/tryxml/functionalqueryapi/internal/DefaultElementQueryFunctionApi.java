@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.tryxml.queryfunctionapi.internal;
+package eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal;
 
-import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.ElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ElementQueryFunctionApi;
 
 import java.util.Objects;
 import java.util.function.Predicate;

@@ -17,7 +17,7 @@
 package eu.cdevreeze.tryjava.tryxml.saxon;
 
 import com.google.common.collect.ImmutableMap;
-import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.ParentAwareElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ParentAwareElementQueryFunctionApi;
 import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;

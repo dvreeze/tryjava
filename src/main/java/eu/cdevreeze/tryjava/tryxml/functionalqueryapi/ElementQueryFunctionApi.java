@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.tryxml.queryfunctionapi;
+package eu.cdevreeze.tryjava.tryxml.functionalqueryapi;
 
 import com.google.common.collect.ImmutableMap;
 

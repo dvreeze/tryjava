@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import eu.cdevreeze.tryjava.tryxml.convert.SaxonConverter;
 import eu.cdevreeze.tryjava.tryxml.parentaware.DocumentElement;
-import eu.cdevreeze.tryjava.tryxml.queryfunctionapi.ParentAwareElementQueryFunctionApi;
+import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.ParentAwareElementQueryFunctionApi;
 import eu.cdevreeze.tryjava.tryxml.saxon.SaxonElementQueryFunctionApi;
 import eu.cdevreeze.tryjava.tryxml.simple.Element;
 import net.sf.saxon.s9api.*;

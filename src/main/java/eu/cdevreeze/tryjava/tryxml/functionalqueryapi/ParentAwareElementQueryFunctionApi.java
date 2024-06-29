@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.tryxml.queryfunctionapi;
+package eu.cdevreeze.tryjava.tryxml.functionalqueryapi;
 
 import java.util.Optional;
 import java.util.stream.Stream;
