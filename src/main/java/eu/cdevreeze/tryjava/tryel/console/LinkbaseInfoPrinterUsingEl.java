@@ -30,8 +30,11 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Program that prints some info about an XBRL linkbase (but not label or reference linkbase), using Jakarta EL.
@@ -41,9 +44,14 @@ import java.util.Set;
  */
 public class LinkbaseInfoPrinterUsingEl {
 
+    public record Arc(String extendedLinkrole, String arcrole, String order, URI from, URI to) {
+    }
+
     private static final Processor saxonProcessor = new Processor(false);
 
     private static final Logger logger = LoggerFactory.getLogger(LinkbaseInfoPrinterUsingEl.class);
+
+    private static final String XLINK_NS = "http://www.w3.org/1999/xlink";
 
     public static void main(String[] args) throws IOException, SaxonApiException, NoSuchMethodException {
         Objects.requireNonNull(args);
@@ -64,12 +72,12 @@ public class LinkbaseInfoPrinterUsingEl {
         elProcessor.defineFunction(
                 "cv",
                 "attribute",
-                LinkbaseInfoPrinterUsingEl.class.getDeclaredMethod("attribute", DocumentElement.Element.class, String.class));
+                LinkbaseInfoPrinterUsingEl.class.getDeclaredMethod("attribute", DocumentElement.Element.class, String.class, String.class));
 
         List<String> linkRoles = elProcessor.eval("""
                 documentElement.childElementStream().toList().stream()
                     .filter(e -> e.elementName().localPart == "roleRef")
-                    .map(e -> cv:attribute(e, "roleURI"))
+                    .map(e -> cv:attribute(e, "", "roleURI"))
                     .toList()
                 """.strip()
         );
@@ -83,6 +91,11 @@ public class LinkbaseInfoPrinterUsingEl {
                 "isExtendedLink",
                 LinkbaseInfoPrinterUsingEl.class.getDeclaredMethod("isExtendedLink", DocumentElement.Element.class));
 
+        elProcessor.defineFunction(
+                "cv",
+                "findAllArcs",
+                LinkbaseInfoPrinterUsingEl.class.getDeclaredMethod("findAllArcs", DocumentElement.Element.class));
+
         List<DocumentElement.Element> extendedLinks = elProcessor.eval("""
                 documentElement.childElementStream().toList().stream()
                     .filter(e -> cv:isExtendedLink(e))
@@ -90,11 +103,26 @@ public class LinkbaseInfoPrinterUsingEl {
                 """.strip()
         );
 
+        List<Arc> arcs = elProcessor.eval("""
+                documentElement.childElementStream().toList().stream()
+                    .filter(e -> cv:isExtendedLink(e))
+                    .flatMap(e -> cv:findAllArcs(e).stream())
+                    .toList()
+                """.strip());
+
         for (var extendedLink : extendedLinks) {
+            System.out.println();
+            String elr = attribute(extendedLink, XLINK_NS, "role");
+
             System.out.printf(
                     "Extended link: %s. Link role: %s%n",
                     extendedLink.elementName(),
-                    extendedLink.attributes().get(new QName("http://www.w3.org/1999/xlink", "role")));
+                    elr);
+            System.out.println();
+
+            for (var arc : arcs.stream().filter(arc -> arc.extendedLinkrole.equals(elr)).toList()) {
+                System.out.printf("Arc: %s%n", arc);
+            }
         }
     }
 
@@ -102,8 +130,48 @@ public class LinkbaseInfoPrinterUsingEl {
         return Set.of("calculationLink", "presentationLink", "definitionLink").contains(element.elementName().getLocalPart());
     }
 
-    public static String attribute(DocumentElement.Element element, String attributeName) {
-        return element.attributes().get(new QName(attributeName));
+    public static String attribute(DocumentElement.Element element, String namespace, String attributeName) {
+        return element.attributes().get(new QName(namespace, attributeName));
+    }
+
+    public static List<Arc> findAllArcs(DocumentElement.Element ancestor) {
+        List<String> linkroles = ancestor.elementStream(LinkbaseInfoPrinterUsingEl::isExtendedLink)
+                .map(e -> attribute(e, XLINK_NS, "role")).distinct().toList();
+
+        return linkroles.stream().flatMap(role -> findAllArcs(ancestor, role)).toList();
+    }
+
+    private static Stream<Arc> findAllArcs(DocumentElement.Element ancestor, String extendedLinkrole) {
+        DocumentElement.Element extendedLink =
+                ancestor.elementStream(e ->
+                                isExtendedLink(e) &&
+                                        attribute(e, XLINK_NS, "role").equals(extendedLinkrole))
+                        .findFirst().orElseThrow();
+
+        Map<String, List<DocumentElement.Element>> locatorsByXlinkLabel =
+                extendedLink
+                        .childElementStream(
+                                e -> e.elementName().equals(new QName("http://www.xbrl.org/2003/linkbase", "loc"))
+                        )
+                        .collect(Collectors.groupingBy(e -> attribute(e, XLINK_NS, "label")));
+
+        return extendedLink
+                .childElementStream(e -> attribute(e, XLINK_NS, "type").equals("arc"))
+                .flatMap(arc -> {
+                    List<DocumentElement.Element> fromLocators =
+                            locatorsByXlinkLabel.get(attribute(arc, XLINK_NS, "from"));
+                    List<DocumentElement.Element> toLocators =
+                            locatorsByXlinkLabel.get(attribute(arc, XLINK_NS, "to"));
+
+                    return fromLocators.stream()
+                            .flatMap(fromLoc -> toLocators.stream().map(toLoc -> new Arc(
+                                    extendedLinkrole,
+                                    attribute(arc, XLINK_NS, "arcrole"),
+                                    attribute(arc, "", "order"),
+                                    URI.create(attribute(fromLoc, XLINK_NS, "href")),
+                                    URI.create(attribute(toLoc, XLINK_NS, "href"))
+                            )));
+                });
     }
 
     private static DocumentElement.Element parseDocumentElement(URI inputFile) throws IOException, SaxonApiException {
