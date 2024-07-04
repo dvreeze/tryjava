@@ -79,6 +79,18 @@
       <artifactId>log4j-core</artifactId>
       <version>3.0.0-beta2</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.el/jakarta.el-api -->
+    <dependency>
+      <groupId>jakarta.el</groupId>
+      <artifactId>jakarta.el-api</artifactId>
+      <version>6.0.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.glassfish/jakarta.el -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.el</artifactId>
+      <version>5.0.0-M1</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
