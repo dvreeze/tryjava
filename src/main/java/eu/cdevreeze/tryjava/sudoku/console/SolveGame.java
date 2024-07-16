@@ -17,12 +17,17 @@
 package eu.cdevreeze.tryjava.sudoku.console;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import eu.cdevreeze.tryjava.sudoku.game.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.game.Game;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 import eu.cdevreeze.tryjava.sudoku.parse.GridParser;
 import eu.cdevreeze.tryjava.sudoku.print.GridPrinter;
 
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -78,5 +83,24 @@ public class SolveGame {
         System.out.println();
         System.out.printf("Resulting grid is valid: %b%n", fullGame.lastGrid().isValid());
         System.out.printf("Resulting grid is solved: %b%n", fullGame.isSolved());
+
+        if (!fullGame.isSolved()) {
+            System.out.println();
+            System.out.println("Candidate numbers:");
+            System.out.println();
+
+            CandidateMap candidateMap = CandidateMap.forGrid(fullGame.lastGrid());
+
+            candidateMap.cellCandidates().entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey(Position.comparator))
+                    .forEach(kv -> {
+                        Position pos = kv.getKey();
+                        ImmutableSet<Integer> candidateNumbers = kv.getValue();
+                        System.out.printf(
+                                "Position %s, candidates %s%n",
+                                pos,
+                                candidateNumbers.stream().sorted().map(Object::toString).collect(Collectors.joining(", ")));
+                    });
+        }
     }
 }
