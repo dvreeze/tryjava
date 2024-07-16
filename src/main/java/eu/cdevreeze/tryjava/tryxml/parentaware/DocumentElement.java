@@ -18,9 +18,9 @@ package eu.cdevreeze.tryjava.tryxml.parentaware;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
 import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.FunctionalParentAwareElementQueryApi;
 import eu.cdevreeze.tryjava.tryxml.functionalqueryapi.internal.DefaultFunctionalElementQueryApi;
+import eu.cdevreeze.tryjava.tryxml.queryapi.ParentAwareElementQueryApi;
 
 import javax.xml.namespace.QName;
 import java.util.Objects;
