@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public record Grid(ImmutableList<Row> rows) implements GridOrHouse {
+public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
 
     public Grid {
         Preconditions.checkArgument(rows.size() == Row.ROW_COUNT);

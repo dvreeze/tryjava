@@ -26,10 +26,14 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) {
+public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements GridApi {
 
     public GridWithPencilMarks {
         Preconditions.checkArgument(Sets.intersection(grid.positionsOfFilledCells(), pencilMarks.positions()).isEmpty());
+    }
+
+    public Optional<Integer> cellValue(Position position) {
+        return grid.cellValue(position);
     }
 
     public GridWithPencilMarks withCellValue(Position position, Optional<Integer> value) {
