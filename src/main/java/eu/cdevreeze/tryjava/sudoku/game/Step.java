@@ -18,6 +18,7 @@ package eu.cdevreeze.tryjava.sudoku.game;
 
 import com.google.common.base.Preconditions;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
 import java.util.Optional;
@@ -37,7 +38,7 @@ public record Step(Position position, int value, String description) {
         return grid.cellValue(position).isEmpty();
     }
 
-    public Grid applyStep(Grid grid) {
+    public GridApi applyStep(GridApi grid) {
         return grid.withCellValue(position, Optional.of(value));
     }
 }

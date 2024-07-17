@@ -60,10 +60,10 @@ public class SolveGame {
         System.out.println();
         System.out.println("Last grid (after automatically trying to solve the sudoku):");
         System.out.println();
-        System.out.println(GridPrinter.print(fullGame.lastGrid()));
+        System.out.println(GridPrinter.print(fullGame.lastGrid().grid()));
 
         System.out.println();
-        System.out.printf("Resulting grid is valid: %b%n", fullGame.lastGrid().isValid());
+        System.out.printf("Resulting grid is valid: %b%n", fullGame.lastGrid().grid().isValid());
         System.out.printf("Resulting grid is solved: %b%n", fullGame.isSolved());
 
         System.out.println();
@@ -77,11 +77,11 @@ public class SolveGame {
             System.out.println();
             System.out.printf("Resulting grid:%n");
             System.out.println();
-            System.out.println(GridPrinter.print(fullGame.stepResults().get(i).resultGrid()));
+            System.out.println(GridPrinter.print(fullGame.stepResults().get(i).resultGrid().grid()));
         });
 
         System.out.println();
-        System.out.printf("Resulting grid is valid: %b%n", fullGame.lastGrid().isValid());
+        System.out.printf("Resulting grid is valid: %b%n", fullGame.lastGrid().grid().isValid());
         System.out.printf("Resulting grid is solved: %b%n", fullGame.isSolved());
 
         if (!fullGame.isSolved()) {
@@ -89,7 +89,7 @@ public class SolveGame {
             System.out.println("Candidate numbers:");
             System.out.println();
 
-            PencilMarks pencilMarks = PencilMarks.forGrid(fullGame.lastGrid());
+            PencilMarks pencilMarks = PencilMarks.forGrid(fullGame.lastGrid().grid());
 
             pencilMarks.cellCandidateNumbers().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(Position.comparator))

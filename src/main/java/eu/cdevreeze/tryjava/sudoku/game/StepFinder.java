@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 public interface StepFinder {
 
-    Grid startGrid();
+    GridApi startGrid();
 
     Optional<StepResult> findNextStepResult();
 }

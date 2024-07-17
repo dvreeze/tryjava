@@ -16,12 +16,12 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 
 /**
- * Pair of Step and resulting Grid.
+ * Pair of Step and resulting GridApi.
  *
  * @author Chris de Vreeze
  */
-public record StepResult(Step step, Grid resultGrid) {
+public record StepResult(Step step, GridApi resultGrid) {
 }

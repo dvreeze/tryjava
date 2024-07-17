@@ -19,6 +19,7 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -33,9 +34,9 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
     public Game {
         Preconditions.checkArgument(startGrid.isValid());
 
-        var grid = startGrid;
+        GridApi grid = startGrid;
         for (var stepResult : stepResults) {
-            Preconditions.checkArgument(stepResult.step().isValidStep(grid));
+            Preconditions.checkArgument(stepResult.step().isValidStep(grid.grid()));
             final var nextGrid = stepResult.step().applyStep(grid);
             Preconditions.checkArgument(nextGrid.equals(stepResult.resultGrid()));
             grid = nextGrid;
@@ -43,10 +44,10 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
     }
 
     public boolean isSolved() {
-        return lastGrid().isSolved();
+        return lastGrid().grid().isSolved();
     }
 
-    public Grid lastGrid() {
+    public GridApi lastGrid() {
         return (stepResults.isEmpty()) ? startGrid : stepResults.getLast().resultGrid();
     }
 
