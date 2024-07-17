@@ -30,7 +30,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
+public record HiddenSingleInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     @Override
     public Row house() {
@@ -38,7 +38,7 @@ public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFin
     }
 
     public Row row() {
-        return startGrid.row(rowIndex);
+        return startGrid.grid().row(rowIndex);
     }
 
     @Override
@@ -52,7 +52,10 @@ public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFin
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.update(
+                        PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<Integer> hiddenSingleNumberOption =
                 row.remainingUnusedNumbers().stream()
@@ -72,7 +75,7 @@ public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFin
                     position,
                     hiddenSingleNumber,
                     "Filling hidden single in row"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
         } else {
             return Optional.empty();
         }

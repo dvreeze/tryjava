@@ -17,10 +17,12 @@
 package eu.cdevreeze.tryjava.sudoku.game;
 
 import com.google.common.base.Preconditions;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.Cell;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Region;
 import eu.cdevreeze.tryjava.sudoku.model.RegionPosition;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record VisualEliminationInRegion(Grid startGrid, RegionPosition regionPosition,
+public record VisualEliminationInRegion(GridApi startGrid, RegionPosition regionPosition,
                                         int number) implements StepFinderInGivenHouse {
 
     public VisualEliminationInRegion {
@@ -43,7 +45,7 @@ public record VisualEliminationInRegion(Grid startGrid, RegionPosition regionPos
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
@@ -56,7 +58,8 @@ public record VisualEliminationInRegion(Grid startGrid, RegionPosition regionPos
 
         var remainingUnfilledCells = region.remainingUnfilledCells();
         var potentiallyMatchingUnfilledCells = remainingUnfilledCells.stream()
-                .filter(cell -> startGrid().withCellValue(cell.position(), Optional.of(number)).isValid())
+                .filter(this::isCandidateCell)
+                .filter(cell -> startGrid().withCellValue(cell.position(), Optional.of(number)).grid().isValid())
                 .collect(Collectors.toSet());
 
         if (potentiallyMatchingUnfilledCells.size() == 1) {
@@ -68,5 +71,15 @@ public record VisualEliminationInRegion(Grid startGrid, RegionPosition regionPos
         } else {
             return Optional.empty();
         }
+    }
+
+    private boolean isCandidateCell(Cell cell) {
+        return startGrid.optionalPencilMarks().stream().allMatch(pm -> {
+            if (pm.cellCandidateNumbers().containsKey(cell.position())) {
+                return Objects.requireNonNull(pm.cellCandidateNumbers().get(cell.position())).contains(number);
+            } else {
+                return true;
+            }
+        });
     }
 }

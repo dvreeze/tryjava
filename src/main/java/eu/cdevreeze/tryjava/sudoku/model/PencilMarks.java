@@ -67,6 +67,12 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
         );
     }
 
+    public PencilMarks update(PencilMarks other) {
+        return new PencilMarks(
+                update(this.cellCandidateNumbers, other.cellCandidateNumbers)
+        );
+    }
+
     public static PencilMarks forGrid(Grid grid) {
         var remainingUnfilledPositions = grid.remainingUnfilledCells().stream().map(Cell::position).collect(ImmutableList.toImmutableList());
         var cellCandidates = candidates(grid, remainingUnfilledPositions);
@@ -108,5 +114,15 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
                 .filter(n -> region.remainingUnusedNumbers().contains(n))
                 .filter(n -> grid.withCellValue(position, Optional.of(n)).isValid())
                 .collect(ImmutableSet.toImmutableSet());
+    }
+
+    public static ImmutableMap<Position, ImmutableSet<Integer>> update(
+            ImmutableMap<Position, ImmutableSet<Integer>> candidates1,
+            ImmutableMap<Position, ImmutableSet<Integer>> candidates2
+    ) {
+        return ImmutableMap.<Position, ImmutableSet<Integer>>builder()
+                .putAll(candidates1)
+                .putAll(candidates2)
+                .build();
     }
 }

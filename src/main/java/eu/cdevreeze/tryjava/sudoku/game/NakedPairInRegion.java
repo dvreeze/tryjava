@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedPairInRegion(Grid startGrid,
+public record NakedPairInRegion(GridApi startGrid,
                                 RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     public record NakedPair(Position pos1, Position pos2, ImmutableSet<Integer> numbers) {
@@ -49,7 +49,7 @@ public record NakedPairInRegion(Grid startGrid,
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
@@ -63,7 +63,10 @@ public record NakedPairInRegion(Grid startGrid,
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.update(
+                        PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<NakedPair> nakedPairOption =
                 candidates.entrySet().stream()
@@ -107,7 +110,7 @@ public record NakedPairInRegion(Grid startGrid,
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in region after processing naked pair"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
         } else {
             return Optional.empty();
         }

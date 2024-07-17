@@ -19,7 +19,7 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
+public record HiddenPairInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     private record NumberPosition(int number, Position position) {
     }
@@ -54,13 +54,16 @@ public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinde
     }
 
     public Row row() {
-        return startGrid.row(rowIndex);
+        return startGrid.grid().row(rowIndex);
     }
 
     @Override
     public Optional<StepResult> findNextStepResult() {
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidatesForRow(startGrid, rowIndex);
+                PencilMarks.update(
+                        PencilMarks.candidatesForRow(startGrid.grid(), rowIndex),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);
 
@@ -134,6 +137,6 @@ public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinde
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in row after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
     }
 }

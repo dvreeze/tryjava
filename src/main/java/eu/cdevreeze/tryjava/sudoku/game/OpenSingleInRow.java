@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record OpenSingleInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
+public record OpenSingleInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     @Override
     public Row house() {
@@ -35,7 +35,7 @@ public record OpenSingleInRow(Grid startGrid, int rowIndex) implements StepFinde
     }
 
     public Row row() {
-        return startGrid.row(rowIndex);
+        return startGrid.grid().row(rowIndex);
     }
 
     @Override

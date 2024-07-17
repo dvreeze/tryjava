@@ -17,7 +17,7 @@
 package eu.cdevreeze.tryjava.sudoku.game;
 
 import eu.cdevreeze.tryjava.sudoku.model.Column;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record OpenSingleInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
+public record OpenSingleInColumn(GridApi startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     @Override
     public Column house() {
@@ -35,7 +35,7 @@ public record OpenSingleInColumn(Grid startGrid, int columnIndex) implements Ste
     }
 
     public Column column() {
-        return startGrid.column(columnIndex);
+        return startGrid.grid().column(columnIndex);
     }
 
     @Override

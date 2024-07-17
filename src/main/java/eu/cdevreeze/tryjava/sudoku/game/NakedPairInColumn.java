@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedPairInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
+public record NakedPairInColumn(GridApi startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     public record NakedPair(Position pos1, Position pos2, ImmutableSet<Integer> numbers) {
 
@@ -48,7 +48,7 @@ public record NakedPairInColumn(Grid startGrid, int columnIndex) implements Step
     }
 
     public Column column() {
-        return startGrid.column(columnIndex);
+        return startGrid.grid().column(columnIndex);
     }
 
     @Override
@@ -62,7 +62,10 @@ public record NakedPairInColumn(Grid startGrid, int columnIndex) implements Step
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.update(
+                        PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<NakedPair> nakedPairOption =
                 candidates.entrySet().stream()
@@ -106,7 +109,7 @@ public record NakedPairInColumn(Grid startGrid, int columnIndex) implements Step
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in column after processing naked pair"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
         } else {
             return Optional.empty();
         }

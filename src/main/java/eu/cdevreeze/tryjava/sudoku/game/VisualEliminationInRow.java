@@ -17,9 +17,11 @@
 package eu.cdevreeze.tryjava.sudoku.game;
 
 import com.google.common.base.Preconditions;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.Cell;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record VisualEliminationInRow(Grid startGrid, int rowIndex,
+public record VisualEliminationInRow(GridApi startGrid, int rowIndex,
                                      int number) implements StepFinderInGivenHouse {
 
     public VisualEliminationInRow {
@@ -42,7 +44,7 @@ public record VisualEliminationInRow(Grid startGrid, int rowIndex,
     }
 
     public Row row() {
-        return startGrid.row(rowIndex);
+        return startGrid.grid().row(rowIndex);
     }
 
     @Override
@@ -55,7 +57,8 @@ public record VisualEliminationInRow(Grid startGrid, int rowIndex,
 
         var remainingUnfilledCells = row.remainingUnfilledCells();
         var potentiallyMatchingUnfilledCells = remainingUnfilledCells.stream()
-                .filter(cell -> startGrid().withCellValue(cell.position(), Optional.of(number)).isValid())
+                .filter(this::isCandidateCell)
+                .filter(cell -> startGrid().withCellValue(cell.position(), Optional.of(number)).grid().isValid())
                 .collect(Collectors.toSet());
 
         if (potentiallyMatchingUnfilledCells.size() == 1) {
@@ -67,5 +70,15 @@ public record VisualEliminationInRow(Grid startGrid, int rowIndex,
         } else {
             return Optional.empty();
         }
+    }
+
+    private boolean isCandidateCell(Cell cell) {
+        return startGrid.optionalPencilMarks().stream().allMatch(pm -> {
+            if (pm.cellCandidateNumbers().containsKey(cell.position())) {
+                return Objects.requireNonNull(pm.cellCandidateNumbers().get(cell.position())).contains(number);
+            } else {
+                return true;
+            }
+        });
     }
 }

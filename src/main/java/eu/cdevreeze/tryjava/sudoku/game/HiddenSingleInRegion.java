@@ -30,7 +30,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record HiddenSingleInRegion(Grid startGrid,
+public record HiddenSingleInRegion(GridApi startGrid,
                                    RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
@@ -39,7 +39,7 @@ public record HiddenSingleInRegion(Grid startGrid,
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
@@ -53,7 +53,10 @@ public record HiddenSingleInRegion(Grid startGrid,
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.update(
+                        PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<Integer> hiddenSingleNumberOption =
                 region.remainingUnusedNumbers().stream()
@@ -73,7 +76,7 @@ public record HiddenSingleInRegion(Grid startGrid,
                     position,
                     hiddenSingleNumber,
                     "Filling hidden single in region"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
         } else {
             return Optional.empty();
         }

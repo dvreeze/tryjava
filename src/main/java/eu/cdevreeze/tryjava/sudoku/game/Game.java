@@ -84,5 +84,5 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
     public record GameStatus(Game game, boolean progressing) {
     }
 
-    public static final int MAX_STEPS = 100;
+    public static final int MAX_STEPS = 1000;
 }

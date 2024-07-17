@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record HiddenPairInRegion(Grid startGrid, RegionPosition regionPosition) implements StepFinderInGivenHouse {
+public record HiddenPairInRegion(GridApi startGrid, RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     private record NumberPosition(int number, Position position) {
     }
@@ -51,13 +51,16 @@ public record HiddenPairInRegion(Grid startGrid, RegionPosition regionPosition) 
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
     public Optional<StepResult> findNextStepResult() {
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidatesForRegion(startGrid, regionPosition);
+                PencilMarks.update(
+                        PencilMarks.candidatesForRegion(startGrid.grid(), regionPosition),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);
 
@@ -131,6 +134,6 @@ public record HiddenPairInRegion(Grid startGrid, RegionPosition regionPosition) 
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in region after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
     }
 }

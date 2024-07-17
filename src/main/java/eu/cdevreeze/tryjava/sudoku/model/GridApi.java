@@ -32,4 +32,8 @@ sealed public interface GridApi permits Grid, GridWithPencilMarks {
     Optional<Integer> cellValue(Position position);
 
     GridApi withCellValue(Position position, Optional<Integer> value);
+
+    default GridWithPencilMarks withPencilMarks(PencilMarks pms) {
+        return new GridWithPencilMarks(grid(), pms);
+    }
 }

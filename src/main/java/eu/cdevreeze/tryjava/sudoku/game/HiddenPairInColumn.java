@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import eu.cdevreeze.tryjava.sudoku.model.Column;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record HiddenPairInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
+public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     private record NumberPosition(int number, Position position) {
     }
@@ -54,13 +54,16 @@ public record HiddenPairInColumn(Grid startGrid, int columnIndex) implements Ste
     }
 
     public Column column() {
-        return startGrid.column(columnIndex);
+        return startGrid.grid().column(columnIndex);
     }
 
     @Override
     public Optional<StepResult> findNextStepResult() {
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidatesForColumn(startGrid, columnIndex);
+                PencilMarks.update(
+                        PencilMarks.candidatesForColumn(startGrid.grid(), columnIndex),
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                );
 
         Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);
 
@@ -134,6 +137,6 @@ public record HiddenPairInColumn(Grid startGrid, int columnIndex) implements Ste
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in column after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
     }
 }

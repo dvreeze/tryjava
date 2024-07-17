@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Region;
 import eu.cdevreeze.tryjava.sudoku.model.RegionPosition;
 
@@ -28,7 +28,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record OpenSingleInRegion(Grid startGrid,
+public record OpenSingleInRegion(GridApi startGrid,
                                  RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
@@ -37,7 +37,7 @@ public record OpenSingleInRegion(Grid startGrid,
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override

@@ -34,25 +34,25 @@ public record DefaultStepFinder(GridApi startGrid) implements StepFinder {
     @Override
     public Optional<StepResult> findNextStepResult() {
         return Stream.<Stream<StepFinder>>of(
-                        IntStream.range(0, 9).mapToObj(i -> new OpenSingleInRow(startGrid.grid(), i)),
-                        IntStream.range(0, 9).mapToObj(i -> new OpenSingleInColumn(startGrid.grid(), i)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new OpenSingleInRegion(startGrid.grid(), rp)),
+                        IntStream.range(0, 9).mapToObj(i -> new OpenSingleInRow(startGrid, i)),
+                        IntStream.range(0, 9).mapToObj(i -> new OpenSingleInColumn(startGrid, i)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new OpenSingleInRegion(startGrid, rp)),
                         IntStream.range(0, 9).boxed()
                                 .flatMap(i -> IntStream.rangeClosed(1, 9)
-                                        .mapToObj(n -> new VisualEliminationInRow(startGrid.grid(), i, n))),
+                                        .mapToObj(n -> new VisualEliminationInRow(startGrid, i, n))),
                         IntStream.range(0, 9).boxed()
                                 .flatMap(i -> IntStream.rangeClosed(1, 9)
-                                        .mapToObj(n -> new VisualEliminationInColumn(startGrid.grid(), i, n))),
+                                        .mapToObj(n -> new VisualEliminationInColumn(startGrid, i, n))),
                         Region.ALL_REGION_POSITIONS.stream()
                                 .flatMap(rp -> IntStream.rangeClosed(1, 9)
-                                        .mapToObj(n -> new VisualEliminationInRegion(startGrid.grid(), rp, n))),
+                                        .mapToObj(n -> new VisualEliminationInRegion(startGrid, rp, n))),
                         Stream.of(new LoneSingle(startGrid.grid())),
-                        IntStream.range(0, 9).mapToObj(i -> new HiddenSingleInRow(startGrid.grid(), i)),
-                        IntStream.range(0, 9).mapToObj(i -> new HiddenSingleInColumn(startGrid.grid(), i)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenSingleInRegion(startGrid.grid(), rp)),
-                        IntStream.range(0, 9).mapToObj(i -> new NakedPairInRow(startGrid.grid(), i)),
-                        IntStream.range(0, 9).mapToObj(i -> new NakedPairInColumn(startGrid.grid(), i)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new NakedPairInRegion(startGrid.grid(), rp)),
+                        IntStream.range(0, 9).mapToObj(i -> new HiddenSingleInRow(startGrid, i)),
+                        IntStream.range(0, 9).mapToObj(i -> new HiddenSingleInColumn(startGrid, i)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenSingleInRegion(startGrid, rp)),
+                        IntStream.range(0, 9).mapToObj(i -> new NakedPairInRow(startGrid, i)),
+                        IntStream.range(0, 9).mapToObj(i -> new NakedPairInColumn(startGrid, i)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new NakedPairInRegion(startGrid, rp)),
                         IntStream.range(0, 9).mapToObj(i -> new NakedTripletInRow(startGrid.grid(), i)),
                         IntStream.range(0, 9).mapToObj(i -> new NakedTripletInColumn(startGrid.grid(), i)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new NakedTripletInRegion(startGrid.grid(), rp)),
@@ -65,9 +65,9 @@ public record DefaultStepFinder(GridApi startGrid) implements StepFinder {
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithColumn(startGrid.grid(), rp)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithRow(startGrid.grid(), rp)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithColumn(startGrid.grid(), rp)),
-                        IntStream.range(0, 9).mapToObj(i -> new HiddenPairInRow(startGrid.grid(), i)),
-                        IntStream.range(0, 9).mapToObj(i -> new HiddenPairInColumn(startGrid.grid(), i)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenPairInRegion(startGrid.grid(), rp)),
+                        IntStream.range(0, 9).mapToObj(i -> new HiddenPairInRow(startGrid, i)),
+                        IntStream.range(0, 9).mapToObj(i -> new HiddenPairInColumn(startGrid, i)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenPairInRegion(startGrid, rp)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenTripletInRow(startGrid.grid(), i))
                 )
                 .flatMap(Function.identity())
