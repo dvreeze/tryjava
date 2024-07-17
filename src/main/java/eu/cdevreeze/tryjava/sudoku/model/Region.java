@@ -26,11 +26,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Region (3 * 3) in a Sudoku grid
+ * Region (3 * 3) in a Sudoku grid. It is also known as a block.
  *
  * @author Chris de Vreeze
  */
-public record Region(Position upperLeftPosition, ImmutableList<RegionRow> regionRows) implements RowOrColumnOrRegion {
+public record Region(Position upperLeftPosition, ImmutableList<RegionRow> regionRows) implements House {
 
     public Region {
         Preconditions.checkArgument(regionRows.size() == ROW_COUNT);

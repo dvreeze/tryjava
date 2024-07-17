@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Row, or column, or (3 * 3) region in a grid.
+ * Row, or column, or (3 * 3) region in a grid. This is called a house.
  * <p>
  * All implementations must be immutable and thread-safe.
  *
  * @author Chris de Vreeze
  */
-public interface RowOrColumnOrRegion extends GridPart {
+public interface House extends GridPart {
 
     ImmutableSet<Integer> ALL_NUMBERS =
             IntStream.rangeClosed(1, 9).boxed().collect(ImmutableSet.toImmutableSet());

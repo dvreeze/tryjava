@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Optional;
 
 /**
- * Row, column or (3 * 3) region in a grid, or a region row/column, or the entire grid.
+ * House or the entire grid.
  * <p>
  * All implementations must be immutable and thread-safe.
  *

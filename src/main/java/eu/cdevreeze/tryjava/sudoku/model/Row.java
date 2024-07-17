@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public record Row(int rowIndex, ImmutableList<Optional<Integer>> cellValues) implements RowOrColumnOrRegion {
+public record Row(int rowIndex, ImmutableList<Optional<Integer>> cellValues) implements House {
 
     public Row {
         Objects.checkIndex(rowIndex, ROW_COUNT);

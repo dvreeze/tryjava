@@ -16,7 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.RowOrColumnOrRegion;
+import eu.cdevreeze.tryjava.sudoku.model.House;
 
 /**
  * "Step finder" in a Sudoku game, considering a given row or column or region.
@@ -26,5 +26,5 @@ import eu.cdevreeze.tryjava.sudoku.model.RowOrColumnOrRegion;
  */
 public interface StepFinderInGivenRowOrColumnOrRegion extends StepFinder {
 
-    RowOrColumnOrRegion rowOrColumnOrRegion();
+    House rowOrColumnOrRegion();
 }
