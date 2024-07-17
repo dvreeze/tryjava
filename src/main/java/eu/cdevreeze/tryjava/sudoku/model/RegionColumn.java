@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Region column in a Sudoku grid
+ * Column of a region in a Sudoku grid
  *
  * @author Chris de Vreeze
  */

@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.stream.IntStream;
 
 /**
- * Zero-based "region position" in a Sudoku grid
+ * Zero-based "region position" in a Sudoku grid in a "region coordinate system" with 3 * 3 regions.
  *
  * @author Chris de Vreeze
  */
