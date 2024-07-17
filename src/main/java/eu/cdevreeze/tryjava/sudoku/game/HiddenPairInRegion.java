@@ -113,14 +113,14 @@ public record HiddenPairInRegion(Grid startGrid, RegionPosition regionPosition) 
     }
 
     private Optional<StepResult> findNextStepResult(HiddenPair hiddenPair, ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
-        // The hidden pair is "stripped away" from the same cells
+        // The hidden pair is retained in the same cells
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
                 candidates.entrySet().stream()
                         .filter(kv -> kv.getKey().equals(hiddenPair.pos1) || kv.getKey().equals(hiddenPair.pos2))
                         .map(kv -> Map.entry(
                                 kv.getKey(),
                                 kv.getValue().stream()
-                                        .filter(n -> !hiddenPair.numbers.contains(n))
+                                        .filter(hiddenPair.numbers::contains)
                                         .collect(ImmutableSet.toImmutableSet()))
                         )
                         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));

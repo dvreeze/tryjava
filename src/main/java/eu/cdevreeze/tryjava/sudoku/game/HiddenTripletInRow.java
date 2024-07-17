@@ -27,23 +27,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * "Step finder" for a hidden pair in a row.
- * See <a href="https://www.learn-sudoku.com/hidden-pairs.html">hidden-pair</a>.
+ * "Step finder" for a hidden triplet in a row.
+ * See <a href="https://www.learn-sudoku.com/hidden-triplets.html">hidden-triplet</a>.
  *
  * @author Chris de Vreeze
  */
-public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
+public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     private record NumberPosition(int number, Position position) {
     }
 
-    public record HiddenPair(Position pos1, Position pos2, ImmutableSet<Integer> numbers) {
+    public record HiddenTriplet(Position pos1, Position pos2, Position pos3, ImmutableSet<Integer> numbers) {
 
-        public HiddenPair {
-            Preconditions.checkArgument(!pos1.equals(pos2));
-            Preconditions.checkArgument(numbers.size() == 2);
+        public HiddenTriplet {
+            Preconditions.checkArgument(Stream.of(pos1, pos2, pos3).distinct().count() == 3);
+            Preconditions.checkArgument(numbers.size() == 3);
+        }
+
+        public ImmutableSet<Position> positions() {
+            return ImmutableSet.of(pos1, pos2, pos3);
         }
     }
 
@@ -61,18 +66,18 @@ public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinde
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 CandidateMap.candidatesForRow(startGrid, rowIndex);
 
-        Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);
+        Optional<HiddenTriplet> hiddenTripletOption = findHiddenTriplet(candidates);
 
-        if (hiddenPairOption.isEmpty()) {
+        if (hiddenTripletOption.isEmpty()) {
             return Optional.empty();
         }
 
-        HiddenPair hiddenPair = hiddenPairOption.get();
+        HiddenTriplet hiddenTriplet = hiddenTripletOption.get();
 
-        return findNextStepResult(hiddenPair, candidates);
+        return findNextStepResult(hiddenTriplet, candidates);
     }
 
-    private Optional<HiddenPair> findHiddenPair(ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
+    private Optional<HiddenTriplet> findHiddenTriplet(ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
         Map<Integer, Set<Position>> numberPositions =
                 candidates.entrySet().stream()
                         .flatMap(kv -> kv.getValue().stream().map(n -> new NumberPosition(n, kv.getKey())))
@@ -84,22 +89,36 @@ public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinde
 
         Map<Integer, Set<Position>> relevantNumberPositions =
                 numberPositions.entrySet().stream()
-                        .filter(kv -> kv.getValue().size() == 2)
+                        .filter(kv -> !kv.getValue().isEmpty() && kv.getValue().size() <= 3)
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Optional<HiddenPair> hiddenPairOption = Optional.empty();
-        for (var numberPosition1 : relevantNumberPositions.entrySet()) {
-            for (var numberPosition2 : relevantNumberPositions.entrySet()) {
-                if (numberPosition1.getKey().intValue() != numberPosition2.getKey().intValue()) {
-                    if (numberPosition1.getValue().equals(numberPosition2.getValue())) {
-                        var sortedPositions = numberPosition1.getValue().stream().sorted(Position.comparator).toList();
-                        Preconditions.checkArgument(sortedPositions.size() == 2);
+        Optional<HiddenTriplet> hiddenTripletOption = Optional.empty();
 
-                        hiddenPairOption = Optional.of(
-                                new HiddenPair(
+        for (var numberPosition1 : relevantNumberPositions.entrySet()) {
+            Map<Integer, Set<Position>> relevantNumberPositions1 =
+                    relevantNumberPositions.entrySet().stream()
+                            .filter(kv -> !kv.getKey().equals(numberPosition1.getKey()))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            for (var numberPosition2 : relevantNumberPositions1.entrySet()) {
+                Map<Integer, Set<Position>> relevantNumberPositions2 =
+                        relevantNumberPositions1.entrySet().stream()
+                                .filter(kv -> !kv.getKey().equals(numberPosition2.getKey()))
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                for (var numberPosition3 : relevantNumberPositions2.entrySet()) {
+                    Set<Position> positions = Stream.of(numberPosition1, numberPosition2, numberPosition3)
+                            .flatMap(kv -> kv.getValue().stream())
+                            .collect(Collectors.toSet());
+
+                    if (positions.size() == 3) {
+                        var sortedPositions = positions.stream().sorted(Position.comparator).toList();
+                        Preconditions.checkArgument(sortedPositions.size() == 3);
+
+                        hiddenTripletOption = Optional.of(
+                                new HiddenTriplet(
                                         sortedPositions.get(0),
                                         sortedPositions.get(1),
-                                        ImmutableSet.of(numberPosition1.getKey(), numberPosition2.getKey())
+                                        sortedPositions.get(2),
+                                        ImmutableSet.of(numberPosition1.getKey(), numberPosition2.getKey(), numberPosition3.getKey())
                                 )
                         );
                         break;
@@ -108,18 +127,18 @@ public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinde
             }
         }
 
-        return hiddenPairOption;
+        return hiddenTripletOption;
     }
 
-    private Optional<StepResult> findNextStepResult(HiddenPair hiddenPair, ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
-        // The hidden pair is retained in the same cells
+    private Optional<StepResult> findNextStepResult(HiddenTriplet hiddenTriplet, ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
+        // The hidden triplet is retained in the same cells
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
                 candidates.entrySet().stream()
-                        .filter(kv -> kv.getKey().equals(hiddenPair.pos1) || kv.getKey().equals(hiddenPair.pos2))
+                        .filter(kv -> hiddenTriplet.positions().contains(kv.getKey()))
                         .map(kv -> Map.entry(
                                 kv.getKey(),
                                 kv.getValue().stream()
-                                        .filter(hiddenPair.numbers::contains)
+                                        .filter(hiddenTriplet.numbers::contains)
                                         .collect(ImmutableSet.toImmutableSet()))
                         )
                         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -132,7 +151,7 @@ public record HiddenPairInRow(Grid startGrid, int rowIndex) implements StepFinde
         return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
-                "Filling cell in row after processing hidden pair"
+                "Filling cell in row after processing hidden triplet"
         )).map(step -> new StepResult(step, step.applyStep(startGrid)));
     }
 }
