@@ -19,8 +19,6 @@ package eu.cdevreeze.tryjava.sudoku.model;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Optional;
-
 /**
  * House or the entire grid.
  * <p>
@@ -33,11 +31,6 @@ public interface GridOrHouse {
     ImmutableList<Cell> cells();
 
     /**
-     * Equivalent to "cells().stream().map(cell -> cell.optionalValue()).collect(ImmutableList.toImmutableList())"
-     */
-    ImmutableList<Optional<Integer>> cellValues();
-
-    /**
      * Equivalent to "cells().stream().map(cell -> cell.position()).collect(ImmutableList.toImmutableList())"
      */
     ImmutableList<Position> positionsInGrid();
@@ -48,8 +41,16 @@ public interface GridOrHouse {
         return cells().stream().filter(Cell::isFilled).collect(ImmutableSet.toImmutableSet());
     }
 
+    default ImmutableSet<Position> positionsOfFilledCells() {
+        return cells().stream().filter(Cell::isFilled).map(Cell::position).collect(ImmutableSet.toImmutableSet());
+    }
+
     default ImmutableSet<Cell> remainingUnfilledCells() {
         return cells().stream().filter(Cell::isUnfilled).collect(ImmutableSet.toImmutableSet());
+    }
+
+    default ImmutableSet<Position> positionsOfRemainingUnfilledCells() {
+        return cells().stream().filter(Cell::isUnfilled).map(Cell::position).collect(ImmutableSet.toImmutableSet());
     }
 
     /**

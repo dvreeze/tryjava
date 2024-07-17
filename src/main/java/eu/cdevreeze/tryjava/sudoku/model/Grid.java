@@ -43,11 +43,6 @@ public record Grid(ImmutableList<Row> rows) implements GridOrHouse {
     }
 
     @Override
-    public ImmutableList<Optional<Integer>> cellValues() {
-        return rows.stream().flatMap(r -> r.cellValues().stream()).collect(ImmutableList.toImmutableList());
-    }
-
-    @Override
     public ImmutableList<Position> positionsInGrid() {
         return rows.stream().flatMap(r -> r.positionsInGrid().stream()).collect(ImmutableList.toImmutableList());
     }

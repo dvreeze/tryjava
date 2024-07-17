@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.model;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
@@ -35,6 +36,11 @@ public interface House extends GridOrHouse {
 
     ImmutableSet<Integer> ALL_NUMBERS =
             IntStream.rangeClosed(1, 9).boxed().collect(ImmutableSet.toImmutableSet());
+
+    /**
+     * Equivalent to "cells().stream().map(cell -> cell.optionalValue()).collect(ImmutableList.toImmutableList())"
+     */
+    ImmutableList<Optional<Integer>> cellValues();
 
     default ImmutableSet<Integer> remainingUnusedNumbers() {
         Set<Integer> usedNumbers = filledCells().stream().map(cell -> cell.optionalValue().orElseThrow()).collect(Collectors.toSet());

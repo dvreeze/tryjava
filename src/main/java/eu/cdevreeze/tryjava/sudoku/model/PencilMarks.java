@@ -35,6 +35,10 @@ import java.util.stream.IntStream;
  */
 public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidateNumbers) {
 
+    public ImmutableSet<Position> positions() {
+        return cellCandidateNumbers.keySet();
+    }
+
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRow(int rowIndex) {
         return cellCandidateNumbers.entrySet().stream()
                 .filter(kv -> kv.getKey().rowIndex() == rowIndex)
@@ -52,6 +56,15 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
         return cellCandidateNumbers.entrySet().stream()
                 .filter(kv -> positionsInGrid.contains(kv.getKey()))
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public PencilMarks withoutPosition(Position pos) {
+        return new PencilMarks(
+                cellCandidateNumbers.entrySet()
+                        .stream()
+                        .filter(kv -> !kv.getKey().equals(pos))
+                        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue))
+        );
     }
 
     public static PencilMarks forGrid(Grid grid) {
