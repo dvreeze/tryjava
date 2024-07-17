@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedQuadInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenRowOrColumnOrRegion {
+public record NakedQuadInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     public record Quad(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 

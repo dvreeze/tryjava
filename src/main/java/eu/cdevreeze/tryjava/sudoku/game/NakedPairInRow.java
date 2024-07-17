@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedPairInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenRowOrColumnOrRegion {
+public record NakedPairInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     public record NakedPair(Position pos1, Position pos2, ImmutableSet<Integer> numbers) {
 

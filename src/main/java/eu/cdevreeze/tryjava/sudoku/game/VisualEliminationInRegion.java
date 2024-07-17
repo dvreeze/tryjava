@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @author Chris de Vreeze
  */
 public record VisualEliminationInRegion(Grid startGrid, RegionPosition regionPosition,
-                                        int number) implements StepFinderInGivenRowOrColumnOrRegion {
+                                        int number) implements StepFinderInGivenHouse {
 
     public VisualEliminationInRegion {
         Preconditions.checkArgument(number >= 1 && number <= 9);

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * @author Chris de Vreeze
  */
 public record NakedPairInRegion(Grid startGrid,
-                                RegionPosition regionPosition) implements StepFinderInGivenRowOrColumnOrRegion {
+                                RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     public record NakedPair(Position pos1, Position pos2, ImmutableSet<Integer> numbers) {
 

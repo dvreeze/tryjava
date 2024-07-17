@@ -33,7 +33,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenRowOrColumnOrRegion {
+public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     @Override
     public Row rowOrColumnOrRegion() {

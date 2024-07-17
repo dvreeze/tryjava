@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenRowOrColumnOrRegion {
+public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     public record Triplet(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 

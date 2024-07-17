@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @author Chris de Vreeze
  */
 public record IntersectionWithColumn(Grid startGrid,
-                                     RegionPosition regionPosition) implements StepFinderInGivenRowOrColumnOrRegion {
+                                     RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
     public Region rowOrColumnOrRegion() {

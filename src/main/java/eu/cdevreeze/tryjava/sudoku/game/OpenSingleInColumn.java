@@ -27,7 +27,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record OpenSingleInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenRowOrColumnOrRegion {
+public record OpenSingleInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     @Override
     public Column rowOrColumnOrRegion() {

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @author Chris de Vreeze
  */
 public record NakedTripletInRegion(Grid startGrid,
-                                   RegionPosition regionPosition) implements StepFinderInGivenRowOrColumnOrRegion {
+                                   RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     public record Triplet(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 

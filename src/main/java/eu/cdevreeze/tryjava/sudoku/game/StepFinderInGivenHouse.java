@@ -24,7 +24,7 @@ import eu.cdevreeze.tryjava.sudoku.model.House;
  *
  * @author Chris de Vreeze
  */
-public interface StepFinderInGivenRowOrColumnOrRegion extends StepFinder {
+public interface StepFinderInGivenHouse extends StepFinder {
 
     House rowOrColumnOrRegion();
 }

@@ -31,7 +31,7 @@ import java.util.Optional;
  * @author Chris de Vreeze
  */
 public record HiddenSingleInRegion(Grid startGrid,
-                                   RegionPosition regionPosition) implements StepFinderInGivenRowOrColumnOrRegion {
+                                   RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
     public Region rowOrColumnOrRegion() {

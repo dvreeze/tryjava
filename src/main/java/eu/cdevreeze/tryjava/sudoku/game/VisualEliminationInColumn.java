@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author Chris de Vreeze
  */
 public record VisualEliminationInColumn(Grid startGrid, int columnIndex,
-                                        int number) implements StepFinderInGivenRowOrColumnOrRegion {
+                                        int number) implements StepFinderInGivenHouse {
 
     public VisualEliminationInColumn {
         Preconditions.checkArgument(number >= 1 && number <= 9);
