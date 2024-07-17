@@ -73,6 +73,11 @@ public record CandidateMap(ImmutableMap<Position, ImmutableSet<Integer>> cellCan
         return candidates(grid, positions);
     }
 
+    public static ImmutableMap<Position, ImmutableSet<Integer>> candidatesForRegion(Grid grid, RegionPosition regionPosition) {
+        ImmutableList<Position> positions = regionPosition.positionsInGrid();
+        return candidates(grid, positions);
+    }
+
     public static ImmutableMap<Position, ImmutableSet<Integer>> candidates(Grid grid, ImmutableList<Position> positions) {
         return positions.stream()
                 .filter(pos -> grid.cellValue(pos).isEmpty())

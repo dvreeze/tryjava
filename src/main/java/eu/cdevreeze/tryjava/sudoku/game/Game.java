@@ -60,16 +60,27 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
 
     public static Game runStepFinderRepeatedly(Grid startGrid) {
         return Stream.iterate(
-                        Game.startGame(startGrid),
-                        game -> {
+                        new GameStatus(Game.startGame(startGrid), true),
+                        GameStatus::progressing,
+                        gameStatus -> {
+                            if (!gameStatus.progressing()) {
+                                return gameStatus;
+                            }
+                            Game game = gameStatus.game;
                             var stepFinder = new DefaultStepFinder(game.lastGrid());
                             var nextStepResultOption = stepFinder.findNextStepResult();
-                            return nextStepResultOption.map(game::plus).orElse(game);
+                            return nextStepResultOption
+                                    .map(game::plus)
+                                    .map(g -> new GameStatus(g, true)).orElse(new GameStatus(game, false));
                         }
                 )
                 .limit(MAX_STEPS)
+                .map(GameStatus::game)
                 .max(Comparator.comparingInt(game -> game.stepResults.size()))
                 .orElseThrow();
+    }
+
+    public record GameStatus(Game game, boolean progressing) {
     }
 
     public static final int MAX_STEPS = 100;
