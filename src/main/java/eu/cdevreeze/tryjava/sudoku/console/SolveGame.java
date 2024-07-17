@@ -91,7 +91,7 @@ public class SolveGame {
 
             PencilMarks pencilMarks = PencilMarks.forGrid(fullGame.lastGrid());
 
-            pencilMarks.cellCandidates().entrySet().stream()
+            pencilMarks.cellCandidateNumbers().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(Position.comparator))
                     .forEach(kv -> {
                         Position pos = kv.getKey();

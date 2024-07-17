@@ -37,7 +37,7 @@ public record LoneSingle(Grid startGrid) implements StepFinder {
         PencilMarks pencilMarks = PencilMarks.forGrid(startGrid);
 
         Optional<Position> loneSinglePositionOption =
-                pencilMarks.cellCandidates().entrySet()
+                pencilMarks.cellCandidateNumbers().entrySet()
                         .stream()
                         .filter(kv -> kv.getValue().size() == 1)
                         .findFirst()
@@ -48,7 +48,7 @@ public record LoneSingle(Grid startGrid) implements StepFinder {
 
             return Optional.of(new Step(
                     loneSinglePosition,
-                    Objects.requireNonNull(pencilMarks.cellCandidates().get(loneSinglePosition)).iterator().next(),
+                    Objects.requireNonNull(pencilMarks.cellCandidateNumbers().get(loneSinglePosition)).iterator().next(),
                     "Lone single"
             )).map(step -> new StepResult(step, step.applyStep(startGrid)));
         } else {

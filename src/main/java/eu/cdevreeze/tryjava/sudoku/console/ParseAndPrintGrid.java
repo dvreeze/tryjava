@@ -56,7 +56,7 @@ public class ParseAndPrintGrid {
         System.out.println("Candidate numbers:");
         System.out.println();
 
-        pencilMarks.cellCandidates().entrySet().stream()
+        pencilMarks.cellCandidateNumbers().entrySet().stream()
                 .sorted(Map.Entry.comparingByKey(Position.comparator))
                 .forEach(kv -> {
                     Position pos = kv.getKey();

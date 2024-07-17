@@ -98,7 +98,7 @@ public record XWingInRows(Grid startGrid) implements StepFinder {
 
                 // The X-Wing is "stripped away" from the 2 columns in the other rows
                 ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
-                        candidates.cellCandidates().entrySet().stream()
+                        candidates.cellCandidateNumbers().entrySet().stream()
                                 .filter(kv -> kv.getKey().rowIndex() != potentialRowInXWing.rowIndex)
                                 .filter(kv -> kv.getKey().rowIndex() != other.rowIndex)
                                 .map(kv -> Map.entry(

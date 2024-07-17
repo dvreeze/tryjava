@@ -33,23 +33,23 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidates) {
+public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidateNumbers) {
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRow(int rowIndex) {
-        return cellCandidates.entrySet().stream()
+        return cellCandidateNumbers.entrySet().stream()
                 .filter(kv -> kv.getKey().rowIndex() == rowIndex)
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInColumn(int columnIndex) {
-        return cellCandidates.entrySet().stream()
+        return cellCandidateNumbers.entrySet().stream()
                 .filter(kv -> kv.getKey().columnIndex() == columnIndex)
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRegion(RegionPosition regionPosition) {
         Set<Position> positionsInGrid = new HashSet<>(regionPosition.positionsInGrid());
-        return cellCandidates.entrySet().stream()
+        return cellCandidateNumbers.entrySet().stream()
                 .filter(kv -> positionsInGrid.contains(kv.getKey()))
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
