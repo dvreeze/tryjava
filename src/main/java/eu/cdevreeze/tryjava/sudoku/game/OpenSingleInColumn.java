@@ -30,7 +30,7 @@ import java.util.Optional;
 public record OpenSingleInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     @Override
-    public Column rowOrColumnOrRegion() {
+    public Column house() {
         return column();
     }
 

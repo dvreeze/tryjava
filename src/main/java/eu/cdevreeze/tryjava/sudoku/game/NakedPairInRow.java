@@ -46,7 +46,7 @@ public record NakedPairInRow(Grid startGrid, int rowIndex) implements StepFinder
     }
 
     @Override
-    public Row rowOrColumnOrRegion() {
+    public Row house() {
         return row();
     }
 

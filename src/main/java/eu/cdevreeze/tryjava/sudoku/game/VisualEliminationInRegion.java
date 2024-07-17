@@ -38,7 +38,7 @@ public record VisualEliminationInRegion(Grid startGrid, RegionPosition regionPos
     }
 
     @Override
-    public Region rowOrColumnOrRegion() {
+    public Region house() {
         return region();
     }
 

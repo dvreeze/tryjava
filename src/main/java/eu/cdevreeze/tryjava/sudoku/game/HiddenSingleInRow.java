@@ -36,7 +36,7 @@ import java.util.Optional;
 public record HiddenSingleInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     @Override
-    public Row rowOrColumnOrRegion() {
+    public Row house() {
         return row();
     }
 

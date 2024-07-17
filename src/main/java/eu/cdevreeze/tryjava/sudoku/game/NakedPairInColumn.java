@@ -46,7 +46,7 @@ public record NakedPairInColumn(Grid startGrid, int columnIndex) implements Step
     }
 
     @Override
-    public Column rowOrColumnOrRegion() {
+    public Column house() {
         return column();
     }
 

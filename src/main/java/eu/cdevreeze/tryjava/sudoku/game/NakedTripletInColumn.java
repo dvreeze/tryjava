@@ -49,7 +49,7 @@ public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements S
     }
 
     @Override
-    public Column rowOrColumnOrRegion() {
+    public Column house() {
         return column();
     }
 

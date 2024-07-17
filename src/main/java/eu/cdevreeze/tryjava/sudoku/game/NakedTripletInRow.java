@@ -49,7 +49,7 @@ public record NakedTripletInRow(Grid startGrid, int rowIndex) implements StepFin
     }
 
     @Override
-    public Row rowOrColumnOrRegion() {
+    public Row house() {
         return row();
     }
 

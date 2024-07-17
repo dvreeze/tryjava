@@ -19,12 +19,12 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import eu.cdevreeze.tryjava.sudoku.model.House;
 
 /**
- * "Step finder" in a Sudoku game, considering a given row or column or region.
- * This does not necessarily mean that the step is applied within that row/column/region.
+ * "Step finder" in a Sudoku game, considering a given house (row or column or region).
+ * This does not necessarily mean that the step is applied within that house.
  *
  * @author Chris de Vreeze
  */
 public interface StepFinderInGivenHouse extends StepFinder {
 
-    House rowOrColumnOrRegion();
+    House house();
 }

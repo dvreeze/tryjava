@@ -32,7 +32,7 @@ public record OpenSingleInRegion(Grid startGrid,
                                  RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
-    public Region rowOrColumnOrRegion() {
+    public Region house() {
         return region();
     }
 

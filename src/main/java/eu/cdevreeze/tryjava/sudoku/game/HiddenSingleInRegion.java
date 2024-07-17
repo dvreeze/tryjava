@@ -34,7 +34,7 @@ public record HiddenSingleInRegion(Grid startGrid,
                                    RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
-    public Region rowOrColumnOrRegion() {
+    public Region house() {
         return region();
     }
 

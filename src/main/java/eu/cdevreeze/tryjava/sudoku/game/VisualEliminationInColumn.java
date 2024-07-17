@@ -37,7 +37,7 @@ public record VisualEliminationInColumn(Grid startGrid, int columnIndex,
     }
 
     @Override
-    public Column rowOrColumnOrRegion() {
+    public Column house() {
         return column();
     }
 

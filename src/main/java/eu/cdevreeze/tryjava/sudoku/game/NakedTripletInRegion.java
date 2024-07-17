@@ -47,7 +47,7 @@ public record NakedTripletInRegion(Grid startGrid,
     }
 
     @Override
-    public Region rowOrColumnOrRegion() {
+    public Region house() {
         return region();
     }
 
