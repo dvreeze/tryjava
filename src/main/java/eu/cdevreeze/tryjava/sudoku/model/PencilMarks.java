@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public record CandidateMap(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidates) {
+public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidates) {
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRow(int rowIndex) {
         return cellCandidates.entrySet().stream()
@@ -54,10 +54,10 @@ public record CandidateMap(ImmutableMap<Position, ImmutableSet<Integer>> cellCan
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public static CandidateMap forGrid(Grid grid) {
+    public static PencilMarks forGrid(Grid grid) {
         var remainingUnfilledPositions = grid.remainingUnfilledCells().stream().map(Cell::position).collect(ImmutableList.toImmutableList());
         var cellCandidates = candidates(grid, remainingUnfilledPositions);
-        return new CandidateMap(cellCandidates);
+        return new PencilMarks(cellCandidates);
     }
 
     public static ImmutableMap<Position, ImmutableSet<Integer>> candidatesForRow(Grid grid, int rowIndex) {

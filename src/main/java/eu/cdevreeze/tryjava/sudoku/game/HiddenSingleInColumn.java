@@ -52,7 +52,7 @@ public record HiddenSingleInColumn(Grid startGrid, int columnIndex) implements S
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                CandidateMap.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
 
         Optional<Integer> hiddenSingleNumberOption =
                 column.remainingUnusedNumbers().stream()

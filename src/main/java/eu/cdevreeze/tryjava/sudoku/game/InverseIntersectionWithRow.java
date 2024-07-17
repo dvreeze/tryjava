@@ -47,24 +47,24 @@ public record InverseIntersectionWithRow(Grid startGrid,
     public Optional<StepResult> findNextStepResult() {
         var region = region();
 
-        var candidateMap = CandidateMap.forGrid(startGrid);
+        var candidateMap = PencilMarks.forGrid(startGrid);
 
         return region.rowIndicesInGrid().stream().sorted().flatMap(i -> findNextStepResult(i, candidateMap).stream()).findFirst();
     }
 
-    public Optional<StepResult> findNextStepResult(int rowIndex, CandidateMap candidateMap) {
+    public Optional<StepResult> findNextStepResult(int rowIndex, PencilMarks pencilMarks) {
         if (!region().rowIndicesInGrid().contains(rowIndex)) {
             return Optional.empty();
         }
 
-        Set<Integer> candidateNumbersInRegionInRow = candidateMap.cellCandidatesInRegion(regionPosition)
+        Set<Integer> candidateNumbersInRegionInRow = pencilMarks.cellCandidatesInRegion(regionPosition)
                 .entrySet()
                 .stream()
                 .filter(kv -> kv.getKey().rowIndex() == rowIndex)
                 .flatMap(kv -> kv.getValue().stream())
                 .collect(Collectors.toSet());
 
-        Set<Integer> candidateNumbersInRegionOutsideRow = candidateMap.cellCandidatesInRegion(regionPosition)
+        Set<Integer> candidateNumbersInRegionOutsideRow = pencilMarks.cellCandidatesInRegion(regionPosition)
                 .entrySet()
                 .stream()
                 .filter(kv -> kv.getKey().rowIndex() != rowIndex)
@@ -81,7 +81,7 @@ public record InverseIntersectionWithRow(Grid startGrid,
 
         int candidateNumber = candidateNumbersInRegionThatAreOnlyInRow.iterator().next();
 
-        var candidates = candidateMap.cellCandidatesInRow(rowIndex);
+        var candidates = pencilMarks.cellCandidatesInRow(rowIndex);
 
         // The candidate number is "stripped away" from the other cells in the row
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =

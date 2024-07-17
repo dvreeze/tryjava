@@ -57,7 +57,7 @@ public record HiddenPairInRegion(Grid startGrid, RegionPosition regionPosition) 
     @Override
     public Optional<StepResult> findNextStepResult() {
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                CandidateMap.candidatesForRegion(startGrid, regionPosition);
+                PencilMarks.candidatesForRegion(startGrid, regionPosition);
 
         Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);
 

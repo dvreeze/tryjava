@@ -18,9 +18,9 @@ package eu.cdevreeze.tryjava.sudoku.console;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.game.Game;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 import eu.cdevreeze.tryjava.sudoku.parse.GridParser;
@@ -89,9 +89,9 @@ public class SolveGame {
             System.out.println("Candidate numbers:");
             System.out.println();
 
-            CandidateMap candidateMap = CandidateMap.forGrid(fullGame.lastGrid());
+            PencilMarks pencilMarks = PencilMarks.forGrid(fullGame.lastGrid());
 
-            candidateMap.cellCandidates().entrySet().stream()
+            pencilMarks.cellCandidates().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(Position.comparator))
                     .forEach(kv -> {
                         Position pos = kv.getKey();

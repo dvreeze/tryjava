@@ -65,7 +65,7 @@ public record NakedTripletInRow(Grid startGrid, int rowIndex) implements StepFin
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                CandidateMap.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
 
         Optional<Triplet> nakedTripletOption = Optional.empty();
 

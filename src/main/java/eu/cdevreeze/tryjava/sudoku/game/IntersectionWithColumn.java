@@ -47,24 +47,24 @@ public record IntersectionWithColumn(Grid startGrid,
     public Optional<StepResult> findNextStepResult() {
         var region = region();
 
-        var candidateMap = CandidateMap.forGrid(startGrid);
+        var candidateMap = PencilMarks.forGrid(startGrid);
 
         return region.columnIndicesInGrid().stream().sorted().flatMap(i -> findNextStepResult(i, candidateMap).stream()).findFirst();
     }
 
-    public Optional<StepResult> findNextStepResult(int columnIndex, CandidateMap candidateMap) {
+    public Optional<StepResult> findNextStepResult(int columnIndex, PencilMarks pencilMarks) {
         if (!region().columnIndicesInGrid().contains(columnIndex)) {
             return Optional.empty();
         }
 
-        Set<Integer> candidateNumbersInColumnRegionIntersection = candidateMap.cellCandidatesInRegion(regionPosition)
+        Set<Integer> candidateNumbersInColumnRegionIntersection = pencilMarks.cellCandidatesInRegion(regionPosition)
                 .entrySet()
                 .stream()
                 .filter(kv -> kv.getKey().columnIndex() == columnIndex)
                 .flatMap(kv -> kv.getValue().stream())
                 .collect(Collectors.toSet());
 
-        Set<Integer> candidateNumbersInColumnExcludingRegion = candidateMap.cellCandidatesInColumn(columnIndex)
+        Set<Integer> candidateNumbersInColumnExcludingRegion = pencilMarks.cellCandidatesInColumn(columnIndex)
                 .entrySet()
                 .stream()
                 .filter(kv -> kv.getKey().columnIndex() == columnIndex)
@@ -82,7 +82,7 @@ public record IntersectionWithColumn(Grid startGrid,
 
         int candidateNumber = candidateNumbersInColumnThatAreOnlyInRegion.iterator().next();
 
-        var candidates = candidateMap.cellCandidatesInRegion(regionPosition);
+        var candidates = pencilMarks.cellCandidatesInRegion(regionPosition);
 
         // The candidate number is "stripped away" from the other columns in the region
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =

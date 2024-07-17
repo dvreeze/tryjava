@@ -63,7 +63,7 @@ public record NakedPairInRegion(Grid startGrid,
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                CandidateMap.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
 
         Optional<NakedPair> nakedPairOption =
                 candidates.entrySet().stream()

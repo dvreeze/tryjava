@@ -16,8 +16,8 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
 import java.util.Map;
@@ -34,10 +34,10 @@ public record LoneSingle(Grid startGrid) implements StepFinder {
 
     @Override
     public Optional<StepResult> findNextStepResult() {
-        CandidateMap candidateMap = CandidateMap.forGrid(startGrid);
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid);
 
         Optional<Position> loneSinglePositionOption =
-                candidateMap.cellCandidates().entrySet()
+                pencilMarks.cellCandidates().entrySet()
                         .stream()
                         .filter(kv -> kv.getValue().size() == 1)
                         .findFirst()
@@ -48,7 +48,7 @@ public record LoneSingle(Grid startGrid) implements StepFinder {
 
             return Optional.of(new Step(
                     loneSinglePosition,
-                    Objects.requireNonNull(candidateMap.cellCandidates().get(loneSinglePosition)).iterator().next(),
+                    Objects.requireNonNull(pencilMarks.cellCandidates().get(loneSinglePosition)).iterator().next(),
                     "Lone single"
             )).map(step -> new StepResult(step, step.applyStep(startGrid)));
         } else {

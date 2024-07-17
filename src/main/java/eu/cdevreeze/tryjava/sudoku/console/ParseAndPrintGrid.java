@@ -18,8 +18,8 @@ package eu.cdevreeze.tryjava.sudoku.console;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 import eu.cdevreeze.tryjava.sudoku.parse.GridParser;
@@ -50,13 +50,13 @@ public class ParseAndPrintGrid {
         System.out.printf("Number of filled cells: %d%n", grid.filledCellCount());
         System.out.printf("Number of unfilled cells: %d%n", grid.remainingUnfilledCells().size());
 
-        CandidateMap candidateMap = CandidateMap.forGrid(grid);
+        PencilMarks pencilMarks = PencilMarks.forGrid(grid);
 
         System.out.println();
         System.out.println("Candidate numbers:");
         System.out.println();
 
-        candidateMap.cellCandidates().entrySet().stream()
+        pencilMarks.cellCandidates().entrySet().stream()
                 .sorted(Map.Entry.comparingByKey(Position.comparator))
                 .forEach(kv -> {
                     Position pos = kv.getKey();

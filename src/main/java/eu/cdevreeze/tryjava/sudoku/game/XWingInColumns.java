@@ -19,9 +19,9 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.model.Column;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public record XWingInColumns(Grid startGrid) implements StepFinder {
                 IntStream.range(0, Column.COLUMN_COUNT).boxed()
                         .flatMap(i -> {
                             var column = startGrid.column(i);
-                            var candidatesForColumn = CandidateMap.candidatesForColumn(startGrid, i);
+                            var candidatesForColumn = PencilMarks.candidatesForColumn(startGrid, i);
 
                             return column.remainingUnusedNumbers().stream().flatMap(n -> {
                                 var positions = candidatesForColumn.entrySet().stream()
@@ -81,7 +81,7 @@ public record XWingInColumns(Grid startGrid) implements StepFinder {
                         })
                         .toList();
 
-        var candidates = CandidateMap.forGrid(startGrid);
+        var candidates = PencilMarks.forGrid(startGrid);
 
         for (var potentialColumnInXWing : potentialColumnsInXWing) {
             var matchingPotentialColumnsInXWing =

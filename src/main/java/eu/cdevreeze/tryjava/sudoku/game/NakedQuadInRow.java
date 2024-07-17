@@ -65,7 +65,7 @@ public record NakedQuadInRow(Grid startGrid, int rowIndex) implements StepFinder
                         .collect(ImmutableList.toImmutableList());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                CandidateMap.candidates(startGrid, remainingUnfilledPositions);
+                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
 
         Optional<Quad> nakedQuadOption = Optional.empty();
 

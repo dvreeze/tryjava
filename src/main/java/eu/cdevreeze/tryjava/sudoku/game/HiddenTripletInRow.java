@@ -19,8 +19,8 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 
@@ -65,7 +65,7 @@ public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFi
     @Override
     public Optional<StepResult> findNextStepResult() {
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                CandidateMap.candidatesForRow(startGrid, rowIndex);
+                PencilMarks.candidatesForRow(startGrid, rowIndex);
 
         Optional<HiddenTriplet> hiddenTripletOption = findHiddenTriplet(candidates);
 

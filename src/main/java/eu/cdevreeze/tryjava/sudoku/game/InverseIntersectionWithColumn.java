@@ -47,24 +47,24 @@ public record InverseIntersectionWithColumn(Grid startGrid,
     public Optional<StepResult> findNextStepResult() {
         var region = region();
 
-        var candidateMap = CandidateMap.forGrid(startGrid);
+        var candidateMap = PencilMarks.forGrid(startGrid);
 
         return region.columnIndicesInGrid().stream().sorted().flatMap(i -> findNextStepResult(i, candidateMap).stream()).findFirst();
     }
 
-    public Optional<StepResult> findNextStepResult(int columnIndex, CandidateMap candidateMap) {
+    public Optional<StepResult> findNextStepResult(int columnIndex, PencilMarks pencilMarks) {
         if (!region().columnIndicesInGrid().contains(columnIndex)) {
             return Optional.empty();
         }
 
-        Set<Integer> candidateNumbersInRegionInColumn = candidateMap.cellCandidatesInRegion(regionPosition)
+        Set<Integer> candidateNumbersInRegionInColumn = pencilMarks.cellCandidatesInRegion(regionPosition)
                 .entrySet()
                 .stream()
                 .filter(kv -> kv.getKey().columnIndex() == columnIndex)
                 .flatMap(kv -> kv.getValue().stream())
                 .collect(Collectors.toSet());
 
-        Set<Integer> candidateNumbersInRegionOutsideColumn = candidateMap.cellCandidatesInRegion(regionPosition)
+        Set<Integer> candidateNumbersInRegionOutsideColumn = pencilMarks.cellCandidatesInRegion(regionPosition)
                 .entrySet()
                 .stream()
                 .filter(kv -> kv.getKey().columnIndex() != columnIndex)
@@ -81,7 +81,7 @@ public record InverseIntersectionWithColumn(Grid startGrid,
 
         int candidateNumber = candidateNumbersInRegionThatAreOnlyInColumn.iterator().next();
 
-        var candidates = candidateMap.cellCandidatesInColumn(columnIndex);
+        var candidates = pencilMarks.cellCandidatesInColumn(columnIndex);
 
         // The candidate number is "stripped away" from the other cells in the column
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
