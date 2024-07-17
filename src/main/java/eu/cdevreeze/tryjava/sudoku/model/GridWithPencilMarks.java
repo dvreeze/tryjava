@@ -32,10 +32,17 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
         Preconditions.checkArgument(Sets.intersection(grid.positionsOfFilledCells(), pencilMarks.positions()).isEmpty());
     }
 
+    @Override
+    public Grid grid() {
+        return grid;
+    }
+
+    @Override
     public Optional<Integer> cellValue(Position position) {
         return grid.cellValue(position);
     }
 
+    @Override
     public GridWithPencilMarks withCellValue(Position position, Optional<Integer> value) {
         return new GridWithPencilMarks(
                 grid.withCellValue(position, value),

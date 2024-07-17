@@ -25,6 +25,8 @@ import java.util.Optional;
  */
 sealed public interface GridApi permits Grid, GridWithPencilMarks {
 
+    Grid grid();
+
     Optional<Integer> cellValue(Position position);
 
     GridApi withCellValue(Position position, Optional<Integer> value);

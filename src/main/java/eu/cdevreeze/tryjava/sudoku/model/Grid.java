@@ -38,6 +38,11 @@ public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
     }
 
     @Override
+    public Grid grid() {
+        return this;
+    }
+
+    @Override
     public ImmutableList<Cell> cells() {
         return rows.stream().flatMap(r -> r.cells().stream()).collect(ImmutableList.toImmutableList());
     }
@@ -59,12 +64,14 @@ public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
                 .collect(ImmutableList.toImmutableList());
     }
 
+    @Override
     public Optional<Integer> cellValue(Position position) {
         Objects.checkIndex(position.rowIndex(), Row.ROW_COUNT);
         Objects.checkIndex(position.columnIndex(), Column.COLUMN_COUNT);
         return row(position.rowIndex()).cellValues().get(position.columnIndex());
     }
 
+    @Override
     public Grid withCellValue(Position position, Optional<Integer> value) {
         ImmutableList.Builder<Row> rowBuilder = ImmutableList.builder();
         rowBuilder.addAll(rows.stream().limit(position.rowIndex()).toList());
