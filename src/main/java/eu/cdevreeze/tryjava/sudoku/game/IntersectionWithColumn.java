@@ -18,10 +18,7 @@ package eu.cdevreeze.tryjava.sudoku.game;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
-import eu.cdevreeze.tryjava.sudoku.model.Position;
-import eu.cdevreeze.tryjava.sudoku.model.Region;
-import eu.cdevreeze.tryjava.sudoku.model.RegionPosition;
+import eu.cdevreeze.tryjava.sudoku.model.*;
 
 import java.util.Map;
 import java.util.Optional;

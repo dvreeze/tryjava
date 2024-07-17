@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package eu.cdevreeze.tryjava.sudoku.game;
+package eu.cdevreeze.tryjava.sudoku.model;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.*;
 
 import java.util.HashSet;
 import java.util.Map;

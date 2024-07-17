@@ -18,7 +18,7 @@ package eu.cdevreeze.tryjava.sudoku.console;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.game.CandidateMap;
+import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.game.Game;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
 import eu.cdevreeze.tryjava.sudoku.model.Position;

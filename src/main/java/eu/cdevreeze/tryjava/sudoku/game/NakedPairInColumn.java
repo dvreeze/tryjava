@@ -20,10 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.Cell;
-import eu.cdevreeze.tryjava.sudoku.model.Column;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
-import eu.cdevreeze.tryjava.sudoku.model.Position;
+import eu.cdevreeze.tryjava.sudoku.model.*;
 
 import java.util.List;
 import java.util.Map;

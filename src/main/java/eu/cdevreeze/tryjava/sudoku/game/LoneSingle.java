@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
+import eu.cdevreeze.tryjava.sudoku.model.CandidateMap;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
