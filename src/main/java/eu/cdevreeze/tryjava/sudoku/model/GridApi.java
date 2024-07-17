@@ -27,6 +27,8 @@ sealed public interface GridApi permits Grid, GridWithPencilMarks {
 
     Grid grid();
 
+    Optional<PencilMarks> optionalPencilMarks();
+
     Optional<Integer> cellValue(Position position);
 
     GridApi withCellValue(Position position, Optional<Integer> value);

@@ -43,6 +43,11 @@ public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
     }
 
     @Override
+    public Optional<PencilMarks> optionalPencilMarks() {
+        return Optional.empty();
+    }
+
+    @Override
     public ImmutableList<Cell> cells() {
         return rows.stream().flatMap(r -> r.cells().stream()).collect(ImmutableList.toImmutableList());
     }

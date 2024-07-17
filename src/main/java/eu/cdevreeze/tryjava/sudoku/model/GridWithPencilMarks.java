@@ -38,6 +38,11 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
     }
 
     @Override
+    public Optional<PencilMarks> optionalPencilMarks() {
+        return Optional.of(pencilMarks);
+    }
+
+    @Override
     public Optional<Integer> cellValue(Position position) {
         return grid.cellValue(position);
     }
