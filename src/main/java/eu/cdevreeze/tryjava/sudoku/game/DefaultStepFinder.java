@@ -60,7 +60,11 @@ public record DefaultStepFinder(Grid startGrid) implements StepFinder {
                         IntStream.range(0, 9).mapToObj(i -> new NakedQuadInColumn(startGrid, i)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new NakedQuadInRegion(startGrid, rp)),
                         Stream.of(new XWingInRows(startGrid)),
-                        Stream.of(new XWingInColumns(startGrid))
+                        Stream.of(new XWingInColumns(startGrid)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithRow(startGrid, rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithColumn(startGrid, rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithRow(startGrid, rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithColumn(startGrid, rp))
                 )
                 .flatMap(Function.identity())
                 .flatMap(stepFinder -> stepFinder.findNextStepResult().stream())

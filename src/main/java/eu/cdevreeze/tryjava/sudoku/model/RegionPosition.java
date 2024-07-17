@@ -17,6 +17,9 @@
 package eu.cdevreeze.tryjava.sudoku.model;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
+import java.util.stream.IntStream;
 
 /**
  * Zero-based "region position" in a Sudoku grid
@@ -40,6 +43,14 @@ public record RegionPosition(int regionRowIndex, int regionColumnIndex) {
 
     public Position upperLeftPositionInGrid() {
         return Position.of(regionRowIndex * 3, regionColumnIndex * 3);
+    }
+
+    public ImmutableList<Position> positionsInGrid() {
+        Position upperLeftPos = upperLeftPositionInGrid();
+        return IntStream.range(0, 3).boxed().flatMap(i ->
+                        IntStream.range(0, 3).boxed()
+                                .map(j -> upperLeftPos.increaseRowIndex(i).increaseColumnIndex(j)))
+                .collect(ImmutableList.toImmutableList());
     }
 
     public static RegionPosition fromPosition(Position position) {

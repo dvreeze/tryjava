@@ -20,6 +20,7 @@ import eu.cdevreeze.tryjava.sudoku.model.RowOrColumnOrRegion;
 
 /**
  * "Step finder" in a Sudoku game, considering a given row or column or region.
+ * This does not necessarily mean that the step is applied within that row/column/region.
  *
  * @author Chris de Vreeze
  */

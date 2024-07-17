@@ -18,6 +18,7 @@ package eu.cdevreeze.tryjava.sudoku.model;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -80,6 +81,14 @@ public record Region(Position upperLeftPosition, ImmutableList<RegionRow> region
         return regionRows.stream()
                 .flatMap(r -> r.positionsInGrid().stream())
                 .collect(ImmutableList.toImmutableList());
+    }
+
+    public ImmutableSet<Integer> rowIndicesInGrid() {
+        return positionsInGrid().stream().map(Position::rowIndex).collect(ImmutableSet.toImmutableSet());
+    }
+
+    public ImmutableSet<Integer> columnIndicesInGrid() {
+        return positionsInGrid().stream().map(Position::columnIndex).collect(ImmutableSet.toImmutableSet());
     }
 
     public static final int ROW_COUNT = 3;

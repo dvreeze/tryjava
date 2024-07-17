@@ -22,7 +22,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -32,6 +35,25 @@ import java.util.stream.IntStream;
  * @author Chris de Vreeze
  */
 public record CandidateMap(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidates) {
+
+    public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRow(int rowIndex) {
+        return cellCandidates.entrySet().stream()
+                .filter(kv -> kv.getKey().rowIndex() == rowIndex)
+                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInColumn(int columnIndex) {
+        return cellCandidates.entrySet().stream()
+                .filter(kv -> kv.getKey().columnIndex() == columnIndex)
+                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRegion(RegionPosition regionPosition) {
+        Set<Position> positionsInGrid = new HashSet<>(regionPosition.positionsInGrid());
+        return cellCandidates.entrySet().stream()
+                .filter(kv -> positionsInGrid.contains(kv.getKey()))
+                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
     public static CandidateMap forGrid(Grid grid) {
         var remainingUnfilledPositions = grid.remainingUnfilledCells().stream().map(Cell::position).collect(ImmutableList.toImmutableList());
