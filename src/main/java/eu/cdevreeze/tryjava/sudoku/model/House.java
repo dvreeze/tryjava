@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public interface House extends GridPart {
+public interface House extends GridOrHouse {
 
     ImmutableSet<Integer> ALL_NUMBERS =
             IntStream.rangeClosed(1, 9).boxed().collect(ImmutableSet.toImmutableSet());

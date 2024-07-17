@@ -28,7 +28,7 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public interface GridPart {
+public interface GridOrHouse {
 
     ImmutableList<Cell> cells();
 

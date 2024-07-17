@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public record RegionColumn(Position upperMostPositionInGrid,
-                           ImmutableList<Optional<Integer>> cellValues) implements GridPart {
+                           ImmutableList<Optional<Integer>> cellValues) implements GridOrHouse {
 
     public RegionColumn {
         Preconditions.checkArgument(cellValues.size() == SIZE);
