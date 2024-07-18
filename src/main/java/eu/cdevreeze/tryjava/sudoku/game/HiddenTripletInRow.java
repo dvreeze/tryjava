@@ -38,6 +38,8 @@ import java.util.stream.Stream;
  */
 public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
+    // TODO Fix
+
     private record NumberPosition(int number, Position position) {
     }
 

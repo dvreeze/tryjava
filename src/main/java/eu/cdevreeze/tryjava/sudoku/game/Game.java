@@ -64,6 +64,10 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
                         new GameStatus(Game.startGame(startGrid), true),
                         GameStatus::progressing,
                         gameStatus -> {
+                            Preconditions.checkArgument(
+                                    gameStatus.isValid(),
+                                    "The game grid is invalid"
+                            );
                             if (!gameStatus.progressing()) {
                                 return gameStatus;
                             }
@@ -82,6 +86,10 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
     }
 
     public record GameStatus(Game game, boolean progressing) {
+
+        public boolean isValid() {
+            return game.lastGrid().grid().isValid();
+        }
     }
 
     public static final int MAX_STEPS = 1000;
