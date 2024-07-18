@@ -20,12 +20,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * "Step finder" for a naked pair in a column.
@@ -39,6 +42,11 @@ public record NakedPairInColumn(GridApi startGrid, int columnIndex) implements S
 
         public NakedPair {
             Preconditions.checkArgument(numbers.size() == 2);
+            Preconditions.checkArgument(Stream.of(pos1, pos2).distinct().count() == 2);
+        }
+
+        public ImmutableSet<Position> positions() {
+            return ImmutableSet.of(pos1, pos2);
         }
     }
 
@@ -68,23 +76,31 @@ public record NakedPairInColumn(GridApi startGrid, int columnIndex) implements S
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
+        List<Integer> remainingNumbers = column.remainingUnusedNumbers().stream().sorted().toList();
+        List<List<Integer>> numberPermutations =
+                Permutations.orderedPermutations2(remainingNumbers, Comparator.comparingInt(v -> v));
+
         Optional<NakedPair> nakedPairOption =
-                candidates.entrySet().stream()
-                        .filter(kv -> kv.getValue().size() == 2)
-                        .collect(Collectors.groupingBy(
-                                        Map.Entry::getValue,
-                                        Collectors.mapping(Map.Entry::getKey, Collectors.toSet())
-                                )
-                        )
-                        .entrySet()
-                        .stream()
-                        .filter(kv -> kv.getKey().size() == 2 && kv.getValue().size() == 2)
-                        .findFirst()
-                        .map(kv -> {
-                            List<Position> positions = kv.getValue().stream().sorted(Position.comparator).toList();
-                            ImmutableSet<Integer> numbers = kv.getKey();
-                            return new NakedPair(positions.get(0), positions.get(1), numbers);
-                        });
+                numberPermutations.stream()
+                        .flatMap(numberGroup -> {
+                            List<Position> positions = candidates.entrySet().stream()
+                                    .filter(kv -> Sets.difference(kv.getValue(), ImmutableSet.copyOf(numberGroup)).isEmpty())
+                                    .map(Map.Entry::getKey)
+                                    .sorted(Position.comparator)
+                                    .toList();
+
+                            if (positions.size() == 2) {
+                                return Stream.of(
+                                        new NakedPair(
+                                                positions.get(0),
+                                                positions.get(1),
+                                                numberGroup.stream().collect(ImmutableSet.toImmutableSet())
+                                        ));
+                            } else {
+                                return Stream.empty();
+                            }
+                        })
+                        .findFirst();
 
         if (nakedPairOption.isPresent()) {
             NakedPair nakedPair = nakedPairOption.get();
