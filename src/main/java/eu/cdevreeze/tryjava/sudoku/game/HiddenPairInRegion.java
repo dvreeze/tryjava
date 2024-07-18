@@ -19,12 +19,14 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * "Step finder" for a hidden pair in a region.
@@ -42,6 +44,10 @@ public record HiddenPairInRegion(GridApi startGrid, RegionPosition regionPositio
         public HiddenPair {
             Preconditions.checkArgument(!pos1.equals(pos2));
             Preconditions.checkArgument(numbers.size() == 2);
+        }
+
+        public ImmutableSet<Position> positions() {
+            return ImmutableSet.of(pos1, pos2);
         }
     }
 
@@ -75,42 +81,30 @@ public record HiddenPairInRegion(GridApi startGrid, RegionPosition regionPositio
     }
 
     private Optional<HiddenPair> findHiddenPair(ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
-        Map<Integer, Set<Position>> numberPositions =
-                candidates.entrySet().stream()
-                        .flatMap(kv -> kv.getValue().stream().map(n -> new NumberPosition(n, kv.getKey())))
-                        .collect(Collectors.groupingBy(
-                                        NumberPosition::number,
-                                        Collectors.mapping(NumberPosition::position, Collectors.toSet())
-                                )
-                        );
+        List<Integer> remainingNumbers = region().remainingUnusedNumbers().stream().sorted().toList();
+        List<List<Integer>> numberPermutations =
+                Permutations.orderedPermutations2(remainingNumbers, Comparator.comparingInt(v -> v));
 
-        Map<Integer, Set<Position>> relevantNumberPositions =
-                numberPositions.entrySet().stream()
-                        .filter(kv -> kv.getValue().size() == 2)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return numberPermutations.stream()
+                .flatMap(numberGroup -> {
+                    List<Position> positions = candidates.entrySet().stream()
+                            .filter(kv -> kv.getValue().containsAll(numberGroup))
+                            .map(Map.Entry::getKey)
+                            .sorted(Position.comparator)
+                            .toList();
 
-        Optional<HiddenPair> hiddenPairOption = Optional.empty();
-        for (var numberPosition1 : relevantNumberPositions.entrySet()) {
-            for (var numberPosition2 : relevantNumberPositions.entrySet()) {
-                if (numberPosition1.getKey().intValue() != numberPosition2.getKey().intValue()) {
-                    if (numberPosition1.getValue().equals(numberPosition2.getValue())) {
-                        var sortedPositions = numberPosition1.getValue().stream().sorted(Position.comparator).toList();
-                        Preconditions.checkArgument(sortedPositions.size() == 2);
-
-                        hiddenPairOption = Optional.of(
+                    if (positions.size() == 2) {
+                        return Stream.of(
                                 new HiddenPair(
-                                        sortedPositions.get(0),
-                                        sortedPositions.get(1),
-                                        ImmutableSet.of(numberPosition1.getKey(), numberPosition2.getKey())
-                                )
-                        );
-                        break;
+                                        positions.get(0),
+                                        positions.get(1),
+                                        numberGroup.stream().collect(ImmutableSet.toImmutableSet())
+                                ));
+                    } else {
+                        return Stream.empty();
                     }
-                }
-            }
-        }
-
-        return hiddenPairOption;
+                })
+                .findFirst();
     }
 
     private Optional<StepResult> findNextStepResult(HiddenPair hiddenPair, ImmutableMap<Position, ImmutableSet<Integer>> candidates, PencilMarks pencilMarks) {

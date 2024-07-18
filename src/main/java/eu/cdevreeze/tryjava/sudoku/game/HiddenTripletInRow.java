@@ -19,15 +19,16 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -37,11 +38,6 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
-
-    // TODO Fix
-
-    private record NumberPosition(int number, Position position) {
-    }
 
     public record HiddenTriplet(Position pos1, Position pos2, Position pos3, ImmutableSet<Integer> numbers) {
 
@@ -85,56 +81,31 @@ public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements Ste
     }
 
     private Optional<HiddenTriplet> findHiddenTriplet(ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
-        Map<Integer, Set<Position>> numberPositions =
-                candidates.entrySet().stream()
-                        .flatMap(kv -> kv.getValue().stream().map(n -> new NumberPosition(n, kv.getKey())))
-                        .collect(Collectors.groupingBy(
-                                        NumberPosition::number,
-                                        Collectors.mapping(NumberPosition::position, Collectors.toSet())
-                                )
-                        );
+        List<Integer> remainingNumbers = row().remainingUnusedNumbers().stream().sorted().toList();
+        List<List<Integer>> numberPermutations =
+                Permutations.orderedPermutations3(remainingNumbers, Comparator.comparingInt(v -> v));
 
-        Map<Integer, Set<Position>> relevantNumberPositions =
-                numberPositions.entrySet().stream()
-                        .filter(kv -> !kv.getValue().isEmpty() && kv.getValue().size() <= 3)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        Optional<HiddenTriplet> hiddenTripletOption = Optional.empty();
-
-        for (var numberPosition1 : relevantNumberPositions.entrySet()) {
-            Map<Integer, Set<Position>> relevantNumberPositions1 =
-                    relevantNumberPositions.entrySet().stream()
-                            .filter(kv -> !kv.getKey().equals(numberPosition1.getKey()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            for (var numberPosition2 : relevantNumberPositions1.entrySet()) {
-                Map<Integer, Set<Position>> relevantNumberPositions2 =
-                        relevantNumberPositions1.entrySet().stream()
-                                .filter(kv -> !kv.getKey().equals(numberPosition2.getKey()))
-                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                for (var numberPosition3 : relevantNumberPositions2.entrySet()) {
-                    Set<Position> positions = Stream.of(numberPosition1, numberPosition2, numberPosition3)
-                            .flatMap(kv -> kv.getValue().stream())
-                            .collect(Collectors.toSet());
+        return numberPermutations.stream()
+                .flatMap(numberGroup -> {
+                    List<Position> positions = candidates.entrySet().stream()
+                            .filter(kv -> kv.getValue().containsAll(numberGroup))
+                            .map(Map.Entry::getKey)
+                            .sorted(Position.comparator)
+                            .toList();
 
                     if (positions.size() == 3) {
-                        var sortedPositions = positions.stream().sorted(Position.comparator).toList();
-                        Preconditions.checkArgument(sortedPositions.size() == 3);
-
-                        hiddenTripletOption = Optional.of(
+                        return Stream.of(
                                 new HiddenTriplet(
-                                        sortedPositions.get(0),
-                                        sortedPositions.get(1),
-                                        sortedPositions.get(2),
-                                        ImmutableSet.of(numberPosition1.getKey(), numberPosition2.getKey(), numberPosition3.getKey())
-                                )
-                        );
-                        break;
+                                        positions.get(0),
+                                        positions.get(1),
+                                        positions.get(2),
+                                        numberGroup.stream().collect(ImmutableSet.toImmutableSet())
+                                ));
+                    } else {
+                        return Stream.empty();
                     }
-                }
-            }
-        }
-
-        return hiddenTripletOption;
+                })
+                .findFirst();
     }
 
     private Optional<StepResult> findNextStepResult(HiddenTriplet hiddenTriplet, ImmutableMap<Position, ImmutableSet<Integer>> candidates, PencilMarks pencilMarks) {
