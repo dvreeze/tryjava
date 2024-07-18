@@ -134,6 +134,6 @@ public record HiddenPairInRegion(GridApi startGrid, RegionPosition regionPositio
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in region after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
     }
 }

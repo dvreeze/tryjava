@@ -46,7 +46,7 @@ public record DefaultStepFinder(GridApi startGrid) implements StepFinder {
                         Region.ALL_REGION_POSITIONS.stream()
                                 .flatMap(rp -> IntStream.rangeClosed(1, 9)
                                         .mapToObj(n -> new VisualEliminationInRegion(startGrid, rp, n))),
-                        Stream.of(new LoneSingle(startGrid.grid())),
+                        Stream.of(new LoneSingle(startGrid)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenSingleInRow(startGrid, i)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenSingleInColumn(startGrid, i)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenSingleInRegion(startGrid, rp)),
@@ -59,8 +59,8 @@ public record DefaultStepFinder(GridApi startGrid) implements StepFinder {
                         IntStream.range(0, 9).mapToObj(i -> new NakedQuadInRow(startGrid.grid(), i)),
                         IntStream.range(0, 9).mapToObj(i -> new NakedQuadInColumn(startGrid.grid(), i)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new NakedQuadInRegion(startGrid.grid(), rp)),
-                        Stream.of(new XWingInRows(startGrid.grid())),
-                        Stream.of(new XWingInColumns(startGrid.grid())),
+                        Stream.of(new XWingInRows(startGrid)),
+                        Stream.of(new XWingInColumns(startGrid)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithRow(startGrid.grid(), rp)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithColumn(startGrid.grid(), rp)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithRow(startGrid.grid(), rp)),

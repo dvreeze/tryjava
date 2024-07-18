@@ -110,7 +110,7 @@ public record NakedPairInRegion(GridApi startGrid,
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in region after processing naked pair"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
         } else {
             return Optional.empty();
         }

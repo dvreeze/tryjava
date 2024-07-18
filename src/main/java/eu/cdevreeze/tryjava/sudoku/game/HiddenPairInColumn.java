@@ -137,6 +137,6 @@ public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements 
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in column after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
     }
 }

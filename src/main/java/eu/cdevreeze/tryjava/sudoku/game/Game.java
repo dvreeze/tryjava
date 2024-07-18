@@ -38,7 +38,7 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
         for (var stepResult : stepResults) {
             Preconditions.checkArgument(stepResult.step().isValidStep(grid.grid()));
             final var nextGrid = stepResult.step().applyStep(grid);
-            Preconditions.checkArgument(nextGrid.equals(stepResult.resultGrid()));
+            Preconditions.checkArgument(nextGrid.grid().equals(stepResult.resultGrid().grid()));
             grid = nextGrid;
         }
     }

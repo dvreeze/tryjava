@@ -78,6 +78,23 @@ public class SolveGame {
             System.out.printf("Resulting grid:%n");
             System.out.println();
             System.out.println(GridPrinter.print(fullGame.stepResults().get(i).resultGrid().grid()));
+
+            fullGame.stepResults().get(i).resultGrid().optionalPencilMarks().ifPresent(pms -> {
+                System.out.println();
+                System.out.println("Candidate numbers:");
+                System.out.println();
+
+                pms.cellCandidateNumbers().entrySet().stream()
+                        .sorted(Map.Entry.comparingByKey(Position.comparator))
+                        .forEach(kv -> {
+                            Position pos = kv.getKey();
+                            ImmutableSet<Integer> candidateNumbers = kv.getValue();
+                            System.out.printf(
+                                    "Position %s, candidates %s%n",
+                                    pos,
+                                    candidateNumbers.stream().sorted().map(Object::toString).collect(Collectors.joining(", ")));
+                        });
+            });
         });
 
         System.out.println();

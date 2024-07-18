@@ -137,6 +137,6 @@ public record HiddenPairInRow(GridApi startGrid, int rowIndex) implements StepFi
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in row after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
     }
 }

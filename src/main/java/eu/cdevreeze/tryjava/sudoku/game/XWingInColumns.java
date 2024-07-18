@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import eu.cdevreeze.tryjava.sudoku.model.Column;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  *
  * @author Chris de Vreeze
  */
-public record XWingInColumns(Grid startGrid) implements StepFinder {
+public record XWingInColumns(GridApi startGrid) implements StepFinder {
 
     public record PotentialColumnInXWing(int columnIndex, int rowIndex1, int rowIndex2, int number) {
 
@@ -57,8 +57,8 @@ public record XWingInColumns(Grid startGrid) implements StepFinder {
         List<PotentialColumnInXWing> potentialColumnsInXWing =
                 IntStream.range(0, Column.COLUMN_COUNT).boxed()
                         .flatMap(i -> {
-                            var column = startGrid.column(i);
-                            var candidatesForColumn = PencilMarks.candidatesForColumn(startGrid, i);
+                            var column = startGrid.grid().column(i);
+                            var candidatesForColumn = PencilMarks.candidatesForColumn(startGrid.grid(), i);
 
                             return column.remainingUnusedNumbers().stream().flatMap(n -> {
                                 var positions = candidatesForColumn.entrySet().stream()
@@ -81,7 +81,8 @@ public record XWingInColumns(Grid startGrid) implements StepFinder {
                         })
                         .toList();
 
-        var candidates = PencilMarks.forGrid(startGrid);
+        var candidates = PencilMarks.forGrid(startGrid.grid())
+                .update(startGrid.optionalPencilMarks().orElse(new PencilMarks(ImmutableMap.of())));
 
         for (var potentialColumnInXWing : potentialColumnsInXWing) {
             var matchingPotentialColumnsInXWing =
@@ -118,7 +119,7 @@ public record XWingInColumns(Grid startGrid) implements StepFinder {
                         candidateToFillIn.getKey(),
                         candidateToFillIn.getValue().iterator().next(),
                         "Filling cell after processing X-Wing (column-based)"
-                )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+                )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
             }
         }
 

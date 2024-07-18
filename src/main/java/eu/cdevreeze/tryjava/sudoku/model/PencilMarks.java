@@ -123,6 +123,6 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
         return ImmutableMap.<Position, ImmutableSet<Integer>>builder()
                 .putAll(candidates1)
                 .putAll(candidates2)
-                .build();
+                .buildKeepingLast();
     }
 }

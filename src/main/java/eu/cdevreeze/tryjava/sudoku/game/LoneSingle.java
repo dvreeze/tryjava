@@ -16,7 +16,8 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import com.google.common.collect.ImmutableMap;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
@@ -30,11 +31,12 @@ import java.util.Optional;
  *
  * @author Chris de Vreeze
  */
-public record LoneSingle(Grid startGrid) implements StepFinder {
+public record LoneSingle(GridApi startGrid) implements StepFinder {
 
     @Override
     public Optional<StepResult> findNextStepResult() {
-        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid);
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .update(startGrid.optionalPencilMarks().orElse(new PencilMarks(ImmutableMap.of())));
 
         Optional<Position> loneSinglePositionOption =
                 pencilMarks.cellCandidateNumbers().entrySet()
@@ -50,7 +52,7 @@ public record LoneSingle(Grid startGrid) implements StepFinder {
                     loneSinglePosition,
                     Objects.requireNonNull(pencilMarks.cellCandidateNumbers().get(loneSinglePosition)).iterator().next(),
                     "Lone single"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(pencilMarks))));
         } else {
             return Optional.empty();
         }
