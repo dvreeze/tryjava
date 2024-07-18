@@ -19,7 +19,7 @@ package eu.cdevreeze.tryjava.sudoku.game;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
+import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  *
  * @author Chris de Vreeze
  */
-public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
+public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     private record NumberPosition(int number, Position position) {
     }
@@ -59,13 +59,17 @@ public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFi
     }
 
     public Row row() {
-        return startGrid.row(rowIndex);
+        return startGrid.grid().row(rowIndex);
     }
 
     @Override
     public Optional<StepResult> findNextStepResult() {
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidatesForRow(startGrid.grid(), rowIndex))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidatesForRow(startGrid, rowIndex);
+                pencilMarks.cellCandidatesInRow(rowIndex);
 
         Optional<HiddenTriplet> hiddenTripletOption = findHiddenTriplet(candidates);
 
@@ -75,7 +79,7 @@ public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFi
 
         HiddenTriplet hiddenTriplet = hiddenTripletOption.get();
 
-        return findNextStepResult(hiddenTriplet, candidates);
+        return findNextStepResult(hiddenTriplet, candidates, pencilMarks);
     }
 
     private Optional<HiddenTriplet> findHiddenTriplet(ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
@@ -131,7 +135,7 @@ public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFi
         return hiddenTripletOption;
     }
 
-    private Optional<StepResult> findNextStepResult(HiddenTriplet hiddenTriplet, ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
+    private Optional<StepResult> findNextStepResult(HiddenTriplet hiddenTriplet, ImmutableMap<Position, ImmutableSet<Integer>> candidates, PencilMarks pencilMarks) {
         // The hidden triplet is retained in the same cells
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
                 candidates.entrySet().stream()
@@ -149,10 +153,12 @@ public record HiddenTripletInRow(Grid startGrid, int rowIndex) implements StepFi
                         .filter(kv -> kv.getValue().size() == 1)
                         .findFirst();
 
+        PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
         return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in row after processing hidden triplet"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
     }
 }

@@ -61,14 +61,14 @@ public record DefaultStepFinder(GridApi startGrid) implements StepFinder {
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new NakedQuadInRegion(startGrid, rp)),
                         Stream.of(new XWingInRows(startGrid)),
                         Stream.of(new XWingInColumns(startGrid)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithRow(startGrid.grid(), rp)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithColumn(startGrid.grid(), rp)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithRow(startGrid.grid(), rp)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithColumn(startGrid.grid(), rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithRow(startGrid, rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new IntersectionWithColumn(startGrid, rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithRow(startGrid, rp)),
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new InverseIntersectionWithColumn(startGrid, rp)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenPairInRow(startGrid, i)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenPairInColumn(startGrid, i)),
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenPairInRegion(startGrid, rp)),
-                        IntStream.range(0, 9).mapToObj(i -> new HiddenTripletInRow(startGrid.grid(), i))
+                        IntStream.range(0, 9).mapToObj(i -> new HiddenTripletInRow(startGrid, i))
                 )
                 .flatMap(Function.identity())
                 .flatMap(stepFinder -> stepFinder.findNextStepResult().stream())

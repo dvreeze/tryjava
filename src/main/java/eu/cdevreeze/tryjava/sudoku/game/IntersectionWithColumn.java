@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record IntersectionWithColumn(Grid startGrid,
+public record IntersectionWithColumn(GridApi startGrid,
                                      RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     @Override
@@ -40,16 +40,17 @@ public record IntersectionWithColumn(Grid startGrid,
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
     public Optional<StepResult> findNextStepResult() {
         var region = region();
 
-        var candidateMap = PencilMarks.forGrid(startGrid);
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .updateIfPresent(startGrid.optionalPencilMarks());
 
-        return region.columnIndicesInGrid().stream().sorted().flatMap(i -> findNextStepResult(i, candidateMap).stream()).findFirst();
+        return region.columnIndicesInGrid().stream().sorted().flatMap(i -> findNextStepResult(i, pencilMarks).stream()).findFirst();
     }
 
     public Optional<StepResult> findNextStepResult(int columnIndex, PencilMarks pencilMarks) {
@@ -101,10 +102,12 @@ public record IntersectionWithColumn(Grid startGrid,
                         .filter(kv -> kv.getValue().size() == 1)
                         .findFirst();
 
+        PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
         return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in region after processing omission (column-based)"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
     }
 }

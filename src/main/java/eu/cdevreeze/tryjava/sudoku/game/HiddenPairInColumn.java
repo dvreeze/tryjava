@@ -59,11 +59,12 @@ public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements 
 
     @Override
     public Optional<StepResult> findNextStepResult() {
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidatesForColumn(startGrid.grid(), columnIndex))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.updateIfPresent(
-                        PencilMarks.candidatesForColumn(startGrid.grid(), columnIndex),
-                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers)
-                );
+                pencilMarks.cellCandidatesInColumn(columnIndex);
 
         Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);
 
@@ -73,7 +74,7 @@ public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements 
 
         HiddenPair hiddenPair = hiddenPairOption.get();
 
-        return findNextStepResult(hiddenPair, candidates);
+        return findNextStepResult(hiddenPair, candidates, pencilMarks);
     }
 
     private Optional<HiddenPair> findHiddenPair(ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
@@ -115,7 +116,7 @@ public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements 
         return hiddenPairOption;
     }
 
-    private Optional<StepResult> findNextStepResult(HiddenPair hiddenPair, ImmutableMap<Position, ImmutableSet<Integer>> candidates) {
+    private Optional<StepResult> findNextStepResult(HiddenPair hiddenPair, ImmutableMap<Position, ImmutableSet<Integer>> candidates, PencilMarks pencilMarks) {
         // The hidden pair is retained in the same cells
         ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
                 candidates.entrySet().stream()
@@ -133,10 +134,12 @@ public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements 
                         .filter(kv -> kv.getValue().size() == 1)
                         .findFirst();
 
+        PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
         return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                 candidateToFillIn.getKey(),
                 candidateToFillIn.getValue().iterator().next(),
                 "Filling cell in column after processing hidden pair"
-        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
     }
 }
