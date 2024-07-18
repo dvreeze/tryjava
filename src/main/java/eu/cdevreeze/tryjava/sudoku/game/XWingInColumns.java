@@ -54,11 +54,15 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
 
     @Override
     public Optional<StepResult> findNextStepResult() {
+        var pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .updateIfPresent(startGrid.optionalPencilMarks());
+        var candidates = pencilMarks.cellCandidateNumbers();
+
         List<PotentialColumnInXWing> potentialColumnsInXWing =
                 IntStream.range(0, Column.COLUMN_COUNT).boxed()
                         .flatMap(i -> {
                             var column = startGrid.grid().column(i);
-                            var candidatesForColumn = PencilMarks.candidatesForColumn(startGrid.grid(), i);
+                            var candidatesForColumn = pencilMarks.cellCandidatesInColumn(i);
 
                             return column.remainingUnusedNumbers().stream().flatMap(n -> {
                                 var positions = candidatesForColumn.entrySet().stream()
@@ -81,9 +85,6 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
                         })
                         .toList();
 
-        var candidates = PencilMarks.forGrid(startGrid.grid())
-                .update(startGrid.optionalPencilMarks().orElse(new PencilMarks(ImmutableMap.of())));
-
         for (var potentialColumnInXWing : potentialColumnsInXWing) {
             var matchingPotentialColumnsInXWing =
                     potentialColumnsInXWing.stream().filter(r -> r.matches(potentialColumnInXWing)).toList();
@@ -92,14 +93,12 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
                 return Optional.empty();
             } else {
                 int number = potentialColumnInXWing.number;
-                int row1 = potentialColumnInXWing.rowIndex1;
-                int row2 = potentialColumnInXWing.rowIndex2;
 
                 PotentialColumnInXWing other = matchingPotentialColumnsInXWing.stream().findFirst().orElseThrow();
 
                 // The X-Wing is "stripped away" from the 2 rows in the other columns
                 ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
-                        candidates.cellCandidateNumbers().entrySet().stream()
+                        candidates.entrySet().stream()
                                 .filter(kv -> kv.getKey().columnIndex() != potentialColumnInXWing.columnIndex)
                                 .filter(kv -> kv.getKey().columnIndex() != other.columnIndex)
                                 .map(kv -> Map.entry(
@@ -115,11 +114,13 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
                                 .filter(kv -> kv.getValue().size() == 1)
                                 .findFirst();
 
+                PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
                 return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                         candidateToFillIn.getKey(),
                         candidateToFillIn.getValue().iterator().next(),
                         "Filling cell after processing X-Wing (column-based)"
-                )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
+                )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
             }
         }
 

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements StepFinderInGivenHouse {
+public record NakedTripletInColumn(GridApi startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
     public record Triplet(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 
@@ -51,7 +51,7 @@ public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements S
     }
 
     public Column column() {
-        return startGrid.column(columnIndex);
+        return startGrid.grid().column(columnIndex);
     }
 
     @Override
@@ -64,8 +64,12 @@ public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements S
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
         Optional<Triplet> nakedTripletOption = Optional.empty();
 
@@ -112,11 +116,13 @@ public record NakedTripletInColumn(Grid startGrid, int columnIndex) implements S
                             .filter(kv -> kv.getValue().size() == 1)
                             .findFirst();
 
+            PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
             return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in column after processing naked triplet"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
         } else {
             return Optional.empty();
         }

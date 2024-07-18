@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedQuadInRegion(Grid startGrid,
+public record NakedQuadInRegion(GridApi startGrid,
                                 RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     public record Quad(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
@@ -52,7 +52,7 @@ public record NakedQuadInRegion(Grid startGrid,
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
@@ -65,8 +65,12 @@ public record NakedQuadInRegion(Grid startGrid,
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
         Optional<Quad> nakedQuadOption = Optional.empty();
 
@@ -99,7 +103,7 @@ public record NakedQuadInRegion(Grid startGrid,
         if (nakedQuadOption.isPresent()) {
             Quad nakedQuad = nakedQuadOption.get();
 
-            // The naked triplet is "stripped away" from the other unfilled cells
+            // The naked quad is "stripped away" from the other unfilled cells
             ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
                     candidates.entrySet().stream()
                             .filter(kv -> !nakedQuad.positions.contains(kv.getKey()))
@@ -116,11 +120,13 @@ public record NakedQuadInRegion(Grid startGrid,
                             .filter(kv -> kv.getValue().size() == 1)
                             .findFirst();
 
+            PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
             return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in region after processing naked quad"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
         } else {
             return Optional.empty();
         }

@@ -16,7 +16,6 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
-import com.google.common.collect.ImmutableMap;
 import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
@@ -36,7 +35,7 @@ public record LoneSingle(GridApi startGrid) implements StepFinder {
     @Override
     public Optional<StepResult> findNextStepResult() {
         PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
-                .update(startGrid.optionalPencilMarks().orElse(new PencilMarks(ImmutableMap.of())));
+                .updateIfPresent(startGrid.optionalPencilMarks());
 
         Optional<Position> loneSinglePositionOption =
                 pencilMarks.cellCandidateNumbers().entrySet()

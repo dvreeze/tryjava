@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedQuadInRow(Grid startGrid, int rowIndex) implements StepFinderInGivenHouse {
+public record NakedQuadInRow(GridApi startGrid, int rowIndex) implements StepFinderInGivenHouse {
 
     public record Quad(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 
@@ -51,7 +51,7 @@ public record NakedQuadInRow(Grid startGrid, int rowIndex) implements StepFinder
     }
 
     public Row row() {
-        return startGrid.row(rowIndex);
+        return startGrid.grid().row(rowIndex);
     }
 
     @Override
@@ -64,8 +64,12 @@ public record NakedQuadInRow(Grid startGrid, int rowIndex) implements StepFinder
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
         Optional<Quad> nakedQuadOption = Optional.empty();
 
@@ -98,7 +102,7 @@ public record NakedQuadInRow(Grid startGrid, int rowIndex) implements StepFinder
         if (nakedQuadOption.isPresent()) {
             Quad nakedQuad = nakedQuadOption.get();
 
-            // The naked triplet is "stripped away" from the other unfilled cells
+            // The naked quad is "stripped away" from the other unfilled cells
             ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
                     candidates.entrySet().stream()
                             .filter(kv -> !nakedQuad.positions.contains(kv.getKey()))
@@ -115,11 +119,13 @@ public record NakedQuadInRow(Grid startGrid, int rowIndex) implements StepFinder
                             .filter(kv -> kv.getValue().size() == 1)
                             .findFirst();
 
+            PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
             return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in row after processing naked quad"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
         } else {
             return Optional.empty();
         }

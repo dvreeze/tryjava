@@ -21,11 +21,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 /**
@@ -40,22 +39,27 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
     }
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRow(int rowIndex) {
-        return cellCandidateNumbers.entrySet().stream()
-                .filter(kv -> kv.getKey().rowIndex() == rowIndex)
-                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        return filterOnPositions(pos -> pos.rowIndex() == rowIndex);
     }
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInColumn(int columnIndex) {
-        return cellCandidateNumbers.entrySet().stream()
-                .filter(kv -> kv.getKey().columnIndex() == columnIndex)
-                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        return filterOnPositions(pos -> pos.columnIndex() == columnIndex);
     }
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRegion(RegionPosition regionPosition) {
-        Set<Position> positionsInGrid = new HashSet<>(regionPosition.positionsInGrid());
+        ImmutableSet<Position> positionsInGrid =
+                regionPosition.positionsInGrid().stream().collect(ImmutableSet.toImmutableSet());
+        return filterOnPositions(positionsInGrid);
+    }
+
+    public ImmutableMap<Position, ImmutableSet<Integer>> filterOnPositions(Predicate<Position> predicate) {
         return cellCandidateNumbers.entrySet().stream()
-                .filter(kv -> positionsInGrid.contains(kv.getKey()))
+                .filter(kv -> predicate.test(kv.getKey()))
                 .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public ImmutableMap<Position, ImmutableSet<Integer>> filterOnPositions(ImmutableSet<Position> positions) {
+        return filterOnPositions(positions::contains);
     }
 
     public PencilMarks withoutPosition(Position pos) {
@@ -71,6 +75,14 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
         return new PencilMarks(
                 update(this.cellCandidateNumbers, other.cellCandidateNumbers)
         );
+    }
+
+    public PencilMarks update(ImmutableMap<Position, ImmutableSet<Integer>> other) {
+        return update(new PencilMarks(other));
+    }
+
+    public PencilMarks updateIfPresent(Optional<PencilMarks> optionalPencilMarks) {
+        return optionalPencilMarks.map(this::update).orElse(this);
     }
 
     public static PencilMarks forGrid(Grid grid) {
@@ -124,5 +136,12 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
                 .putAll(candidates1)
                 .putAll(candidates2)
                 .buildKeepingLast();
+    }
+
+    public static ImmutableMap<Position, ImmutableSet<Integer>> updateIfPresent(
+            ImmutableMap<Position, ImmutableSet<Integer>> candidates1,
+            Optional<ImmutableMap<Position, ImmutableSet<Integer>>> optionalCandidates2
+    ) {
+        return optionalCandidates2.map(cds -> update(candidates1, cds)).orElse(candidates1);
     }
 }

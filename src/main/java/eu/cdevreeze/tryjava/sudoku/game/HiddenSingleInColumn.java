@@ -51,11 +51,12 @@ public record HiddenSingleInColumn(GridApi startGrid, int columnIndex) implement
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.update(
-                        PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions),
-                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
-                );
+                pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
         Optional<Integer> hiddenSingleNumberOption =
                 column.remainingUnusedNumbers().stream()
@@ -75,7 +76,7 @@ public record HiddenSingleInColumn(GridApi startGrid, int columnIndex) implement
                     position,
                     hiddenSingleNumber,
                     "Filling hidden single in column"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(candidates)))));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(pencilMarks))));
         } else {
             return Optional.empty();
         }

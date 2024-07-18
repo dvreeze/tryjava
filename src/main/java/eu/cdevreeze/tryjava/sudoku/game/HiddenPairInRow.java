@@ -60,9 +60,9 @@ public record HiddenPairInRow(GridApi startGrid, int rowIndex) implements StepFi
     @Override
     public Optional<StepResult> findNextStepResult() {
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.update(
+                PencilMarks.updateIfPresent(
                         PencilMarks.candidatesForRow(startGrid.grid(), rowIndex),
-                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
+                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers)
                 );
 
         Optional<HiddenPair> hiddenPairOption = findHiddenPair(candidates);

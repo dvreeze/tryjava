@@ -62,11 +62,12 @@ public record NakedPairInRegion(GridApi startGrid,
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.update(
-                        PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions),
-                        startGrid.optionalPencilMarks().map(PencilMarks::cellCandidateNumbers).orElse(ImmutableMap.of())
-                );
+                pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
         Optional<NakedPair> nakedPairOption =
                 candidates.entrySet().stream()
@@ -106,11 +107,13 @@ public record NakedPairInRegion(GridApi startGrid,
                             .filter(kv -> kv.getValue().size() == 1)
                             .findFirst();
 
+            PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
             return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in region after processing naked pair"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(new PencilMarks(adaptedCandidates)))));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
         } else {
             return Optional.empty();
         }

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author Chris de Vreeze
  */
-public record NakedTripletInRegion(Grid startGrid,
+public record NakedTripletInRegion(GridApi startGrid,
                                    RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
     public record Triplet(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
@@ -52,7 +52,7 @@ public record NakedTripletInRegion(Grid startGrid,
     }
 
     public Region region() {
-        return startGrid.region(regionPosition);
+        return startGrid.grid().region(regionPosition);
     }
 
     @Override
@@ -65,8 +65,12 @@ public record NakedTripletInRegion(Grid startGrid,
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
+        PencilMarks pencilMarks =
+                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
+                        .updateIfPresent(startGrid.optionalPencilMarks());
+
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
-                PencilMarks.candidates(startGrid, remainingUnfilledPositions);
+                pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
         Optional<Triplet> nakedTripletOption = Optional.empty();
 
@@ -113,11 +117,13 @@ public record NakedTripletInRegion(Grid startGrid,
                             .filter(kv -> kv.getValue().size() == 1)
                             .findFirst();
 
+            PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
             return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                     candidateToFillIn.getKey(),
                     candidateToFillIn.getValue().iterator().next(),
                     "Filling cell in region after processing naked triplet"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
         } else {
             return Optional.empty();
         }
