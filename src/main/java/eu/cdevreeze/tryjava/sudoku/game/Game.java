@@ -64,10 +64,9 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
                         new GameStatus(Game.startGame(startGrid), true),
                         GameStatus::progressing,
                         gameStatus -> {
-                            Preconditions.checkArgument(
-                                    gameStatus.isValid(),
-                                    "The game grid is invalid"
-                            );
+                            if (!gameStatus.isValid()) {
+                                return new GameStatus(gameStatus.game, false);
+                            }
                             if (!gameStatus.progressing()) {
                                 return gameStatus;
                             }
