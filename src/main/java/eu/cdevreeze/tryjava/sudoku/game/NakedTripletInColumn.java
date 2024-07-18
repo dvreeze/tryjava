@@ -20,11 +20,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * "Step finder" for a naked triplet in a column.
@@ -34,14 +38,11 @@ import java.util.stream.Collectors;
  */
 public record NakedTripletInColumn(GridApi startGrid, int columnIndex) implements StepFinderInGivenHouse {
 
-    public record Triplet(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
+    public record NakedTriplet(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 
-        public Triplet {
+        public NakedTriplet {
             Preconditions.checkArgument(positions.size() == 3);
-        }
-
-        public boolean isNakedTriplet() {
-            return numbers.size() == 3;
+            Preconditions.checkArgument(numbers.size() == 3);
         }
     }
 
@@ -71,33 +72,33 @@ public record NakedTripletInColumn(GridApi startGrid, int columnIndex) implement
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
-        Optional<Triplet> nakedTripletOption = Optional.empty();
+        List<Integer> remainingNumbers = column.remainingUnusedNumbers().stream().sorted().toList();
+        List<List<Integer>> numberPermutations =
+                Permutations.orderedPermutations3(remainingNumbers, Comparator.comparingInt(v -> v));
 
-        for (var pos1 : remainingUnfilledPositions) {
-            var remainingPositions1 = remainingUnfilledPositions.stream().filter(p -> !p.equals(pos1)).collect(Collectors.toSet());
-            for (var pos2 : remainingPositions1) {
-                var remainingPositions2 = remainingPositions1.stream().filter(p -> !p.equals(pos2)).collect(Collectors.toSet());
-                for (var pos3 : remainingPositions2) {
-                    var positions = ImmutableSet.of(pos1, pos2, pos3);
-                    Preconditions.checkArgument(positions.size() == 3);
+        Optional<NakedTriplet> nakedTripletOption =
+                numberPermutations.stream()
+                        .flatMap(numberGroup -> {
+                            List<Position> positions = candidates.entrySet().stream()
+                                    .filter(kv -> Sets.difference(kv.getValue(), ImmutableSet.copyOf(numberGroup)).isEmpty())
+                                    .map(Map.Entry::getKey)
+                                    .sorted(Position.comparator)
+                                    .toList();
 
-                    ImmutableSet<Integer> numbers = candidates.entrySet()
-                            .stream()
-                            .filter(kv -> positions.contains(kv.getKey()))
-                            .flatMap(kv -> kv.getValue().stream())
-                            .collect(ImmutableSet.toImmutableSet());
-                    Triplet triplet = new Triplet(positions, numbers);
-
-                    if (triplet.isNakedTriplet()) {
-                        nakedTripletOption = Optional.of(triplet);
-                        break;
-                    }
-                }
-            }
-        }
+                            if (positions.size() == 3) {
+                                return Stream.of(
+                                        new NakedTriplet(
+                                                positions.stream().collect(ImmutableSet.toImmutableSet()),
+                                                numberGroup.stream().collect(ImmutableSet.toImmutableSet())
+                                        ));
+                            } else {
+                                return Stream.empty();
+                            }
+                        })
+                        .findFirst();
 
         if (nakedTripletOption.isPresent()) {
-            Triplet nakedTriplet = nakedTripletOption.get();
+            NakedTriplet nakedTriplet = nakedTripletOption.get();
 
             // The naked triplet is "stripped away" from the other unfilled cells
             ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =

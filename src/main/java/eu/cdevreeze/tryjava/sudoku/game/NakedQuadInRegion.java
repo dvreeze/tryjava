@@ -20,11 +20,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * "Step finder" for a naked quad in a region.
@@ -35,14 +39,11 @@ import java.util.stream.Collectors;
 public record NakedQuadInRegion(GridApi startGrid,
                                 RegionPosition regionPosition) implements StepFinderInGivenHouse {
 
-    public record Quad(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
+    public record NakedQuad(ImmutableSet<Position> positions, ImmutableSet<Integer> numbers) {
 
-        public Quad {
+        public NakedQuad {
             Preconditions.checkArgument(positions.size() == 4);
-        }
-
-        public boolean isNakedQuad() {
-            return numbers.size() == 4;
+            Preconditions.checkArgument(numbers.size() == 4);
         }
     }
 
@@ -72,36 +73,33 @@ public record NakedQuadInRegion(GridApi startGrid,
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
-        Optional<Quad> nakedQuadOption = Optional.empty();
+        List<Integer> remainingNumbers = region.remainingUnusedNumbers().stream().sorted().toList();
+        List<List<Integer>> numberPermutations =
+                Permutations.orderedPermutations4(remainingNumbers, Comparator.comparingInt(v -> v));
 
-        for (var pos1 : remainingUnfilledPositions) {
-            var remainingPositions1 = remainingUnfilledPositions.stream().filter(p -> !p.equals(pos1)).collect(Collectors.toSet());
-            for (var pos2 : remainingPositions1) {
-                var remainingPositions2 = remainingPositions1.stream().filter(p -> !p.equals(pos2)).collect(Collectors.toSet());
-                for (var pos3 : remainingPositions2) {
-                    var remainingPositions3 = remainingPositions2.stream().filter(p -> !p.equals(pos3)).collect(Collectors.toSet());
-                    for (var pos4 : remainingPositions3) {
-                        var positions = ImmutableSet.of(pos1, pos2, pos3, pos4);
-                        Preconditions.checkArgument(positions.size() == 4);
+        Optional<NakedQuad> nakedQuadOption =
+                numberPermutations.stream()
+                        .flatMap(numberGroup -> {
+                            List<Position> positions = candidates.entrySet().stream()
+                                    .filter(kv -> Sets.difference(kv.getValue(), ImmutableSet.copyOf(numberGroup)).isEmpty())
+                                    .map(Map.Entry::getKey)
+                                    .sorted(Position.comparator)
+                                    .toList();
 
-                        ImmutableSet<Integer> numbers = candidates.entrySet()
-                                .stream()
-                                .filter(kv -> positions.contains(kv.getKey()))
-                                .flatMap(kv -> kv.getValue().stream())
-                                .collect(ImmutableSet.toImmutableSet());
-                        Quad quad = new Quad(positions, numbers);
-
-                        if (quad.isNakedQuad()) {
-                            nakedQuadOption = Optional.of(quad);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+                            if (positions.size() == 4) {
+                                return Stream.of(
+                                        new NakedQuad(
+                                                positions.stream().collect(ImmutableSet.toImmutableSet()),
+                                                numberGroup.stream().collect(ImmutableSet.toImmutableSet())
+                                        ));
+                            } else {
+                                return Stream.empty();
+                            }
+                        })
+                        .findFirst();
 
         if (nakedQuadOption.isPresent()) {
-            Quad nakedQuad = nakedQuadOption.get();
+            NakedQuad nakedQuad = nakedQuadOption.get();
 
             // The naked quad is "stripped away" from the other unfilled cells
             ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
