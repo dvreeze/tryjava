@@ -62,9 +62,8 @@ public record HiddenPairInColumn(GridApi startGrid, int columnIndex) implements 
 
     @Override
     public Optional<StepResult> findNextStepResult() {
-        PencilMarks pencilMarks =
-                new PencilMarks(PencilMarks.candidatesForColumn(startGrid.grid(), columnIndex))
-                        .updateIfPresent(startGrid.optionalPencilMarks());
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .updateIfPresent(startGrid.optionalPencilMarks());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.cellCandidatesInColumn(columnIndex);

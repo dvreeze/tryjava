@@ -70,9 +70,8 @@ public record NakedPairInRegion(GridApi startGrid,
                         .sorted(Position.comparator)
                         .collect(ImmutableList.toImmutableList());
 
-        PencilMarks pencilMarks =
-                new PencilMarks(PencilMarks.candidates(startGrid.grid(), remainingUnfilledPositions))
-                        .updateIfPresent(startGrid.optionalPencilMarks());
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .updateIfPresent(startGrid.optionalPencilMarks());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));

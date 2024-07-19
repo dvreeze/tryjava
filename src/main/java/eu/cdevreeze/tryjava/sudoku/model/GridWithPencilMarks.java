@@ -17,6 +17,7 @@
 package eu.cdevreeze.tryjava.sudoku.model;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import java.util.Optional;
@@ -49,9 +50,57 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
 
     @Override
     public GridWithPencilMarks withCellValue(Position position, Optional<Integer> value) {
+        Grid nextGrid = grid.withCellValue(position, value);
+
         return new GridWithPencilMarks(
-                grid.withCellValue(position, value),
-                (value.isEmpty()) ? pencilMarks : pencilMarks.withoutPosition(position)
+                nextGrid,
+                (value.isEmpty()) ? pencilMarks :
+                        new GridWithPencilMarks(nextGrid, pencilMarks.withoutPosition(position))
+                                .removeInconsistencies(position).pencilMarks
         );
+    }
+
+    // See https://sandiway.arizona.edu/sudoku/inconsistency.html
+
+    public GridWithPencilMarks removeInconsistencies(Position position) {
+        return removeInconsistenciesForRow(position.rowIndex())
+                .removeInconsistenciesForColumn(position.columnIndex())
+                .removeInconsistenciesForRegion(RegionPosition.fromPosition(position));
+    }
+
+    public GridWithPencilMarks removeInconsistenciesForRow(int rowIndex) {
+        var row = grid().row(rowIndex);
+        var remainingUnusedNumbers = row.remainingUnusedNumbers();
+        PencilMarks updatedPencilMarks = pencilMarks.update(
+                row.positionsOfRemainingUnfilledCells(),
+                values -> values.stream()
+                        .filter(remainingUnusedNumbers::contains)
+                        .collect(ImmutableSet.toImmutableSet())
+        );
+        return new GridWithPencilMarks(grid, updatedPencilMarks);
+    }
+
+    public GridWithPencilMarks removeInconsistenciesForColumn(int columnIndex) {
+        var column = grid().column(columnIndex);
+        var remainingUnusedNumbers = column.remainingUnusedNumbers();
+        PencilMarks updatedPencilMarks = pencilMarks.update(
+                column.positionsOfRemainingUnfilledCells(),
+                values -> values.stream()
+                        .filter(remainingUnusedNumbers::contains)
+                        .collect(ImmutableSet.toImmutableSet())
+        );
+        return new GridWithPencilMarks(grid, updatedPencilMarks);
+    }
+
+    public GridWithPencilMarks removeInconsistenciesForRegion(RegionPosition regionPosition) {
+        var region = grid().region(regionPosition);
+        var remainingUnusedNumbers = region.remainingUnusedNumbers();
+        PencilMarks updatedPencilMarks = pencilMarks.update(
+                region.positionsOfRemainingUnfilledCells(),
+                values -> values.stream()
+                        .filter(remainingUnusedNumbers::contains)
+                        .collect(ImmutableSet.toImmutableSet())
+        );
+        return new GridWithPencilMarks(grid, updatedPencilMarks);
     }
 }

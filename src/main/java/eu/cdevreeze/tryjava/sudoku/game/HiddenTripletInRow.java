@@ -62,9 +62,8 @@ public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements Ste
 
     @Override
     public Optional<StepResult> findNextStepResult() {
-        PencilMarks pencilMarks =
-                new PencilMarks(PencilMarks.candidatesForRow(startGrid.grid(), rowIndex))
-                        .updateIfPresent(startGrid.optionalPencilMarks());
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .updateIfPresent(startGrid.optionalPencilMarks());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.cellCandidatesInRow(rowIndex);

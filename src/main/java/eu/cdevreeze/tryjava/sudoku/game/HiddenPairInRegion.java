@@ -62,9 +62,8 @@ public record HiddenPairInRegion(GridApi startGrid, RegionPosition regionPositio
 
     @Override
     public Optional<StepResult> findNextStepResult() {
-        PencilMarks pencilMarks =
-                new PencilMarks(PencilMarks.candidatesForRegion(startGrid.grid(), regionPosition))
-                        .updateIfPresent(startGrid.optionalPencilMarks());
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
+                .updateIfPresent(startGrid.optionalPencilMarks());
 
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.cellCandidatesInRegion(regionPosition);

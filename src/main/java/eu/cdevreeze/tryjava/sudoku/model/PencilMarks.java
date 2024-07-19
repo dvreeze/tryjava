@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 
 /**
@@ -83,6 +84,15 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
 
     public PencilMarks updateIfPresent(Optional<PencilMarks> optionalPencilMarks) {
         return optionalPencilMarks.map(this::update).orElse(this);
+    }
+
+    public PencilMarks update(ImmutableSet<Position> positions, UnaryOperator<ImmutableSet<Integer>> valuesOperator) {
+        ImmutableMap<Position, ImmutableSet<Integer>> cellCandidates =
+                positions.stream()
+                        .flatMap(pos -> Optional.ofNullable(cellCandidateNumbers.get(pos))
+                                .map(values -> Map.entry(pos, valuesOperator.apply(values))).stream())
+                        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        return update(cellCandidates);
     }
 
     public static PencilMarks forGrid(Grid grid) {

@@ -54,7 +54,7 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
 
     @Override
     public Optional<StepResult> findNextStepResult() {
-        var pencilMarks = PencilMarks.forGrid(startGrid.grid())
+        PencilMarks pencilMarks = PencilMarks.forGrid(startGrid.grid())
                 .updateIfPresent(startGrid.optionalPencilMarks());
         var candidates = pencilMarks.cellCandidateNumbers();
 
