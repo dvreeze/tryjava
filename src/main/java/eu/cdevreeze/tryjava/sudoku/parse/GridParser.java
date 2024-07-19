@@ -21,7 +21,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
 
-import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Sudoku grid parser, taking 9 lines of whitespace-separated numbers, where 0 or smaller means "not filled".
@@ -38,11 +38,11 @@ public class GridParser {
             .omitEmptyStrings();
 
     public static Grid parse(String sudokuGrid) {
-        ImmutableList<ImmutableList<Optional<Integer>>> rows =
+        ImmutableList<ImmutableList<OptionalInt>> rows =
                 sudokuGrid.lines()
                         .map(line -> lineSplitter.splitToStream(line)
-                                .map(Integer::valueOf)
-                                .map(n -> (n <= 0) ? Optional.<Integer>empty() : Optional.of(n))
+                                .map(Integer::parseInt)
+                                .map(n -> (n <= 0) ? OptionalInt.empty() : OptionalInt.of(n))
                                 .collect(ImmutableList.toImmutableList()))
                         .collect(ImmutableList.toImmutableList());
 

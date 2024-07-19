@@ -24,6 +24,7 @@ import eu.cdevreeze.tryjava.sudoku.model.RegionPosition;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +60,7 @@ public record VisualEliminationInRegion(GridApi startGrid, RegionPosition region
         var remainingUnfilledCells = region.remainingUnfilledCells();
         var potentiallyMatchingUnfilledCells = remainingUnfilledCells.stream()
                 .filter(this::isCandidateCell)
-                .filter(cell -> startGrid().withCellValue(cell.position(), Optional.of(number)).grid().isValid())
+                .filter(cell -> startGrid().withCellValue(cell.position(), OptionalInt.of(number)).grid().isValid())
                 .collect(Collectors.toSet());
 
         if (potentiallyMatchingUnfilledCells.size() == 1) {

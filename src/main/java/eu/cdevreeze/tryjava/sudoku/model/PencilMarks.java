@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -134,7 +135,7 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
         return row.remainingUnusedNumbers().stream()
                 .filter(n -> column.remainingUnusedNumbers().contains(n))
                 .filter(n -> region.remainingUnusedNumbers().contains(n))
-                .filter(n -> grid.withCellValue(position, Optional.of(n)).isValid())
+                .filter(n -> grid.withCellValue(position, OptionalInt.of(n)).isValid())
                 .collect(ImmutableSet.toImmutableSet());
     }
 

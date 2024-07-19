@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -70,7 +70,7 @@ public record Region(Position upperLeftPosition, ImmutableList<RegionRow> region
     }
 
     @Override
-    public ImmutableList<Optional<Integer>> cellValues() {
+    public ImmutableList<OptionalInt> cellValues() {
         return regionRows.stream()
                 .flatMap(r -> r.cellValues().stream())
                 .collect(ImmutableList.toImmutableList());

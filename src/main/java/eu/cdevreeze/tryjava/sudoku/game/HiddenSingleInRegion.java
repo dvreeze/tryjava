@@ -23,6 +23,7 @@ import eu.cdevreeze.tryjava.sudoku.model.*;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * "Step finder" for a hidden single in a region.
@@ -58,13 +59,14 @@ public record HiddenSingleInRegion(GridApi startGrid,
         ImmutableMap<Position, ImmutableSet<Integer>> candidates =
                 pencilMarks.filterOnPositions(remainingUnfilledPositions.stream().collect(ImmutableSet.toImmutableSet()));
 
-        Optional<Integer> hiddenSingleNumberOption =
+        OptionalInt hiddenSingleNumberOption =
                 region.remainingUnusedNumbers().stream()
+                        .mapToInt(n -> n)
                         .filter(n -> candidates.values().stream().filter(cds -> cds.contains(n)).count() == 1)
                         .findFirst();
 
         if (hiddenSingleNumberOption.isPresent()) {
-            int hiddenSingleNumber = hiddenSingleNumberOption.get();
+            int hiddenSingleNumber = hiddenSingleNumberOption.getAsInt();
 
             Position position = candidates.entrySet().stream()
                     .filter(kv -> kv.getValue().contains(hiddenSingleNumber))

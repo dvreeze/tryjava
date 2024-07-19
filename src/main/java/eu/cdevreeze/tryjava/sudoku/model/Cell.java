@@ -16,14 +16,14 @@
 
 package eu.cdevreeze.tryjava.sudoku.model;
 
-import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Cell in a Sudoku grid
  *
  * @author Chris de Vreeze
  */
-public record Cell(Position position, Optional<Integer> optionalValue) {
+public record Cell(Position position, OptionalInt optionalValue) {
 
     public boolean isFilled() {
         return optionalValue().isPresent();

@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @author Chris de Vreeze
  */
 public record RegionColumn(Position upperMostPositionInGrid,
-                           ImmutableList<Optional<Integer>> cellValues) implements GridOrHouse {
+                           ImmutableList<OptionalInt> cellValues) implements GridOrHouse {
 
     public RegionColumn {
         Preconditions.checkArgument(cellValues.size() == SIZE);
@@ -61,8 +61,8 @@ public record RegionColumn(Position upperMostPositionInGrid,
     @Override
     public boolean isValid() {
         List<Integer> filledCellValues = cellValues().stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .filter(OptionalInt::isPresent)
+                .map(OptionalInt::getAsInt)
                 .toList();
         return filledCellValues.stream().distinct().toList().equals(filledCellValues);
     }

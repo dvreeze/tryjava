@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -40,7 +40,7 @@ public interface House extends GridOrHouse {
     /**
      * Equivalent to "cells().stream().map(cell -> cell.optionalValue()).collect(ImmutableList.toImmutableList())"
      */
-    ImmutableList<Optional<Integer>> cellValues();
+    ImmutableList<OptionalInt> cellValues();
 
     default ImmutableSet<Integer> remainingUnusedNumbers() {
         Set<Integer> usedNumbers = filledCells().stream().map(cell -> cell.optionalValue().orElseThrow()).collect(Collectors.toSet());
@@ -50,8 +50,8 @@ public interface House extends GridOrHouse {
     @Override
     default boolean isValid() {
         List<Integer> filledCellValues = cellValues().stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .filter(OptionalInt::isPresent)
+                .map(OptionalInt::getAsInt)
                 .toList();
         return filledCellValues.stream().distinct().toList().equals(filledCellValues);
     }

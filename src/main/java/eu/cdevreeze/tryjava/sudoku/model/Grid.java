@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -70,14 +71,14 @@ public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
     }
 
     @Override
-    public Optional<Integer> cellValue(Position position) {
+    public OptionalInt cellValue(Position position) {
         Objects.checkIndex(position.rowIndex(), Row.ROW_COUNT);
         Objects.checkIndex(position.columnIndex(), Column.COLUMN_COUNT);
         return row(position.rowIndex()).cellValues().get(position.columnIndex());
     }
 
     @Override
-    public Grid withCellValue(Position position, Optional<Integer> value) {
+    public Grid withCellValue(Position position, OptionalInt value) {
         ImmutableList.Builder<Row> rowBuilder = ImmutableList.builder();
         rowBuilder.addAll(rows.stream().limit(position.rowIndex()).toList());
         rowBuilder.add(row(position.rowIndex()).withCellValue(position.columnIndex(), value));
@@ -140,7 +141,7 @@ public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
         return isValid() && isFilled();
     }
 
-    public static Grid fromRows(ImmutableList<ImmutableList<Optional<Integer>>> rows) {
+    public static Grid fromRows(ImmutableList<ImmutableList<OptionalInt>> rows) {
         Preconditions.checkArgument(rows.size() == Row.ROW_COUNT);
         rows.forEach(r -> Preconditions.checkArgument(r.size() == Row.SIZE));
 

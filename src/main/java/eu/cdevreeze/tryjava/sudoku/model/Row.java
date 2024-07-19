@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public record Row(int rowIndex, ImmutableList<Optional<Integer>> cellValues) implements House {
+public record Row(int rowIndex, ImmutableList<OptionalInt> cellValues) implements House {
 
     public Row {
         Objects.checkIndex(rowIndex, ROW_COUNT);
@@ -50,13 +50,13 @@ public record Row(int rowIndex, ImmutableList<Optional<Integer>> cellValues) imp
                 .collect(ImmutableList.toImmutableList());
     }
 
-    public Row withCellValue(int columnIndex, Optional<Integer> value) {
-        ImmutableList.Builder<Optional<Integer>> cellValuesBuilder = ImmutableList.builder();
+    public Row withCellValue(int columnIndex, OptionalInt value) {
+        ImmutableList.Builder<OptionalInt> cellValuesBuilder = ImmutableList.builder();
         cellValuesBuilder.addAll(cellValues.stream().limit(columnIndex).toList());
         cellValuesBuilder.add(value);
         cellValuesBuilder.addAll(cellValues.stream().skip(columnIndex + 1).toList());
 
-        ImmutableList<Optional<Integer>> updatedCellValues = cellValuesBuilder.build();
+        ImmutableList<OptionalInt> updatedCellValues = cellValuesBuilder.build();
         return new Row(rowIndex, updatedCellValues);
     }
 

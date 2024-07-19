@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
@@ -83,7 +82,7 @@ public record NakedPairInRow(GridApi startGrid, int rowIndex) implements StepFin
                 numberPermutations.stream()
                         .flatMap(numberGroup -> {
                             List<Position> positions = candidates.entrySet().stream()
-                                    .filter(kv -> Sets.difference(kv.getValue(), ImmutableSet.copyOf(numberGroup)).isEmpty())
+                                    .filter(kv -> kv.getValue().equals(ImmutableSet.copyOf(numberGroup)))
                                     .map(Map.Entry::getKey)
                                     .sorted(Position.comparator)
                                     .toList();

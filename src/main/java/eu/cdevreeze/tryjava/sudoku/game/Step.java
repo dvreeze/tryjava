@@ -21,7 +21,7 @@ import eu.cdevreeze.tryjava.sudoku.model.Grid;
 import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 
-import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Step in a Sudoku game.
@@ -39,6 +39,6 @@ public record Step(Position position, int value, String description) {
     }
 
     public GridApi applyStep(GridApi grid) {
-        return grid.withCellValue(position, Optional.of(value));
+        return grid.withCellValue(position, OptionalInt.of(value));
     }
 }

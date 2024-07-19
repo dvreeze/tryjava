@@ -20,7 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
  *
  * @author Chris de Vreeze
  */
-public record Column(int columnIndex, ImmutableList<Optional<Integer>> cellValues) implements House {
+public record Column(int columnIndex, ImmutableList<OptionalInt> cellValues) implements House {
 
     public Column {
         Objects.checkIndex(columnIndex, COLUMN_COUNT);

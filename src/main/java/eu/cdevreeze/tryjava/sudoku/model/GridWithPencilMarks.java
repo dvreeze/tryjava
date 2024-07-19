@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Grid with pencil marks. See <a href="https://www.learn-sudoku.com/pencil-marks.html">pencil-marks</a>.
@@ -44,12 +45,12 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
     }
 
     @Override
-    public Optional<Integer> cellValue(Position position) {
+    public OptionalInt cellValue(Position position) {
         return grid.cellValue(position);
     }
 
     @Override
-    public GridWithPencilMarks withCellValue(Position position, Optional<Integer> value) {
+    public GridWithPencilMarks withCellValue(Position position, OptionalInt value) {
         Grid nextGrid = grid.withCellValue(position, value);
 
         return new GridWithPencilMarks(

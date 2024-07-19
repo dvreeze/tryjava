@@ -17,6 +17,7 @@
 package eu.cdevreeze.tryjava.sudoku.model;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Grid with or without pencil marks. See <a href="https://www.learn-sudoku.com/pencil-marks.html">pencil-marks</a>.
@@ -29,9 +30,9 @@ sealed public interface GridApi permits Grid, GridWithPencilMarks {
 
     Optional<PencilMarks> optionalPencilMarks();
 
-    Optional<Integer> cellValue(Position position);
+    OptionalInt cellValue(Position position);
 
-    GridApi withCellValue(Position position, Optional<Integer> value);
+    GridApi withCellValue(Position position, OptionalInt value);
 
     default GridWithPencilMarks withPencilMarks(PencilMarks pms) {
         return new GridWithPencilMarks(grid(), pms);

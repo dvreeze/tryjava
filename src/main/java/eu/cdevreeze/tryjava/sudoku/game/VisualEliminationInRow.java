@@ -23,6 +23,7 @@ import eu.cdevreeze.tryjava.sudoku.model.Row;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +59,7 @@ public record VisualEliminationInRow(GridApi startGrid, int rowIndex,
         var remainingUnfilledCells = row.remainingUnfilledCells();
         var potentiallyMatchingUnfilledCells = remainingUnfilledCells.stream()
                 .filter(this::isCandidateCell)
-                .filter(cell -> startGrid().withCellValue(cell.position(), Optional.of(number)).grid().isValid())
+                .filter(cell -> startGrid().withCellValue(cell.position(), OptionalInt.of(number)).grid().isValid())
                 .collect(Collectors.toSet());
 
         if (potentiallyMatchingUnfilledCells.size() == 1) {
