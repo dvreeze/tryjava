@@ -18,7 +18,6 @@ package eu.cdevreeze.tryjava.sudoku.game;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
 import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 
 import java.util.Comparator;
@@ -29,10 +28,10 @@ import java.util.stream.Stream;
  *
  * @author Chris de Vreeze
  */
-public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
+public record Game(GridApi startGrid, ImmutableList<StepResult> stepResults) {
 
     public Game {
-        Preconditions.checkArgument(startGrid.isValid());
+        Preconditions.checkArgument(startGrid.grid().isValid());
 
         GridApi grid = startGrid;
         for (var stepResult : stepResults) {
@@ -55,11 +54,11 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
         return new Game(startGrid, ImmutableList.<StepResult>builder().addAll(stepResults).add(stepResult).build());
     }
 
-    public static Game startGame(Grid grid) {
+    public static Game startGame(GridApi grid) {
         return new Game(grid, ImmutableList.of());
     }
 
-    public static Game runStepFinderRepeatedly(Grid startGrid) {
+    public static Game runStepFinderRepeatedly(GridApi startGrid) {
         return Stream.iterate(
                         new GameStatus(Game.startGame(startGrid), true),
                         GameStatus::progressing,
@@ -75,7 +74,8 @@ public record Game(Grid startGrid, ImmutableList<StepResult> stepResults) {
                             var nextStepResultOption = stepFinder.findNextStepResult();
                             return nextStepResultOption
                                     .map(game::plus)
-                                    .map(g -> new GameStatus(g, true)).orElse(new GameStatus(game, false));
+                                    .map(g -> new GameStatus(g, true))
+                                    .orElse(new GameStatus(game, false));
                         }
                 )
                 .limit(MAX_STEPS)

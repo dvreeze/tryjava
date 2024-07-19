@@ -19,10 +19,7 @@ package eu.cdevreeze.tryjava.sudoku.console;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import eu.cdevreeze.tryjava.sudoku.game.Game;
-import eu.cdevreeze.tryjava.sudoku.model.Grid;
-import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
-import eu.cdevreeze.tryjava.sudoku.model.Position;
-import eu.cdevreeze.tryjava.sudoku.model.Row;
+import eu.cdevreeze.tryjava.sudoku.model.*;
 import eu.cdevreeze.tryjava.sudoku.parse.GridParser;
 import eu.cdevreeze.tryjava.sudoku.print.GridPrinter;
 
@@ -55,7 +52,10 @@ public class SolveGame {
         System.out.printf("Number of filled cells: %d%n", startGrid.filledCellCount());
         System.out.printf("Number of unfilled cells: %d%n", startGrid.remainingUnfilledCells().size());
 
-        Game fullGame = Game.runStepFinderRepeatedly(startGrid);
+        boolean startWithPencilMarks = Boolean.parseBoolean(System.getProperty("startWithPencilMarks", "false"));
+        GridApi startGridApi = (startWithPencilMarks) ? GridWithPencilMarks.of(startGrid) : startGrid;
+
+        Game fullGame = Game.runStepFinderRepeatedly(startGridApi);
 
         System.out.println();
         System.out.println("Last grid (after automatically trying to solve the sudoku):");

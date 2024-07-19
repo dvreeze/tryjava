@@ -103,4 +103,8 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
         );
         return new GridWithPencilMarks(grid, updatedPencilMarks);
     }
+
+    public static GridWithPencilMarks of(Grid grid) {
+        return new GridWithPencilMarks(grid, PencilMarks.forGrid(grid));
+    }
 }
