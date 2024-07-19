@@ -21,6 +21,7 @@ import eu.cdevreeze.tryjava.sudoku.model.Region;
 import eu.cdevreeze.tryjava.sudoku.model.RegionPosition;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * "Step finder" for an open single in a region.
@@ -50,7 +51,7 @@ public record OpenSingleInRegion(GridApi startGrid,
         if (remainingUnfilledCells.size() == 1 && remainingUnusedNumbers.size() == 1) {
             return Optional.of(new Step(
                     remainingUnfilledCells.iterator().next().position(),
-                    remainingUnusedNumbers.iterator().next(),
+                    OptionalInt.of(remainingUnusedNumbers.iterator().next()),
                     "Filling open single in region"
             )).map(step -> new StepResult(step, step.applyStep(startGrid)));
         } else {

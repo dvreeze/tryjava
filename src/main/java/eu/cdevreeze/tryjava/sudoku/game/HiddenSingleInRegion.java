@@ -76,7 +76,7 @@ public record HiddenSingleInRegion(GridApi startGrid,
 
             return Optional.of(new Step(
                     position,
-                    hiddenSingleNumber,
+                    OptionalInt.of(hiddenSingleNumber),
                     "Filling hidden single in region"
             )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(pencilMarks))));
         } else {

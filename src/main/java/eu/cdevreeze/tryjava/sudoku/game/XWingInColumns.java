@@ -27,6 +27,7 @@ import eu.cdevreeze.tryjava.sudoku.model.Position;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -118,7 +119,7 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
 
                 return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                         candidateToFillIn.getKey(),
-                        candidateToFillIn.getValue().iterator().next(),
+                        OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
                         "Filling cell after processing X-Wing (column-based)"
                 )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
             }

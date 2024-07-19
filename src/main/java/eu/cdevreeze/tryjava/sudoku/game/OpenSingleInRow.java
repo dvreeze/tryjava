@@ -20,6 +20,7 @@ import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * "Step finder" for an open single in a row.
@@ -48,7 +49,7 @@ public record OpenSingleInRow(GridApi startGrid, int rowIndex) implements StepFi
         if (remainingUnfilledCells.size() == 1 && remainingUnusedNumbers.size() == 1) {
             return Optional.of(new Step(
                     remainingUnfilledCells.iterator().next().position(),
-                    remainingUnusedNumbers.iterator().next(),
+                    OptionalInt.of(remainingUnusedNumbers.iterator().next()),
                     "Filling open single in row"
             )).map(step -> new StepResult(step, step.applyStep(startGrid)));
         } else {

@@ -75,7 +75,7 @@ public record HiddenSingleInColumn(GridApi startGrid, int columnIndex) implement
 
             return Optional.of(new Step(
                     position,
-                    hiddenSingleNumber,
+                    OptionalInt.of(hiddenSingleNumber),
                     "Filling hidden single in column"
             )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(pencilMarks))));
         } else {

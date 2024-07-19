@@ -24,10 +24,7 @@ import com.google.common.collect.Sets;
 import eu.cdevreeze.tryjava.sudoku.internal.Permutations;
 import eu.cdevreeze.tryjava.sudoku.model.*;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -121,7 +118,7 @@ public record NakedQuadInRegion(GridApi startGrid,
 
             return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                     candidateToFillIn.getKey(),
-                    candidateToFillIn.getValue().iterator().next(),
+                    OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
                     "Filling cell in region after processing naked quad"
             )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
         } else {

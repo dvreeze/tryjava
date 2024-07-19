@@ -24,21 +24,25 @@ import eu.cdevreeze.tryjava.sudoku.model.Position;
 import java.util.OptionalInt;
 
 /**
- * Step in a Sudoku game.
+ * Step in a Sudoku game. A step typically but not necessarily sets a value at an empty position.
+ * If it does not set a value, it typically has the side effect of updating the pencil marks.
  *
  * @author Chris de Vreeze
  */
-public record Step(Position position, int value, String description) {
+public record Step(Position position, OptionalInt optionalValue, String description) {
 
     public Step {
-        Preconditions.checkArgument(value >= 1 && value <= 9);
+        Preconditions.checkArgument(optionalValue.stream().allMatch(value -> value >= 1 && value <= 9));
     }
 
     public boolean isValidStep(Grid grid) {
-        return grid.cellValue(position).isEmpty();
+        return optionalValue.isEmpty() || grid.cellValue(position).isEmpty();
     }
 
     public GridApi applyStep(GridApi grid) {
-        return grid.withCellValue(position, OptionalInt.of(value));
+        return optionalValue.stream()
+                .mapToObj(v -> grid.withCellValue(position, OptionalInt.of(v)))
+                .findFirst()
+                .orElse(grid);
     }
 }

@@ -25,10 +25,7 @@ import eu.cdevreeze.tryjava.sudoku.model.PencilMarks;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
 import eu.cdevreeze.tryjava.sudoku.model.Row;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -129,7 +126,7 @@ public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements Ste
 
         return optCandidateToFillIn.map(candidateToFillIn -> new Step(
                 candidateToFillIn.getKey(),
-                candidateToFillIn.getValue().iterator().next(),
+                OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
                 "Filling cell in row after processing hidden triplet"
         )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
     }

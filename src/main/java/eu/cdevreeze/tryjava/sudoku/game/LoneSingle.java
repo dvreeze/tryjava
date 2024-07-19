@@ -23,6 +23,7 @@ import eu.cdevreeze.tryjava.sudoku.model.Position;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * "Step finder" for a lone single.
@@ -49,7 +50,9 @@ public record LoneSingle(GridApi startGrid) implements StepFinder {
 
             return Optional.of(new Step(
                     loneSinglePosition,
-                    Objects.requireNonNull(pencilMarks.cellCandidateNumbers().get(loneSinglePosition)).iterator().next(),
+                    OptionalInt.of(
+                            Objects.requireNonNull(pencilMarks.cellCandidateNumbers().get(loneSinglePosition)).iterator().next()
+                    ),
                     "Lone single"
             )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(pencilMarks))));
         } else {

@@ -66,7 +66,7 @@ public record VisualEliminationInRegion(GridApi startGrid, RegionPosition region
         if (potentiallyMatchingUnfilledCells.size() == 1) {
             return Optional.of(new Step(
                     potentiallyMatchingUnfilledCells.iterator().next().position(),
-                    number,
+                    OptionalInt.of(number),
                     "Filling given number in last matching cell in region"
             )).map(step -> new StepResult(step, step.applyStep(startGrid)));
         } else {
