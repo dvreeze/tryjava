@@ -39,6 +39,8 @@ import java.util.stream.Stream;
  */
 public record XWingInColumns(GridApi startGrid) implements StepFinder {
 
+    // TODO Repair
+
     public record PotentialColumnInXWing(int columnIndex, int rowIndex1, int rowIndex2, int number) {
 
         public PotentialColumnInXWing {
