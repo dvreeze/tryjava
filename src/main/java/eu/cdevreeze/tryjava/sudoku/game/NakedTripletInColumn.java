@@ -115,11 +115,17 @@ public record NakedTripletInColumn(GridApi startGrid, int columnIndex) implement
 
             PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
 
-            return optCandidateToFillIn.map(candidateToFillIn -> new Step(
-                    candidateToFillIn.getKey(),
-                    OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
-                    "Filling cell in column after processing naked triplet"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
+            return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
+                            candidateToFillIn.getKey(),
+                            OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
+                            "Filling cell in column after processing naked triplet"
+                    )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))))
+                    .or(() -> (!adaptedPencilMarks.limits(pencilMarks)) ? Optional.empty() :
+                            Optional.of(new UpdatePencilMarksStep(
+                                    "Updating pencil marks in column after processing naked triplet",
+                                    adaptedPencilMarks
+                            )).map(step -> new StepResult(step, step.applyStep(startGrid)))
+                    );
         } else {
             return Optional.empty();
         }

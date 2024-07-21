@@ -115,11 +115,17 @@ public record NakedQuadInColumn(GridApi startGrid, int columnIndex) implements S
 
             PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
 
-            return optCandidateToFillIn.map(candidateToFillIn -> new Step(
-                    candidateToFillIn.getKey(),
-                    OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
-                    "Filling cell in column after processing naked quad"
-            )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
+            return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
+                            candidateToFillIn.getKey(),
+                            OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
+                            "Filling cell in column after processing naked quad"
+                    )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))))
+                    .or(() -> (!adaptedPencilMarks.limits(pencilMarks)) ? Optional.empty() :
+                            Optional.of(new UpdatePencilMarksStep(
+                                    "Updating pencil marks in column after processing naked quad",
+                                    adaptedPencilMarks
+                            )).map(step -> new StepResult(step, step.applyStep(startGrid)))
+                    );
         } else {
             return Optional.empty();
         }

@@ -59,11 +59,11 @@ public record VisualEliminationInRow(GridApi startGrid, int rowIndex,
         var remainingUnfilledCells = row.remainingUnfilledCells();
         var potentiallyMatchingUnfilledCells = remainingUnfilledCells.stream()
                 .filter(this::isCandidateCell)
-                .filter(cell -> startGrid().withCellValue(cell.position(), OptionalInt.of(number)).grid().isValid())
+                .filter(cell -> startGrid().grid().withCellValue(cell.position(), OptionalInt.of(number)).isValid())
                 .collect(Collectors.toSet());
 
         if (potentiallyMatchingUnfilledCells.size() == 1) {
-            return Optional.of(new Step(
+            return Optional.of(new SetCellValueStep(
                     potentiallyMatchingUnfilledCells.iterator().next().position(),
                     OptionalInt.of(number),
                     "Filling given number in last matching cell in row"
@@ -74,6 +74,7 @@ public record VisualEliminationInRow(GridApi startGrid, int rowIndex,
     }
 
     private boolean isCandidateCell(Cell cell) {
+        Preconditions.checkArgument(cell.isUnfilled());
         return startGrid.optionalPencilMarks().stream().allMatch(pm -> {
             if (pm.cellCandidateNumbers().containsKey(cell.position())) {
                 return Objects.requireNonNull(pm.cellCandidateNumbers().get(cell.position())).contains(number);

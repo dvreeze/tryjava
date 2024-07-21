@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
@@ -36,6 +37,17 @@ import java.util.stream.IntStream;
  */
 public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCandidateNumbers) {
 
+    public PencilMarks {
+        cellCandidateNumbers.forEach((key, value) ->
+                Preconditions.checkArgument(
+                        !value.isEmpty(),
+                        String.format("No candidate numbers for position %s", key)));
+    }
+
+    public boolean isEmpty() {
+        return cellCandidateNumbers.isEmpty();
+    }
+
     public ImmutableSet<Position> positions() {
         return cellCandidateNumbers.keySet();
     }
@@ -49,8 +61,7 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
     }
 
     public ImmutableMap<Position, ImmutableSet<Integer>> cellCandidatesInRegion(RegionPosition regionPosition) {
-        ImmutableSet<Position> positionsInGrid =
-                regionPosition.positionsInGrid().stream().collect(ImmutableSet.toImmutableSet());
+        ImmutableSet<Position> positionsInGrid = ImmutableSet.copyOf(regionPosition.positionsInGrid());
         return filterOnPositions(positionsInGrid);
     }
 
@@ -62,6 +73,18 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
 
     public ImmutableMap<Position, ImmutableSet<Integer>> filterOnPositions(ImmutableSet<Position> positions) {
         return filterOnPositions(positions::contains);
+    }
+
+    public boolean limitsOrEquals(PencilMarks other) {
+        return other.cellCandidateNumbers.keySet().containsAll(cellCandidateNumbers.keySet()) &&
+                cellCandidateNumbers.keySet()
+                        .stream()
+                        .allMatch(pos -> Objects.requireNonNull(other.cellCandidateNumbers.get(pos))
+                                .containsAll(Objects.requireNonNull(cellCandidateNumbers.get(pos))));
+    }
+
+    public boolean limits(PencilMarks other) {
+        return limitsOrEquals(other) && !this.equals(other);
     }
 
     public PencilMarks withoutPosition(Position pos) {
@@ -92,6 +115,7 @@ public record PencilMarks(ImmutableMap<Position, ImmutableSet<Integer>> cellCand
                 positions.stream()
                         .flatMap(pos -> Optional.ofNullable(cellCandidateNumbers.get(pos))
                                 .map(values -> Map.entry(pos, valuesOperator.apply(values))).stream())
+                        .filter(kv -> !kv.getValue().isEmpty())
                         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
         return update(cellCandidates);
     }

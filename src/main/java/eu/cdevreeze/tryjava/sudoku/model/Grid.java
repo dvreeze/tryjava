@@ -85,6 +85,7 @@ public record Grid(ImmutableList<Row> rows) implements GridApi, GridOrHouse {
         rowBuilder.addAll(rows.stream().skip(position.rowIndex() + 1).toList());
 
         ImmutableList<Row> updatedRows = rowBuilder.build();
+        Preconditions.checkArgument(updatedRows.size() == Row.ROW_COUNT);
         return new Grid(updatedRows);
     }
 

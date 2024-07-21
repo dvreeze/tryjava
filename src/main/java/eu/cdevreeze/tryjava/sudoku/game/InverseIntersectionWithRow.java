@@ -104,7 +104,7 @@ public record InverseIntersectionWithRow(GridApi startGrid,
 
         PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
 
-        return optCandidateToFillIn.map(candidateToFillIn -> new Step(
+        return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
                 candidateToFillIn.getKey(),
                 OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
                 "Filling cell in row after processing \"inverse omission\" (row-based)"

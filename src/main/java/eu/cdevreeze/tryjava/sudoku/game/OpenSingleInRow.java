@@ -47,7 +47,7 @@ public record OpenSingleInRow(GridApi startGrid, int rowIndex) implements StepFi
         var remainingUnusedNumbers = row.remainingUnusedNumbers();
 
         if (remainingUnfilledCells.size() == 1 && remainingUnusedNumbers.size() == 1) {
-            return Optional.of(new Step(
+            return Optional.of(new SetCellValueStep(
                     remainingUnfilledCells.iterator().next().position(),
                     OptionalInt.of(remainingUnusedNumbers.iterator().next()),
                     "Filling open single in row"

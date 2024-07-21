@@ -47,7 +47,7 @@ public record OpenSingleInColumn(GridApi startGrid, int columnIndex) implements 
         var remainingUnusedNumbers = column.remainingUnusedNumbers();
 
         if (remainingUnfilledCells.size() == 1 && remainingUnusedNumbers.size() == 1) {
-            return Optional.of(new Step(
+            return Optional.of(new SetCellValueStep(
                     remainingUnfilledCells.iterator().next().position(),
                     OptionalInt.of(remainingUnusedNumbers.iterator().next()),
                     "Filling open single in column"

@@ -50,15 +50,15 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
     }
 
     @Override
-    public GridWithPencilMarks withCellValue(Position position, OptionalInt value) {
-        Grid nextGrid = grid.withCellValue(position, value);
+    public GridWithPencilMarks withCellValue(Position position, OptionalInt optionalValue) {
+        if (optionalValue.isEmpty()) {
+            return this;
+        }
 
-        return new GridWithPencilMarks(
-                nextGrid,
-                (value.isEmpty()) ? pencilMarks :
-                        new GridWithPencilMarks(nextGrid, pencilMarks.withoutPosition(position))
-                                .removeInconsistencies(position).pencilMarks
-        );
+        Grid nextGrid = grid.withCellValue(position, optionalValue);
+
+        return new GridWithPencilMarks(nextGrid, pencilMarks.withoutPosition(position))
+                .removeInconsistencies(position);
     }
 
     // See https://sandiway.arizona.edu/sudoku/inconsistency.html
@@ -78,7 +78,7 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
                         .filter(remainingUnusedNumbers::contains)
                         .collect(ImmutableSet.toImmutableSet())
         );
-        return new GridWithPencilMarks(grid, updatedPencilMarks);
+        return new GridWithPencilMarks(grid(), updatedPencilMarks);
     }
 
     public GridWithPencilMarks removeInconsistenciesForColumn(int columnIndex) {
@@ -90,7 +90,7 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
                         .filter(remainingUnusedNumbers::contains)
                         .collect(ImmutableSet.toImmutableSet())
         );
-        return new GridWithPencilMarks(grid, updatedPencilMarks);
+        return new GridWithPencilMarks(grid(), updatedPencilMarks);
     }
 
     public GridWithPencilMarks removeInconsistenciesForRegion(RegionPosition regionPosition) {
@@ -102,7 +102,7 @@ public record GridWithPencilMarks(Grid grid, PencilMarks pencilMarks) implements
                         .filter(remainingUnusedNumbers::contains)
                         .collect(ImmutableSet.toImmutableSet())
         );
-        return new GridWithPencilMarks(grid, updatedPencilMarks);
+        return new GridWithPencilMarks(grid(), updatedPencilMarks);
     }
 
     public static GridWithPencilMarks of(Grid grid) {

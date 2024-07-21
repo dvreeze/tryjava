@@ -48,7 +48,7 @@ public record LoneSingle(GridApi startGrid) implements StepFinder {
         if (loneSinglePositionOption.isPresent()) {
             var loneSinglePosition = loneSinglePositionOption.get();
 
-            return Optional.of(new Step(
+            return Optional.of(new SetCellValueStep(
                     loneSinglePosition,
                     OptionalInt.of(
                             Objects.requireNonNull(pencilMarks.cellCandidateNumbers().get(loneSinglePosition)).iterator().next()

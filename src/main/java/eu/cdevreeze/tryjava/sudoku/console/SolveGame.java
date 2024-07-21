@@ -75,7 +75,7 @@ public class SolveGame {
             System.out.println();
             System.out.printf("Step: %s%n", fullGame.stepResults().get(i).step());
             System.out.println();
-            System.out.printf("Resulting grid:%n");
+            System.out.printf("Resulting grid (valid: %b):%n", fullGame.stepResults().get(i).resultGrid().grid().isValid());
             System.out.println();
             System.out.println(GridPrinter.print(fullGame.stepResults().get(i).resultGrid().grid()));
 

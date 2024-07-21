@@ -16,6 +16,7 @@
 
 package eu.cdevreeze.tryjava.sudoku.game;
 
+import com.google.common.base.Preconditions;
 import eu.cdevreeze.tryjava.sudoku.model.Grid;
 import eu.cdevreeze.tryjava.sudoku.model.GridApi;
 import eu.cdevreeze.tryjava.sudoku.model.Position;
@@ -24,20 +25,31 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 /**
- * Step in a Sudoku game. A step typically but not necessarily sets a value at an empty position.
- * If it does not set a value, it typically has the side effect of updating the pencil marks.
+ * Step in a Sudoku game that sets a cell value of an empty cell.
  *
  * @author Chris de Vreeze
  */
-public sealed interface Step permits SetCellValueStep, UpdatePencilMarksStep {
+public record SetCellValueStep(Position position, OptionalInt optionalValue, String description) implements Step {
 
-    Optional<Position> optionalPosition();
+    public SetCellValueStep {
+        Preconditions.checkArgument(optionalValue.stream().allMatch(value -> value >= 1 && value <= 9));
+    }
 
-    OptionalInt optionalValue();
+    @Override
+    public boolean isValidStep(Grid grid) {
+        return optionalValue.isEmpty() || grid.cellValue(position).isEmpty();
+    }
 
-    String description();
+    @Override
+    public GridApi applyStep(GridApi grid) {
+        return optionalValue.stream()
+                .mapToObj(v -> grid.withCellValue(position, OptionalInt.of(v)))
+                .findFirst()
+                .orElse(grid);
+    }
 
-    boolean isValidStep(Grid grid);
-
-    GridApi applyStep(GridApi grid);
+    @Override
+    public Optional<Position> optionalPosition() {
+        return Optional.of(position);
+    }
 }

@@ -73,7 +73,7 @@ public record HiddenSingleInColumn(GridApi startGrid, int columnIndex) implement
                     .map(Map.Entry::getKey)
                     .orElseThrow();
 
-            return Optional.of(new Step(
+            return Optional.of(new SetCellValueStep(
                     position,
                     OptionalInt.of(hiddenSingleNumber),
                     "Filling hidden single in column"

@@ -105,7 +105,7 @@ public record IntersectionWithColumn(GridApi startGrid,
 
         PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
 
-        return optCandidateToFillIn.map(candidateToFillIn -> new Step(
+        return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
                 candidateToFillIn.getKey(),
                 OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
                 "Filling cell in region after processing omission (column-based)"

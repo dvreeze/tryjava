@@ -74,7 +74,7 @@ public record HiddenSingleInRegion(GridApi startGrid,
                     .map(Map.Entry::getKey)
                     .orElseThrow();
 
-            return Optional.of(new Step(
+            return Optional.of(new SetCellValueStep(
                     position,
                     OptionalInt.of(hiddenSingleNumber),
                     "Filling hidden single in region"

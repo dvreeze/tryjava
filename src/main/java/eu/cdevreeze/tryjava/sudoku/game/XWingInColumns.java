@@ -117,11 +117,11 @@ public record XWingInColumns(GridApi startGrid) implements StepFinder {
 
                 PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
 
-                return optCandidateToFillIn.map(candidateToFillIn -> new Step(
+                return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
                         candidateToFillIn.getKey(),
                         OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
                         "Filling cell after processing X-Wing (column-based)"
-                )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
+                )).map(step -> new StepResult(step, step.applyStep(startGrid)));
             }
         }
 
