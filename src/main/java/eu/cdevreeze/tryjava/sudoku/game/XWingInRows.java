@@ -39,8 +39,6 @@ import java.util.stream.Stream;
  */
 public record XWingInRows(GridApi startGrid) implements StepFinder {
 
-    // TODO Repair
-
     public record PotentialRowInXWing(int rowIndex, int colIndex1, int colIndex2, int number) {
 
         public PotentialRowInXWing {
@@ -52,6 +50,13 @@ public record XWingInRows(GridApi startGrid) implements StepFinder {
                     colIndex1 == other.colIndex1 &&
                     colIndex2 == other.colIndex2 &&
                     number == other.number;
+        }
+    }
+
+    public record XWing(int rowIndex1, int rowIndex2, int colIndex1, int colIndex2, int number) {
+
+        public XWing {
+            Preconditions.checkArgument(rowIndex1 != rowIndex2);
         }
     }
 
@@ -88,45 +93,61 @@ public record XWingInRows(GridApi startGrid) implements StepFinder {
                         })
                         .toList();
 
-        for (var potentialRowInXWing : potentialRowsInXWing) {
-            var matchingPotentialRowsInXWing =
-                    potentialRowsInXWing.stream().filter(r -> r.matches(potentialRowInXWing)).toList();
+        Optional<XWing> optionalXWing = Optional.empty();
 
-            if (matchingPotentialRowsInXWing.isEmpty()) {
-                return Optional.empty();
-            } else {
-                int number = potentialRowInXWing.number;
-
-                PotentialRowInXWing other = matchingPotentialRowsInXWing.stream().findFirst().orElseThrow();
-
-                // The X-Wing is "stripped away" from the 2 columns in the other rows
-                ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
-                        candidates.entrySet().stream()
-                                .filter(kv -> kv.getKey().rowIndex() != potentialRowInXWing.rowIndex)
-                                .filter(kv -> kv.getKey().rowIndex() != other.rowIndex)
-                                .map(kv -> Map.entry(
-                                        kv.getKey(),
-                                        kv.getValue().stream()
-                                                .filter(n -> n != number)
-                                                .collect(ImmutableSet.toImmutableSet()))
-                                )
-                                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
-
-                Optional<Map.Entry<Position, ImmutableSet<Integer>>> optCandidateToFillIn =
-                        adaptedCandidates.entrySet().stream()
-                                .filter(kv -> kv.getValue().size() == 1)
-                                .findFirst();
-
-                PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
-
-                return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
-                        candidateToFillIn.getKey(),
-                        OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
-                        "Filling cell after processing X-Wing (row-based)"
-                )).map(step -> new StepResult(step, step.applyStep(startGrid)));
+        for (var potentialRowInXWing1 : potentialRowsInXWing) {
+            for (var potentialRowInXWing2 : potentialRowsInXWing) {
+                if (potentialRowInXWing1.matches(potentialRowInXWing2)) {
+                    optionalXWing = Optional.of(new XWing(
+                            potentialRowInXWing1.rowIndex,
+                            potentialRowInXWing2.rowIndex,
+                            potentialRowInXWing1.colIndex1,
+                            potentialRowInXWing1.colIndex2,
+                            potentialRowInXWing1.number
+                    ));
+                    break;
+                }
             }
         }
 
-        return Optional.empty();
+        if (optionalXWing.isEmpty()) {
+            return Optional.empty();
+        }
+
+        XWing xwing = optionalXWing.get();
+
+        int number = xwing.number;
+
+        // The X-Wing is "stripped away" from the 2 columns in the other rows
+        ImmutableMap<Position, ImmutableSet<Integer>> adaptedCandidates =
+                candidates.entrySet().stream()
+                        .filter(kv -> kv.getKey().rowIndex() != xwing.rowIndex1)
+                        .filter(kv -> kv.getKey().rowIndex() != xwing.rowIndex2)
+                        .map(kv -> Map.entry(
+                                kv.getKey(),
+                                kv.getValue().stream()
+                                        .filter(n -> n != number)
+                                        .collect(ImmutableSet.toImmutableSet()))
+                        )
+                        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Optional<Map.Entry<Position, ImmutableSet<Integer>>> optCandidateToFillIn =
+                adaptedCandidates.entrySet().stream()
+                        .filter(kv -> kv.getValue().size() == 1)
+                        .findFirst();
+
+        PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
+
+        return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
+                        candidateToFillIn.getKey(),
+                        OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
+                        "Filling cell after processing X-Wing (row-based)"
+                )).map(step -> new StepResult(step, step.applyStep(startGrid)))
+                .or(() -> (!adaptedPencilMarks.limits(pencilMarks)) ? Optional.empty() :
+                        Optional.of(new UpdatePencilMarksStep(
+                                "Updating pencil marks after processing X-Wing (row-based)",
+                                adaptedPencilMarks
+                        )).map(step -> new StepResult(step, step.applyStep(startGrid)))
+                );
     }
 }
