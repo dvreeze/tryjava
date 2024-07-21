@@ -125,15 +125,9 @@ public record HiddenTripletInRow(GridApi startGrid, int rowIndex) implements Ste
         PencilMarks adaptedPencilMarks = pencilMarks.update(adaptedCandidates);
 
         return optCandidateToFillIn.map(candidateToFillIn -> new SetCellValueStep(
-                        candidateToFillIn.getKey(),
-                        OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
-                        "Filling cell in row after processing hidden triplet"
-                )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))))
-                .or(() -> (!adaptedPencilMarks.limits(pencilMarks)) ? Optional.empty() :
-                        Optional.of(new UpdatePencilMarksStep(
-                                "Updating pencil marks in row after processing hidden triplet",
-                                adaptedPencilMarks
-                        )).map(step -> new StepResult(step, step.applyStep(startGrid)))
-                );
+                candidateToFillIn.getKey(),
+                OptionalInt.of(candidateToFillIn.getValue().iterator().next()),
+                "Filling cell in row after processing hidden triplet"
+        )).map(step -> new StepResult(step, step.applyStep(startGrid.withPencilMarks(adaptedPencilMarks))));
     }
 }
