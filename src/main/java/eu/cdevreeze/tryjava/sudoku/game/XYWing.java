@@ -146,10 +146,8 @@ public record XYWing(GridApi startGrid) implements StepFinder {
                             candidates.entrySet().stream()
                                     .filter(kv -> {
                                         Position pos = kv.getKey();
-                                        return !pos.equals(xyWing.wing1.position()) &&
-                                                !pos.equals(xyWing.wing2.position()) &&
-                                                !pos.equals(xyWing.middle.position()) &&
-                                                (intersect(pos, xyWing.wing1.position()) || intersect(pos, xyWing.wing2.position()));
+                                        return !pos.equals(xyWing.middle.position()) &&
+                                                (intersect(pos, xyWing.wing1.position()) && intersect(pos, xyWing.wing2.position()));
                                     })
                                     .map(kv -> Map.entry(
                                             kv.getKey(),
