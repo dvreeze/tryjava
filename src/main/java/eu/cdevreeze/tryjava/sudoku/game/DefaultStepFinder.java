@@ -70,7 +70,8 @@ public record DefaultStepFinder(GridApi startGrid) implements StepFinder {
                         Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenPairInRegion(startGrid, rp)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenTripletInRow(startGrid, i)),
                         IntStream.range(0, 9).mapToObj(i -> new HiddenTripletInColumn(startGrid, i)),
-                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenTripletInRegion(startGrid, rp))
+                        Region.ALL_REGION_POSITIONS.stream().map(rp -> new HiddenTripletInRegion(startGrid, rp)),
+                        Stream.of(new XYWing(startGrid))
                 )
                 .flatMap(Function.identity())
                 .flatMap(stepFinder -> stepFinder.findNextStepResult().stream())

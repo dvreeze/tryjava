@@ -24,5 +24,5 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author Chris de Vreeze
  */
-public record CellCandidates(Position position, ImmutableSet<Integer> candidateValues) {
+public record PencilMarksCell(Position position, ImmutableSet<Integer> candidateValues) {
 }
