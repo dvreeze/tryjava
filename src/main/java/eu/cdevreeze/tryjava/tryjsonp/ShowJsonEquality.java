@@ -27,7 +27,7 @@ import java.util.Map;
  * Given a sample Json string, this program shows that equality (for JsonValue, overriding "Object.equals")
  * works as expected. JsonArray equality is Java List equality, and JsonObject equality is Java Map equality.
  * <p>
- * Note that most static "Json" methods are avoided for performance reasons. See
+ * Note that most static "Json" value creation methods are avoided for performance reasons. See
  * <a href="https://github.com/quarkusio/quarkus/issues/42748">Json-P performance issue</a>.
  *
  * @author Chris de Vreeze
