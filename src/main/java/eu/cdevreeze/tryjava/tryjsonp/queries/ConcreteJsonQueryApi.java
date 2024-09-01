@@ -48,42 +48,42 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
 
     @Override
     public Stream<JsonObjectResult> jsonObjectStream(JsonValueResult valueResult) {
-        return descendantOrSelfObjectStream(valueResult);
+        return descendantOrSelfJsonObjectStream(valueResult);
     }
 
     @Override
     public Stream<JsonObjectResult> jsonObjectStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfObjectStream(valueResult, fieldName);
+        return descendantOrSelfJsonObjectStream(valueResult, fieldName);
     }
 
     @Override
     public Stream<JsonArrayResult> jsonArrayStream(JsonValueResult valueResult) {
-        return descendantOrSelfArrayStream(valueResult);
+        return descendantOrSelfJsonArrayStream(valueResult);
     }
 
     @Override
     public Stream<JsonArrayResult> jsonArrayStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfArrayStream(valueResult, fieldName);
+        return descendantOrSelfJsonArrayStream(valueResult, fieldName);
     }
 
     @Override
     public Stream<JsonStringResult> jsonStringStream(JsonValueResult valueResult) {
-        return descendantOrSelfStringStream(valueResult);
+        return descendantOrSelfJsonStringStream(valueResult);
     }
 
     @Override
     public Stream<JsonStringResult> jsonStringStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfStringStream(valueResult, fieldName);
+        return descendantOrSelfJsonStringStream(valueResult, fieldName);
     }
 
     @Override
     public Stream<JsonNumberResult> jsonNumberStream(JsonValueResult valueResult) {
-        return descendantOrSelfNumberStream(valueResult);
+        return descendantOrSelfJsonNumberStream(valueResult);
     }
 
     @Override
     public Stream<JsonNumberResult> jsonNumberStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfNumberStream(valueResult, fieldName);
+        return descendantOrSelfJsonNumberStream(valueResult, fieldName);
     }
 
     @Override
@@ -98,42 +98,42 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
 
     @Override
     public Stream<JsonObjectResult> jsonObjectStream(JsonValue jsonValue) {
-        return descendantOrSelfObjectStream(jsonValue);
+        return descendantOrSelfJsonObjectStream(jsonValue);
     }
 
     @Override
     public Stream<JsonObjectResult> jsonObjectStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfObjectStream(jsonValue, fieldName);
+        return descendantOrSelfJsonObjectStream(jsonValue, fieldName);
     }
 
     @Override
     public Stream<JsonArrayResult> jsonArrayStream(JsonValue jsonValue) {
-        return descendantOrSelfArrayStream(jsonValue);
+        return descendantOrSelfJsonArrayStream(jsonValue);
     }
 
     @Override
     public Stream<JsonArrayResult> jsonArrayStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfArrayStream(jsonValue, fieldName);
+        return descendantOrSelfJsonArrayStream(jsonValue, fieldName);
     }
 
     @Override
     public Stream<JsonStringResult> jsonStringStream(JsonValue jsonValue) {
-        return descendantOrSelfStringStream(jsonValue);
+        return descendantOrSelfJsonStringStream(jsonValue);
     }
 
     @Override
     public Stream<JsonStringResult> jsonStringStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfStringStream(jsonValue, fieldName);
+        return descendantOrSelfJsonStringStream(jsonValue, fieldName);
     }
 
     @Override
     public Stream<JsonNumberResult> jsonNumberStream(JsonValue jsonValue) {
-        return descendantOrSelfNumberStream(jsonValue);
+        return descendantOrSelfJsonNumberStream(jsonValue);
     }
 
     @Override
     public Stream<JsonNumberResult> jsonNumberStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfNumberStream(jsonValue, fieldName);
+        return descendantOrSelfJsonNumberStream(jsonValue, fieldName);
     }
 
     // Child axis
@@ -149,51 +149,51 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> childObjectStream(JsonValueResult valueResult) {
+    public Stream<JsonObjectResult> childJsonObjectStream(JsonValueResult valueResult) {
         return childJsonStream(valueResult)
                 .filter(r -> r instanceof JsonObjectResult)
                 .map(r -> (JsonObjectResult) r);
     }
 
     @Override
-    public Stream<JsonObjectResult> childObjectStream(JsonValueResult valueResult, String fieldName) {
-        return childObjectStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> childJsonObjectStream(JsonValueResult valueResult, String fieldName) {
+        return childJsonObjectStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> childArrayStream(JsonValueResult valueResult) {
+    public Stream<JsonArrayResult> childJsonArrayStream(JsonValueResult valueResult) {
         return childJsonStream(valueResult)
                 .filter(r -> r instanceof JsonArrayResult)
                 .map(r -> (JsonArrayResult) r);
     }
 
     @Override
-    public Stream<JsonArrayResult> childArrayStream(JsonValueResult valueResult, String fieldName) {
-        return childArrayStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> childJsonArrayStream(JsonValueResult valueResult, String fieldName) {
+        return childJsonArrayStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> childStringStream(JsonValueResult valueResult) {
+    public Stream<JsonStringResult> childJsonStringStream(JsonValueResult valueResult) {
         return childJsonStream(valueResult)
                 .filter(r -> r instanceof JsonStringResult)
                 .map(r -> (JsonStringResult) r);
     }
 
     @Override
-    public Stream<JsonStringResult> childStringStream(JsonValueResult valueResult, String fieldName) {
-        return childStringStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> childJsonStringStream(JsonValueResult valueResult, String fieldName) {
+        return childJsonStringStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> childNumberStream(JsonValueResult valueResult) {
+    public Stream<JsonNumberResult> childJsonNumberStream(JsonValueResult valueResult) {
         return childJsonStream(valueResult)
                 .filter(r -> r instanceof JsonNumberResult)
                 .map(r -> (JsonNumberResult) r);
     }
 
     @Override
-    public Stream<JsonNumberResult> childNumberStream(JsonValueResult valueResult, String fieldName) {
-        return childNumberStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> childJsonNumberStream(JsonValueResult valueResult, String fieldName) {
+        return childJsonNumberStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
@@ -207,43 +207,43 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> childObjectStream(JsonValue jsonValue) {
-        return childObjectStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonObjectResult> childJsonObjectStream(JsonValue jsonValue) {
+        return childJsonObjectStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonObjectResult> childObjectStream(JsonValue jsonValue, String fieldName) {
-        return childObjectStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> childJsonObjectStream(JsonValue jsonValue, String fieldName) {
+        return childJsonObjectStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> childArrayStream(JsonValue jsonValue) {
-        return childArrayStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonArrayResult> childJsonArrayStream(JsonValue jsonValue) {
+        return childJsonArrayStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonArrayResult> childArrayStream(JsonValue jsonValue, String fieldName) {
-        return childArrayStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> childJsonArrayStream(JsonValue jsonValue, String fieldName) {
+        return childJsonArrayStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> childStringStream(JsonValue jsonValue) {
-        return childStringStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonStringResult> childJsonStringStream(JsonValue jsonValue) {
+        return childJsonStringStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonStringResult> childStringStream(JsonValue jsonValue, String fieldName) {
-        return childStringStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> childJsonStringStream(JsonValue jsonValue, String fieldName) {
+        return childJsonStringStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> childNumberStream(JsonValue jsonValue) {
-        return childNumberStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonNumberResult> childJsonNumberStream(JsonValue jsonValue) {
+        return childJsonNumberStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonNumberResult> childNumberStream(JsonValue jsonValue, String fieldName) {
-        return childNumberStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> childJsonNumberStream(JsonValue jsonValue, String fieldName) {
+        return childJsonNumberStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     // Descendant-or-self axis
@@ -263,51 +263,51 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValueResult valueResult) {
+    public Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValueResult valueResult) {
         return descendantOrSelfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonObjectResult)
                 .map(r -> (JsonObjectResult) r);
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfObjectStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValueResult valueResult, String fieldName) {
+        return descendantOrSelfJsonObjectStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValueResult valueResult) {
+    public Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValueResult valueResult) {
         return descendantOrSelfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonArrayResult)
                 .map(r -> (JsonArrayResult) r);
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfArrayStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValueResult valueResult, String fieldName) {
+        return descendantOrSelfJsonArrayStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> descendantOrSelfStringStream(JsonValueResult valueResult) {
+    public Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValueResult valueResult) {
         return descendantOrSelfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonStringResult)
                 .map(r -> (JsonStringResult) r);
     }
 
     @Override
-    public Stream<JsonStringResult> descendantOrSelfStringStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfStringStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValueResult valueResult, String fieldName) {
+        return descendantOrSelfJsonStringStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValueResult valueResult) {
+    public Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValueResult valueResult) {
         return descendantOrSelfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonNumberResult)
                 .map(r -> (JsonNumberResult) r);
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValueResult valueResult, String fieldName) {
-        return descendantOrSelfNumberStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValueResult valueResult, String fieldName) {
+        return descendantOrSelfJsonNumberStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
@@ -321,43 +321,43 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValue jsonValue) {
-        return descendantOrSelfObjectStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValue jsonValue) {
+        return descendantOrSelfJsonObjectStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfObjectStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValue jsonValue, String fieldName) {
+        return descendantOrSelfJsonObjectStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValue jsonValue) {
-        return descendantOrSelfArrayStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValue jsonValue) {
+        return descendantOrSelfJsonArrayStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfArrayStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValue jsonValue, String fieldName) {
+        return descendantOrSelfJsonArrayStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> descendantOrSelfStringStream(JsonValue jsonValue) {
-        return descendantOrSelfStringStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValue jsonValue) {
+        return descendantOrSelfJsonStringStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonStringResult> descendantOrSelfStringStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfStringStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValue jsonValue, String fieldName) {
+        return descendantOrSelfJsonStringStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValue jsonValue) {
-        return descendantOrSelfNumberStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValue jsonValue) {
+        return descendantOrSelfJsonNumberStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValue jsonValue, String fieldName) {
-        return descendantOrSelfNumberStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValue jsonValue, String fieldName) {
+        return descendantOrSelfJsonNumberStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     // Descendant axis
@@ -373,51 +373,51 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantObjectStream(JsonValueResult valueResult) {
+    public Stream<JsonObjectResult> descendantJsonObjectStream(JsonValueResult valueResult) {
         return descendantJsonStream(valueResult)
                 .filter(r -> r instanceof JsonObjectResult)
                 .map(r -> (JsonObjectResult) r);
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantObjectStream(JsonValueResult valueResult, String fieldName) {
-        return descendantObjectStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> descendantJsonObjectStream(JsonValueResult valueResult, String fieldName) {
+        return descendantJsonObjectStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantArrayStream(JsonValueResult valueResult) {
+    public Stream<JsonArrayResult> descendantJsonArrayStream(JsonValueResult valueResult) {
         return descendantJsonStream(valueResult)
                 .filter(r -> r instanceof JsonArrayResult)
                 .map(r -> (JsonArrayResult) r);
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantArrayStream(JsonValueResult valueResult, String fieldName) {
-        return descendantArrayStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> descendantJsonArrayStream(JsonValueResult valueResult, String fieldName) {
+        return descendantJsonArrayStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> descendantStringStream(JsonValueResult valueResult) {
+    public Stream<JsonStringResult> descendantJsonStringStream(JsonValueResult valueResult) {
         return descendantJsonStream(valueResult)
                 .filter(r -> r instanceof JsonStringResult)
                 .map(r -> (JsonStringResult) r);
     }
 
     @Override
-    public Stream<JsonStringResult> descendantStringStream(JsonValueResult valueResult, String fieldName) {
-        return descendantStringStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> descendantJsonStringStream(JsonValueResult valueResult, String fieldName) {
+        return descendantJsonStringStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantNumberStream(JsonValueResult valueResult) {
+    public Stream<JsonNumberResult> descendantJsonNumberStream(JsonValueResult valueResult) {
         return descendantJsonStream(valueResult)
                 .filter(r -> r instanceof JsonNumberResult)
                 .map(r -> (JsonNumberResult) r);
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantNumberStream(JsonValueResult valueResult, String fieldName) {
-        return descendantNumberStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> descendantJsonNumberStream(JsonValueResult valueResult, String fieldName) {
+        return descendantJsonNumberStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
@@ -431,43 +431,43 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantObjectStream(JsonValue jsonValue) {
-        return descendantObjectStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonObjectResult> descendantJsonObjectStream(JsonValue jsonValue) {
+        return descendantJsonObjectStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonObjectResult> descendantObjectStream(JsonValue jsonValue, String fieldName) {
-        return descendantObjectStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> descendantJsonObjectStream(JsonValue jsonValue, String fieldName) {
+        return descendantJsonObjectStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantArrayStream(JsonValue jsonValue) {
-        return descendantArrayStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonArrayResult> descendantJsonArrayStream(JsonValue jsonValue) {
+        return descendantJsonArrayStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonArrayResult> descendantArrayStream(JsonValue jsonValue, String fieldName) {
-        return descendantArrayStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> descendantJsonArrayStream(JsonValue jsonValue, String fieldName) {
+        return descendantJsonArrayStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> descendantStringStream(JsonValue jsonValue) {
-        return descendantStringStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonStringResult> descendantJsonStringStream(JsonValue jsonValue) {
+        return descendantJsonStringStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonStringResult> descendantStringStream(JsonValue jsonValue, String fieldName) {
-        return descendantStringStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> descendantJsonStringStream(JsonValue jsonValue, String fieldName) {
+        return descendantJsonStringStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantNumberStream(JsonValue jsonValue) {
-        return descendantNumberStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonNumberResult> descendantJsonNumberStream(JsonValue jsonValue) {
+        return descendantJsonNumberStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonNumberResult> descendantNumberStream(JsonValue jsonValue, String fieldName) {
-        return descendantNumberStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> descendantJsonNumberStream(JsonValue jsonValue, String fieldName) {
+        return descendantJsonNumberStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     // Self axis
@@ -483,51 +483,51 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> selfObjectStream(JsonValueResult valueResult) {
+    public Stream<JsonObjectResult> selfJsonObjectStream(JsonValueResult valueResult) {
         return selfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonObjectResult)
                 .map(r -> (JsonObjectResult) r);
     }
 
     @Override
-    public Stream<JsonObjectResult> selfObjectStream(JsonValueResult valueResult, String fieldName) {
-        return selfObjectStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> selfJsonObjectStream(JsonValueResult valueResult, String fieldName) {
+        return selfJsonObjectStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> selfArrayStream(JsonValueResult valueResult) {
+    public Stream<JsonArrayResult> selfJsonArrayStream(JsonValueResult valueResult) {
         return selfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonArrayResult)
                 .map(r -> (JsonArrayResult) r);
     }
 
     @Override
-    public Stream<JsonArrayResult> selfArrayStream(JsonValueResult valueResult, String fieldName) {
-        return selfArrayStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> selfJsonArrayStream(JsonValueResult valueResult, String fieldName) {
+        return selfJsonArrayStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> selfStringStream(JsonValueResult valueResult) {
+    public Stream<JsonStringResult> selfJsonStringStream(JsonValueResult valueResult) {
         return selfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonStringResult)
                 .map(r -> (JsonStringResult) r);
     }
 
     @Override
-    public Stream<JsonStringResult> selfStringStream(JsonValueResult valueResult, String fieldName) {
-        return selfStringStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> selfJsonStringStream(JsonValueResult valueResult, String fieldName) {
+        return selfJsonStringStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> selfNumberStream(JsonValueResult valueResult) {
+    public Stream<JsonNumberResult> selfJsonNumberStream(JsonValueResult valueResult) {
         return selfJsonStream(valueResult)
                 .filter(r -> r instanceof JsonNumberResult)
                 .map(r -> (JsonNumberResult) r);
     }
 
     @Override
-    public Stream<JsonNumberResult> selfNumberStream(JsonValueResult valueResult, String fieldName) {
-        return selfNumberStream(valueResult).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> selfJsonNumberStream(JsonValueResult valueResult, String fieldName) {
+        return selfJsonNumberStream(valueResult).filter(isObjectField(fieldName));
     }
 
     @Override
@@ -541,43 +541,43 @@ final public class ConcreteJsonQueryApi implements JsonQueryApi {
     }
 
     @Override
-    public Stream<JsonObjectResult> selfObjectStream(JsonValue jsonValue) {
-        return selfObjectStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonObjectResult> selfJsonObjectStream(JsonValue jsonValue) {
+        return selfJsonObjectStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonObjectResult> selfObjectStream(JsonValue jsonValue, String fieldName) {
-        return selfObjectStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonObjectResult> selfJsonObjectStream(JsonValue jsonValue, String fieldName) {
+        return selfJsonObjectStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonArrayResult> selfArrayStream(JsonValue jsonValue) {
-        return selfArrayStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonArrayResult> selfJsonArrayStream(JsonValue jsonValue) {
+        return selfJsonArrayStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonArrayResult> selfArrayStream(JsonValue jsonValue, String fieldName) {
-        return selfArrayStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonArrayResult> selfJsonArrayStream(JsonValue jsonValue, String fieldName) {
+        return selfJsonArrayStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonStringResult> selfStringStream(JsonValue jsonValue) {
-        return selfStringStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonStringResult> selfJsonStringStream(JsonValue jsonValue) {
+        return selfJsonStringStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonStringResult> selfStringStream(JsonValue jsonValue, String fieldName) {
-        return selfStringStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonStringResult> selfJsonStringStream(JsonValue jsonValue, String fieldName) {
+        return selfJsonStringStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     @Override
-    public Stream<JsonNumberResult> selfNumberStream(JsonValue jsonValue) {
-        return selfNumberStream(JsonQueryResults.from(jsonValue));
+    public Stream<JsonNumberResult> selfJsonNumberStream(JsonValue jsonValue) {
+        return selfJsonNumberStream(JsonQueryResults.from(jsonValue));
     }
 
     @Override
-    public Stream<JsonNumberResult> selfNumberStream(JsonValue jsonValue, String fieldName) {
-        return selfNumberStream(jsonValue).filter(isObjectField(fieldName));
+    public Stream<JsonNumberResult> selfJsonNumberStream(JsonValue jsonValue, String fieldName) {
+        return selfJsonNumberStream(jsonValue).filter(isObjectField(fieldName));
     }
 
     // Private methods

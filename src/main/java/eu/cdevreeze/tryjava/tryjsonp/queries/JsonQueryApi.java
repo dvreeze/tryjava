@@ -80,21 +80,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> childJsonStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonObjectResult> childObjectStream(JsonValueResult valueResult);
+    Stream<JsonObjectResult> childJsonObjectStream(JsonValueResult valueResult);
 
-    Stream<JsonObjectResult> childObjectStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonObjectResult> childJsonObjectStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonArrayResult> childArrayStream(JsonValueResult valueResult);
+    Stream<JsonArrayResult> childJsonArrayStream(JsonValueResult valueResult);
 
-    Stream<JsonArrayResult> childArrayStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonArrayResult> childJsonArrayStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonStringResult> childStringStream(JsonValueResult valueResult);
+    Stream<JsonStringResult> childJsonStringStream(JsonValueResult valueResult);
 
-    Stream<JsonStringResult> childStringStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonStringResult> childJsonStringStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonNumberResult> childNumberStream(JsonValueResult valueResult);
+    Stream<JsonNumberResult> childJsonNumberStream(JsonValueResult valueResult);
 
-    Stream<JsonNumberResult> childNumberStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonNumberResult> childJsonNumberStream(JsonValueResult valueResult, String fieldName);
 
     // Child axis, passing JsonValue instead of JsonValueResult
 
@@ -102,21 +102,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> childJsonStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonObjectResult> childObjectStream(JsonValue jsonValue);
+    Stream<JsonObjectResult> childJsonObjectStream(JsonValue jsonValue);
 
-    Stream<JsonObjectResult> childObjectStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonObjectResult> childJsonObjectStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonArrayResult> childArrayStream(JsonValue jsonValue);
+    Stream<JsonArrayResult> childJsonArrayStream(JsonValue jsonValue);
 
-    Stream<JsonArrayResult> childArrayStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonArrayResult> childJsonArrayStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonStringResult> childStringStream(JsonValue jsonValue);
+    Stream<JsonStringResult> childJsonStringStream(JsonValue jsonValue);
 
-    Stream<JsonStringResult> childStringStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonStringResult> childJsonStringStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonNumberResult> childNumberStream(JsonValue jsonValue);
+    Stream<JsonNumberResult> childJsonNumberStream(JsonValue jsonValue);
 
-    Stream<JsonNumberResult> childNumberStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonNumberResult> childJsonNumberStream(JsonValue jsonValue, String fieldName);
 
     // Descendant-or-self axis
 
@@ -124,21 +124,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> descendantOrSelfJsonStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValueResult valueResult);
+    Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValueResult valueResult);
 
-    Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValueResult valueResult);
+    Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValueResult valueResult);
 
-    Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonStringResult> descendantOrSelfStringStream(JsonValueResult valueResult);
+    Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValueResult valueResult);
 
-    Stream<JsonStringResult> descendantOrSelfStringStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValueResult valueResult);
+    Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValueResult valueResult);
 
-    Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValueResult valueResult, String fieldName);
 
     // Descendant-or-self axis, passing JsonValue instead of JsonValueResult
 
@@ -146,21 +146,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> descendantOrSelfJsonStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValue jsonValue);
+    Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValue jsonValue);
 
-    Stream<JsonObjectResult> descendantOrSelfObjectStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonObjectResult> descendantOrSelfJsonObjectStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValue jsonValue);
+    Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValue jsonValue);
 
-    Stream<JsonArrayResult> descendantOrSelfArrayStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonArrayResult> descendantOrSelfJsonArrayStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonStringResult> descendantOrSelfStringStream(JsonValue jsonValue);
+    Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValue jsonValue);
 
-    Stream<JsonStringResult> descendantOrSelfStringStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonStringResult> descendantOrSelfJsonStringStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValue jsonValue);
+    Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValue jsonValue);
 
-    Stream<JsonNumberResult> descendantOrSelfNumberStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonNumberResult> descendantOrSelfJsonNumberStream(JsonValue jsonValue, String fieldName);
 
     // Descendant axis
 
@@ -168,21 +168,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> descendantJsonStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonObjectResult> descendantObjectStream(JsonValueResult valueResult);
+    Stream<JsonObjectResult> descendantJsonObjectStream(JsonValueResult valueResult);
 
-    Stream<JsonObjectResult> descendantObjectStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonObjectResult> descendantJsonObjectStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonArrayResult> descendantArrayStream(JsonValueResult valueResult);
+    Stream<JsonArrayResult> descendantJsonArrayStream(JsonValueResult valueResult);
 
-    Stream<JsonArrayResult> descendantArrayStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonArrayResult> descendantJsonArrayStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonStringResult> descendantStringStream(JsonValueResult valueResult);
+    Stream<JsonStringResult> descendantJsonStringStream(JsonValueResult valueResult);
 
-    Stream<JsonStringResult> descendantStringStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonStringResult> descendantJsonStringStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonNumberResult> descendantNumberStream(JsonValueResult valueResult);
+    Stream<JsonNumberResult> descendantJsonNumberStream(JsonValueResult valueResult);
 
-    Stream<JsonNumberResult> descendantNumberStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonNumberResult> descendantJsonNumberStream(JsonValueResult valueResult, String fieldName);
 
     // Descendant axis, passing JsonValue instead of JsonValueResult
 
@@ -190,21 +190,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> descendantJsonStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonObjectResult> descendantObjectStream(JsonValue jsonValue);
+    Stream<JsonObjectResult> descendantJsonObjectStream(JsonValue jsonValue);
 
-    Stream<JsonObjectResult> descendantObjectStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonObjectResult> descendantJsonObjectStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonArrayResult> descendantArrayStream(JsonValue jsonValue);
+    Stream<JsonArrayResult> descendantJsonArrayStream(JsonValue jsonValue);
 
-    Stream<JsonArrayResult> descendantArrayStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonArrayResult> descendantJsonArrayStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonStringResult> descendantStringStream(JsonValue jsonValue);
+    Stream<JsonStringResult> descendantJsonStringStream(JsonValue jsonValue);
 
-    Stream<JsonStringResult> descendantStringStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonStringResult> descendantJsonStringStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonNumberResult> descendantNumberStream(JsonValue jsonValue);
+    Stream<JsonNumberResult> descendantJsonNumberStream(JsonValue jsonValue);
 
-    Stream<JsonNumberResult> descendantNumberStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonNumberResult> descendantJsonNumberStream(JsonValue jsonValue, String fieldName);
 
     // Self axis
 
@@ -212,21 +212,21 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> selfJsonStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonObjectResult> selfObjectStream(JsonValueResult valueResult);
+    Stream<JsonObjectResult> selfJsonObjectStream(JsonValueResult valueResult);
 
-    Stream<JsonObjectResult> selfObjectStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonObjectResult> selfJsonObjectStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonArrayResult> selfArrayStream(JsonValueResult valueResult);
+    Stream<JsonArrayResult> selfJsonArrayStream(JsonValueResult valueResult);
 
-    Stream<JsonArrayResult> selfArrayStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonArrayResult> selfJsonArrayStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonStringResult> selfStringStream(JsonValueResult valueResult);
+    Stream<JsonStringResult> selfJsonStringStream(JsonValueResult valueResult);
 
-    Stream<JsonStringResult> selfStringStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonStringResult> selfJsonStringStream(JsonValueResult valueResult, String fieldName);
 
-    Stream<JsonNumberResult> selfNumberStream(JsonValueResult valueResult);
+    Stream<JsonNumberResult> selfJsonNumberStream(JsonValueResult valueResult);
 
-    Stream<JsonNumberResult> selfNumberStream(JsonValueResult valueResult, String fieldName);
+    Stream<JsonNumberResult> selfJsonNumberStream(JsonValueResult valueResult, String fieldName);
 
     // Self axis, passing JsonValue instead of JsonValueResult
 
@@ -234,19 +234,19 @@ public interface JsonQueryApi {
 
     Stream<? extends JsonValueResult> selfJsonStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonObjectResult> selfObjectStream(JsonValue jsonValue);
+    Stream<JsonObjectResult> selfJsonObjectStream(JsonValue jsonValue);
 
-    Stream<JsonObjectResult> selfObjectStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonObjectResult> selfJsonObjectStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonArrayResult> selfArrayStream(JsonValue jsonValue);
+    Stream<JsonArrayResult> selfJsonArrayStream(JsonValue jsonValue);
 
-    Stream<JsonArrayResult> selfArrayStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonArrayResult> selfJsonArrayStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonStringResult> selfStringStream(JsonValue jsonValue);
+    Stream<JsonStringResult> selfJsonStringStream(JsonValue jsonValue);
 
-    Stream<JsonStringResult> selfStringStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonStringResult> selfJsonStringStream(JsonValue jsonValue, String fieldName);
 
-    Stream<JsonNumberResult> selfNumberStream(JsonValue jsonValue);
+    Stream<JsonNumberResult> selfJsonNumberStream(JsonValue jsonValue);
 
-    Stream<JsonNumberResult> selfNumberStream(JsonValue jsonValue, String fieldName);
+    Stream<JsonNumberResult> selfJsonNumberStream(JsonValue jsonValue, String fieldName);
 }

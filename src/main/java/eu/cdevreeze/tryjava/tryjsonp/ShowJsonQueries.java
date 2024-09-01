@@ -89,13 +89,13 @@ public class ShowJsonQueries {
 
     public static List<String> findHomeNumbersOfJohnSmith(JsonObject jsonObject, JsonQueryApi jq) {
         return jq.jsonArrayStream(jsonObject, "phoneNumber")
-                .flatMap(jq::childObjectStream)
+                .flatMap(jq::childJsonObjectStream)
                 .filter(v ->
-                        jq.childStringStream(v, "type")
+                        jq.childJsonStringStream(v, "type")
                                 .anyMatch(jsonStr -> jsonStr.jsonString().getString().equals("home"))
                 )
                 .flatMap(v ->
-                        jq.childStringStream(v, "number")
+                        jq.childJsonStringStream(v, "number")
                                 .map(JsonQueryResults.JsonStringResult::jsonString)
                                 .map(JsonString::getString)
                 )
@@ -104,9 +104,9 @@ public class ShowJsonQueries {
 
     public static List<String> findPhoneNumbersOfJohnSmith(JsonObject jsonObject, JsonQueryApi jq) {
         return jq.jsonArrayStream(jsonObject, "phoneNumber")
-                .flatMap(jq::childObjectStream)
+                .flatMap(jq::childJsonObjectStream)
                 .flatMap(v ->
-                        jq.childStringStream(v, "number")
+                        jq.childJsonStringStream(v, "number")
                                 .map(JsonQueryResults.JsonStringResult::jsonString)
                                 .map(JsonString::getString)
                 )

@@ -224,20 +224,20 @@ public class BookQueryTests {
 
         Predicate<JsonObject> bookCowrittenByJenniferWidom =
                 bookJsonObj ->
-                        jq.childArrayStream(bookJsonObj, "authors")
-                                .flatMap(jq::childObjectStream)
+                        jq.childJsonArrayStream(bookJsonObj, "authors")
+                                .flatMap(jq::childJsonObjectStream)
                                 .anyMatch(v ->
-                                        jq.childStringStream(v, "firstName")
+                                        jq.childJsonStringStream(v, "firstName")
                                                 .anyMatch(v2 -> v2.jsonString().getString().equals("Jennifer")) &&
-                                                jq.childStringStream(v, "lastName")
+                                                jq.childJsonStringStream(v, "lastName")
                                                         .anyMatch(v2 -> v2.jsonString().getString().equals("Widom"))
                                 );
 
         Set<String> bookTitlesCoauthoredByJenniferWidom =
                 jq.jsonArrayStream(bookstoreJsonObj, "books")
-                        .flatMap(jq::childObjectStream)
+                        .flatMap(jq::childJsonObjectStream)
                         .filter(v -> bookCowrittenByJenniferWidom.test(v.jsonObject()))
-                        .flatMap(v -> jq.childStringStream(v, "title"))
+                        .flatMap(v -> jq.childJsonStringStream(v, "title"))
                         .map(v -> v.jsonString().getString())
                         .collect(Collectors.toSet());
 
@@ -257,11 +257,11 @@ public class BookQueryTests {
 
         Function<JsonObject, String> getAuthorName =
                 authorJsonObj -> {
-                    String firstName = jq.childStringStream(authorJsonObj, "firstName")
+                    String firstName = jq.childJsonStringStream(authorJsonObj, "firstName")
                             .map(v -> v.jsonString().getString())
                             .findFirst()
                             .orElseThrow();
-                    String lastName = jq.childStringStream(authorJsonObj, "lastName")
+                    String lastName = jq.childJsonStringStream(authorJsonObj, "lastName")
                             .map(v -> v.jsonString().getString())
                             .findFirst()
                             .orElseThrow();
@@ -271,7 +271,7 @@ public class BookQueryTests {
         Set<String> authorNames =
                 jq.jsonArrayStream(bookstoreJsonObj, "books")
                         .flatMap(v -> jq.jsonArrayStream(v, "authors"))
-                        .flatMap(jq::childObjectStream)
+                        .flatMap(jq::childJsonObjectStream)
                         .map(v -> getAuthorName.apply(v.jsonObject()))
                         .collect(Collectors.toSet());
 
@@ -287,20 +287,20 @@ public class BookQueryTests {
 
         Predicate<JsonObject> bookCowrittenByJenniferWidom =
                 bookJsonObj ->
-                        jq.childArrayStream(bookJsonObj, "authors")
-                                .flatMap(jq::childObjectStream)
+                        jq.childJsonArrayStream(bookJsonObj, "authors")
+                                .flatMap(jq::childJsonObjectStream)
                                 .anyMatch(v ->
-                                        jq.childStringStream(v, "firstName")
+                                        jq.childJsonStringStream(v, "firstName")
                                                 .anyMatch(v2 -> v2.jsonString().getString().equals("Jennifer")) &&
-                                                jq.childStringStream(v, "lastName")
+                                                jq.childJsonStringStream(v, "lastName")
                                                         .anyMatch(v2 -> v2.jsonString().getString().equals("Widom"))
                                 );
 
         Set<String> bookISBNsCoauthoredByJenniferWidom =
                 jq.jsonArrayStream(bookstoreJsonObj, "books")
-                        .flatMap(jq::childObjectStream)
+                        .flatMap(jq::childJsonObjectStream)
                         .filter(v -> bookCowrittenByJenniferWidom.test(v.jsonObject()))
-                        .flatMap(v -> jq.childStringStream(v, "ISBN"))
+                        .flatMap(v -> jq.childJsonStringStream(v, "ISBN"))
                         .map(v -> v.jsonString().getString())
                         .collect(Collectors.toSet());
 
@@ -316,12 +316,12 @@ public class BookQueryTests {
 
         List<String> februaryMagazineTitles =
                 jq.jsonArrayStream(bookstoreJsonObj, "magazines")
-                        .flatMap(jq::childObjectStream)
+                        .flatMap(jq::childJsonObjectStream)
                         .filter(v ->
                                 jq.jsonStringStream(v, "month")
                                         .anyMatch(v2 -> v2.jsonString().getString().equals("February"))
                         )
-                        .flatMap(v -> jq.childStringStream(v, "title"))
+                        .flatMap(v -> jq.childJsonStringStream(v, "title"))
                         .map(v -> v.jsonString().getString())
                         .toList();
 
