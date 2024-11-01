@@ -16,12 +16,9 @@
 
 package eu.cdevreeze.tryjava.tryjsonp;
 
-import eu.cdevreeze.tryjava.tryjsonp.queries.ConcreteJsonQueryApi;
-import eu.cdevreeze.tryjava.tryjsonp.queries.JsonQueryApi;
-import eu.cdevreeze.tryjava.tryjsonp.queries.JsonQueryResults;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReaderFactory;
-import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import jakarta.json.JsonWriterFactory;
 import jakarta.json.spi.JsonProvider;
 import jakarta.json.stream.JsonGenerator;
@@ -30,10 +27,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static jakarta.json.stream.JsonCollectors.toJsonObject;
 
 /**
- * Given a sample Json string, this program shows JSON querying in a way that is inspired by XML
- * querying based on XPath axis descendant-or-self.
+ * Given a sample Json string, this program shows JSON querying using JSON-P in Java Stream pipelines.
+ * Maybe it does not look like that at the surface, but JSON-P with the Java Stream API combined make up
+ * a decent JSON query API.
  *
  * @author Chris de Vreeze
  */
@@ -66,11 +67,9 @@ public class ShowJsonQueries {
 
         String jsonString = writeJsonObjectToString(jsonObject, jsonProvider);
 
-        JsonQueryApi jq = ConcreteJsonQueryApi.instance();
-
         System.out.printf("Querying JSON (pretty-printed):%n%s%n", jsonString);
 
-        List<String> homeNumbers = findHomeNumbersOfJohnSmith(jsonObject, jq);
+        List<String> homeNumbers = findHomeNumbersOfJohnSmith(jsonObject);
 
         System.out.println();
         System.out.printf(
@@ -78,39 +77,52 @@ public class ShowJsonQueries {
                 String.join(", ", homeNumbers)
         );
 
-        List<String> allNumbers = findPhoneNumbersOfJohnSmith(jsonObject, jq);
+        List<String> allNumbers = findPhoneNumbersOfJohnSmith(jsonObject);
 
         System.out.println();
         System.out.printf(
                 "All numbers of John Smith: %s%n",
                 String.join(", ", allNumbers)
         );
+
+        Map<String, String> numberMap = findPhoneNumbersOfJohnSmithAsMap(jsonObject);
+
+        System.out.println();
+        System.out.printf(
+                "All numbers of John Smith (again): %s%n",
+                numberMap
+        );
     }
 
-    public static List<String> findHomeNumbersOfJohnSmith(JsonObject jsonObject, JsonQueryApi jq) {
-        return jq.jsonArrayStream(jsonObject, "phoneNumber")
-                .flatMap(jq::childJsonObjectStream)
-                .filter(v ->
-                        jq.childJsonStringStream(v, "type")
-                                .anyMatch(jsonStr -> jsonStr.jsonString().getString().equals("home"))
-                )
-                .flatMap(v ->
-                        jq.childJsonStringStream(v, "number")
-                                .map(JsonQueryResults.JsonStringResult::jsonString)
-                                .map(JsonString::getString)
-                )
+    public static List<String> findHomeNumbersOfJohnSmith(JsonObject jsonObject) {
+        return jsonObject.getJsonArray("phoneNumber")
+                .stream()
+                .map(JsonValue::asJsonObject)
+                .filter(phoneNumber -> phoneNumber.getString("type").equals("home"))
+                .map(phoneNumber -> phoneNumber.getString("number"))
                 .toList();
     }
 
-    public static List<String> findPhoneNumbersOfJohnSmith(JsonObject jsonObject, JsonQueryApi jq) {
-        return jq.jsonArrayStream(jsonObject, "phoneNumber")
-                .flatMap(jq::childJsonObjectStream)
-                .flatMap(v ->
-                        jq.childJsonStringStream(v, "number")
-                                .map(JsonQueryResults.JsonStringResult::jsonString)
-                                .map(JsonString::getString)
-                )
+    public static List<String> findPhoneNumbersOfJohnSmith(JsonObject jsonObject) {
+        return jsonObject.getJsonArray("phoneNumber")
+                .stream()
+                .map(JsonValue::asJsonObject)
+                .map(phoneNumber -> phoneNumber.getString("number"))
                 .toList();
+    }
+
+    public static Map<String, String> findPhoneNumbersOfJohnSmithAsMap(JsonObject jsonObject) {
+        return jsonObject.getJsonArray("phoneNumber")
+                .stream()
+                .collect(
+                        toJsonObject(
+                                phone -> phone.asJsonObject().getString("type"),
+                                phone -> phone.asJsonObject().getJsonString("number")
+                        )
+                )
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, kv -> kv.getValue().toString()));
     }
 
     private static String writeJsonObjectToString(JsonObject jsonObj, JsonProvider jsonProvider) {
