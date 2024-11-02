@@ -16,22 +16,23 @@
 
 package eu.cdevreeze.tryjava.tryjsonp;
 
-import eu.cdevreeze.tryjava.tryjsonp.queries.ConcreteJsonQueryApi;
-import eu.cdevreeze.tryjava.tryjsonp.queries.JsonQueryApi;
+import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReaderFactory;
+import jakarta.json.JsonValue;
 import jakarta.json.spi.JsonProvider;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static eu.cdevreeze.tryjava.tryjsonp.queries.JsonPredicates.isObjectField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -138,17 +139,11 @@ public class BookQueryTests {
     // Avoiding expensive Json static methods, that repeatedly look up the JsonProvider
     private static final JsonProvider jsonProvider = JsonProvider.provider();
 
-    private static final JsonQueryApi jq = ConcreteJsonQueryApi.instance();
-
     @Test
     void testQueryAllFieldNames() {
         JsonObject bookstoreJsonObj = parseBookstoreJson();
 
-        List<String> fieldNames = jq.jsonObjectStream(bookstoreJsonObj)
-                .flatMap(jq::childJsonStream)
-                .flatMap(v -> v.optionalFieldName().stream())
-                .distinct()
-                .toList();
+        List<String> fieldNames = findAllFieldNames(bookstoreJsonObj).toList();
 
         assertEquals(List.of(
                 "bookstore",
@@ -167,15 +162,20 @@ public class BookQueryTests {
         ), fieldNames);
     }
 
+    // Improve this querying support based on JSON-P and Java Streams a lot. This is not ergonomic!
+
     @Test
     void testQueryNumberOfTitles() {
         JsonObject bookstoreJsonObj = parseBookstoreJson();
 
         List<String> titles =
-                jq.jsonArrayStream(bookstoreJsonObj)
-                        .filter(v -> isObjectField("books").test(v) || isObjectField("magazines").test(v))
-                        .flatMap(v -> jq.jsonStringStream(v, "title"))
-                        .map(v -> v.jsonString().getString())
+                bookstoreJsonObj.getJsonObject("bookstore").entrySet().stream()
+                        .filter(kv -> Set.of("books", "magazines").contains(kv.getKey()))
+                        .map(Map.Entry::getValue)
+                        .flatMap(v -> asOptionalJsonArray(v).stream())
+                        .flatMap(arr -> arr.stream().flatMap(v -> asOptionalJsonObject(v).stream()))
+                        .filter(obj -> obj.containsKey("title"))
+                        .map(obj -> obj.getString("title"))
                         .toList();
 
         assertEquals(8L, titles.size());
@@ -186,9 +186,9 @@ public class BookQueryTests {
         JsonObject bookstoreJsonObj = parseBookstoreJson();
 
         List<String> magazineMonths =
-                jq.jsonArrayStream(bookstoreJsonObj, "magazines")
-                        .flatMap(v -> jq.jsonStringStream(v, "month"))
-                        .map(v -> v.jsonString().getString())
+                bookstoreJsonObj.getJsonObject("bookstore").get("magazines").asJsonArray().stream()
+                        .flatMap(v -> asOptionalJsonObject(v).stream())
+                        .map(v -> v.getString("month"))
                         .toList();
 
         assertEquals(
@@ -202,9 +202,10 @@ public class BookQueryTests {
         JsonObject bookstoreJsonObj = parseBookstoreJson();
 
         List<String> magazineTitles =
-                jq.jsonArrayStream(bookstoreJsonObj, "magazines")
-                        .flatMap(v -> jq.jsonStringStream(v, "title"))
-                        .map(v -> v.jsonString().getString())
+                bookstoreJsonObj.getJsonObject("bookstore").getJsonArray("magazines").stream()
+                        .flatMap(arr -> asOptionalJsonObject(arr).stream())
+                        .filter(obj -> obj.containsKey("title"))
+                        .map(obj -> obj.getString("title"))
                         .distinct()
                         .toList();
 
@@ -224,21 +225,18 @@ public class BookQueryTests {
 
         Predicate<JsonObject> bookCowrittenByJenniferWidom =
                 bookJsonObj ->
-                        jq.childJsonArrayStream(bookJsonObj, "authors")
-                                .flatMap(jq::childJsonObjectStream)
+                        bookJsonObj.getJsonArray("authors").stream()
+                                .flatMap(v -> asOptionalJsonObject(v).stream())
                                 .anyMatch(v ->
-                                        jq.childJsonStringStream(v, "firstName")
-                                                .anyMatch(v2 -> v2.jsonString().getString().equals("Jennifer")) &&
-                                                jq.childJsonStringStream(v, "lastName")
-                                                        .anyMatch(v2 -> v2.jsonString().getString().equals("Widom"))
+                                        v.getString("firstName").equals("Jennifer") &&
+                                                v.getString("lastName").equals("Widom")
                                 );
 
         Set<String> bookTitlesCoauthoredByJenniferWidom =
-                jq.jsonArrayStream(bookstoreJsonObj, "books")
-                        .flatMap(jq::childJsonObjectStream)
-                        .filter(v -> bookCowrittenByJenniferWidom.test(v.jsonObject()))
-                        .flatMap(v -> jq.childJsonStringStream(v, "title"))
-                        .map(v -> v.jsonString().getString())
+                bookstoreJsonObj.getJsonObject("bookstore").getJsonArray("books").stream()
+                        .flatMap(v -> asOptionalJsonObject(v).stream())
+                        .filter(bookCowrittenByJenniferWidom)
+                        .map(v -> v.getString("title"))
                         .collect(Collectors.toSet());
 
         assertEquals(
@@ -257,22 +255,17 @@ public class BookQueryTests {
 
         Function<JsonObject, String> getAuthorName =
                 authorJsonObj -> {
-                    String firstName = jq.childJsonStringStream(authorJsonObj, "firstName")
-                            .map(v -> v.jsonString().getString())
-                            .findFirst()
-                            .orElseThrow();
-                    String lastName = jq.childJsonStringStream(authorJsonObj, "lastName")
-                            .map(v -> v.jsonString().getString())
-                            .findFirst()
-                            .orElseThrow();
+                    String firstName = authorJsonObj.getString("firstName");
+                    String lastName = authorJsonObj.getString("lastName");
                     return String.format("%s %s", firstName, lastName).strip();
                 };
 
         Set<String> authorNames =
-                jq.jsonArrayStream(bookstoreJsonObj, "books")
-                        .flatMap(v -> jq.jsonArrayStream(v, "authors"))
-                        .flatMap(jq::childJsonObjectStream)
-                        .map(v -> getAuthorName.apply(v.jsonObject()))
+                bookstoreJsonObj.getJsonObject("bookstore").getJsonArray("books").stream()
+                        .flatMap(v -> asOptionalJsonObject(v).stream())
+                        .flatMap(kv -> kv.getJsonArray("authors").stream())
+                        .map(JsonValue::asJsonObject)
+                        .map(getAuthorName)
                         .collect(Collectors.toSet());
 
         assertEquals(
@@ -287,21 +280,18 @@ public class BookQueryTests {
 
         Predicate<JsonObject> bookCowrittenByJenniferWidom =
                 bookJsonObj ->
-                        jq.childJsonArrayStream(bookJsonObj, "authors")
-                                .flatMap(jq::childJsonObjectStream)
+                        bookJsonObj.getJsonArray("authors").stream()
+                                .flatMap(v -> asOptionalJsonObject(v).stream())
                                 .anyMatch(v ->
-                                        jq.childJsonStringStream(v, "firstName")
-                                                .anyMatch(v2 -> v2.jsonString().getString().equals("Jennifer")) &&
-                                                jq.childJsonStringStream(v, "lastName")
-                                                        .anyMatch(v2 -> v2.jsonString().getString().equals("Widom"))
+                                        v.getString("firstName").equals("Jennifer") &&
+                                                v.getString("lastName").equals("Widom")
                                 );
 
         Set<String> bookISBNsCoauthoredByJenniferWidom =
-                jq.jsonArrayStream(bookstoreJsonObj, "books")
-                        .flatMap(jq::childJsonObjectStream)
-                        .filter(v -> bookCowrittenByJenniferWidom.test(v.jsonObject()))
-                        .flatMap(v -> jq.childJsonStringStream(v, "ISBN"))
-                        .map(v -> v.jsonString().getString())
+                bookstoreJsonObj.getJsonObject("bookstore").getJsonArray("books").stream()
+                        .flatMap(v -> asOptionalJsonObject(v).stream())
+                        .filter(bookCowrittenByJenniferWidom)
+                        .map(v -> v.getString("ISBN"))
                         .collect(Collectors.toSet());
 
         assertEquals(
@@ -315,14 +305,10 @@ public class BookQueryTests {
         JsonObject bookstoreJsonObj = parseBookstoreJson();
 
         List<String> februaryMagazineTitles =
-                jq.jsonArrayStream(bookstoreJsonObj, "magazines")
-                        .flatMap(jq::childJsonObjectStream)
-                        .filter(v ->
-                                jq.jsonStringStream(v, "month")
-                                        .anyMatch(v2 -> v2.jsonString().getString().equals("February"))
-                        )
-                        .flatMap(v -> jq.childJsonStringStream(v, "title"))
-                        .map(v -> v.jsonString().getString())
+                bookstoreJsonObj.getJsonObject("bookstore").get("magazines").asJsonArray().stream()
+                        .flatMap(v -> asOptionalJsonObject(v).stream())
+                        .filter(v -> v.getString("month").equals("February"))
+                        .map(v -> v.getString("title"))
                         .toList();
 
         assertEquals(
@@ -331,9 +317,48 @@ public class BookQueryTests {
         );
     }
 
+    private static Stream<String> findAllFieldNames(JsonObject jsonObject) {
+        // Recursive, and mutually recursive with overloaded method
+        return Stream.concat(
+                jsonObject.keySet().stream(),
+                jsonObject.values().stream().flatMap(jsonValue -> {
+                    if (jsonValue instanceof JsonObject jsonObj) {
+                        return findAllFieldNames(jsonObj);
+                    } else if (jsonValue instanceof JsonArray jsonArr) {
+                        return findAllFieldNames(jsonArr);
+                    } else {
+                        return Stream.empty();
+                    }
+                })
+        ).distinct();
+    }
+
+    private static Stream<String> findAllFieldNames(JsonArray jsonArray) {
+        // Recursive, and mutually recursive with overloaded method
+        return jsonArray.stream().flatMap(v -> {
+            if (v instanceof JsonObject jsonObj) {
+                return findAllFieldNames(jsonObj);
+            } else if (v instanceof JsonArray jsonArr) {
+                return findAllFieldNames(jsonArr);
+            } else {
+                return Stream.empty();
+            }
+        }).distinct();
+    }
+
     private static JsonObject parseBookstoreJson() {
         JsonReaderFactory jsonReaderFactory = jsonProvider.createReaderFactory(Map.of());
 
         return jsonReaderFactory.createReader(new StringReader(BOOKSTORE_JSON_STRING)).readObject();
+    }
+
+    // JSON-P Java Stream helpers
+
+    private static Optional<JsonObject> asOptionalJsonObject(JsonValue jsonValue) {
+        return Optional.of(jsonValue).filter(v -> v instanceof JsonObject).map(JsonValue::asJsonObject);
+    }
+
+    private static Optional<JsonArray> asOptionalJsonArray(JsonValue jsonValue) {
+        return Optional.of(jsonValue).filter(v -> v instanceof JsonArray).map(JsonValue::asJsonArray);
     }
 }
