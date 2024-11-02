@@ -163,6 +163,15 @@ public class BookQueryTests {
     }
 
     // Improve this querying support based on JSON-P and Java Streams a lot. This is not ergonomic!
+    // One way to fix this is to first introduce "mirrors" of JsonValue and subtypes. These mirrors
+    // would get an API corresponding to the JsonValue (and subtype) API, except that the methods
+    // would return Java Streams. So JsonObject.getJsonObject would correspond to method jsonObjectStream,
+    // and JsonObject.getJsonArray would correspond to method jsonArrayStream. Likewise, JsonValue.asJsonObject
+    // would correspond to method selfAsJsonObjectStream, etc. Some methods taking a field name parameter
+    // could be overloaded to take a predicate. Of course, converting between JsonValue and "mirrors"
+    // should be trivial. In short, this Stream-based query API would be safe when expected data is missing,
+    // and it does not expect single results when traversing JSON. The "mirror" API could either wrap
+    // JsonValue objects, or it could be entirely decoupled in memory, which would make conversions costly.
 
     @Test
     void testQueryNumberOfTitles() {
